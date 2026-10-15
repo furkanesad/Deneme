@@ -3707,6 +3707,17 @@ function safeDb(d){
 })();
 </script>
 
+<script>
+// Deep link: #q=kelime → Kelimeler sekmesinde arar (kütüphane görünümü)
+(function(){
+  let first = true;
+  function apply(){ let q = null; const m = location.hash.match(/^#q=(.*)$/); if (m) q = decodeURIComponent(m[1]); else if (first){ const sp = new URLSearchParams(location.search); if (sp.has('q')) q = sp.get('q'); } first = false; if (q === null) return; try{
+    F.st = 'lib'; F.lvl = 'all'; document.querySelectorAll('#f-st button').forEach(b => b.setAttribute('aria-pressed', b.dataset.x === 'lib')); document.querySelectorAll('#f-lvl button').forEach(b => b.setAttribute('aria-pressed', b.dataset.x === 'all'));
+    showView('vocab'); F.q = q; const i = document.getElementById('f-q'); if (i){ i.value = q; i.dispatchEvent(new Event('input', {bubbles:true})); } renderLists(); window.scrollTo(0, 0);
+  }catch(e){} }
+  window.addEventListener('hashchange', apply); setTimeout(apply, 900);
+})();
+</script>
 <script src="../offline/lookup.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('../sw.js').catch(function(){});</script>
 </body></html>

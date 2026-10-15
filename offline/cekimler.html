@@ -630,6 +630,8 @@ li{margin:2px 0}
     $('#out').innerHTML = `<div class="grp">${name}${c.guess ? ' · tahmin (sözlükte bulunamadı)' : ''}</div>${mean ? `<div class="hint">${esc(word)}${e && e[1][0] ? ' ・ ' + esc(e[1][0]) : ''} — ${esc(mean)}</div>` : ''}<div class="tw"><table><tr><th>biçim</th><th>sonuç</th></tr>${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="j">${esc(r[1])}</td></tr>`).join('')}</table></div>` +
       (c.k === 'v1' || c.k === 'v2' ? `<p class="hint">Grup belirleme: ${c.k === 'v2' ? 'sonu e/i + る → Grup 2' : 'Grup 1 (五段)'}${G1_EXC.includes(w) ? ' — bu fiil "hain" listesinde, Grup 1' : ''}. Yanlışsa diğer gruba göre kuralı bölüm 2\'den uygula.</p>` : '');
   }
+  function fromHash(){ const m = location.hash.match(/^#v=(.*)$/); const sp = new URLSearchParams(location.search); const v = m ? decodeURIComponent(m[1]) : sp.get('v'); if (v){ $('#vin').value = v; run(); } }
+  window.addEventListener('hashchange', fromHash); fromHash();
   $('#vgo').onclick = run; $('#vin').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
   $('#vchips').innerHTML = ['食べる','行く','買う','話す','待つ','読む','泳ぐ','死ぬ','遊ぶ','帰る','勉強する','来る','高い','いい','静か','きれい'].map(w => `<button class="chip" data-w="${w}">${w}</button>`).join('');
   $('#vchips').onclick = e => { const b = e.target.closest('.chip'); if (b){ $('#vin').value = b.dataset.w; run(); } };

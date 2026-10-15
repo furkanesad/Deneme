@@ -1,11 +1,177 @@
-<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Japonca Defterlerim</title>
-<style>body{font:16px/1.6 system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px 16px;background:#eef1f5;color:#18212f}a{display:block;background:#fff;border:1px solid #d5dce5;border-radius:12px;padding:14px 16px;margin:10px 0;color:inherit;text-decoration:none;font-weight:600}a small{display:block;font-weight:400;color:#5a6577}@media(prefers-color-scheme:dark){body{background:#0f141c;color:#e6ebf2}a{background:#171f2c;border-color:#2a3445}a small{color:#98a3b5}}</style></head><body>
-<h1>Japonca Defterlerim</h1>
-<p style="color:#5a6577">İnternetsiz çalışan sürümler. Her sayfada sol altta 🏠 Ana sayfa düğmesi var.</p>
-<a href="japonca-defterim/offline.html">Japonca Defterim (çevrimdışı)<small>kuromoji + 📚 Kütüphane (kelime, kanji, gramer)</small></a>
-<a href="tabi-kaiwa-defteri-offline.html">Tabi Kaiwa Defteri (çevrimdışı)<small>📚 Kütüphane eklenmiş</small></a>
-<a href="offline/cekimler.html">📐 Çekim Kuralları<small>fiil grupları, tüm çekimler, sıfatlar, keigo, kısaltmalar + fiil çekici</small></a>
-<a href="japonca-defterim/index.html">Japonca Defterim (orijinal)<small>değiştirilmedi</small></a>
-<a href="tabi-kaiwa-defteri.html">Tabi Kaiwa Defteri (orijinal)<small>değiştirilmedi</small></a>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});</script>
-</body></html>
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Japonca Defterlerim</title>
+<style>
+:root{--bg:#EEF1F5;--surface:#fff;--ink:#18212F;--muted:#5A6577;--rule:#D5DCE5;--accent:#26478A;--soft:#E3EAF7;--v:#2346C8;--a:#C2185B;--n:#6A3FB5;--k:#C25E00;--ok:#3E7D3A;
+ --tr:-apple-system,"Segoe UI",system-ui,sans-serif;--jp:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;--nav:52px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--ok:#94C98B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--ok:#94C98B;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--tr);overflow:hidden}
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:20;background:var(--surface);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:6px;padding:0 10px;padding-top:env(safe-area-inset-top,0px)}
+nav .brand{font-weight:800;font-size:1rem;margin-right:6px;white-space:nowrap}
+nav .brand span{font-family:var(--jp);color:var(--accent)}
+.tabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;font:600 .85rem var(--tr);border:1px solid transparent;background:none;color:var(--muted);border-radius:999px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.tab b{font:400 1rem var(--jp)}
+.tab[aria-current="true"]{background:var(--c,var(--accent));color:#fff}
+:root[data-theme="dark"] .tab[aria-current="true"]{color:#10141b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tab[aria-current="true"]{color:#10141b}}
+.tab:hover{border-color:var(--rule)}
+nav .right{display:flex;gap:6px;flex:none}
+.ib{font:600 .8rem var(--tr);border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 10px;cursor:pointer}
+#stage{position:absolute;top:var(--nav);left:0;right:0;bottom:0;overflow:hidden}
+.pane{position:absolute;inset:0;background:var(--bg);transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .38s;transform:translateX(100%);opacity:0;pointer-events:none;will-change:transform}
+.pane.active{transform:translateX(0);opacity:1;pointer-events:auto}
+.pane.left{transform:translateX(-18%);opacity:0}
+.pane iframe{border:0;width:100%;height:100%;display:block;background:var(--bg)}
+.pane .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.9rem;pointer-events:none}
+.pane.ready .loading{display:none}
+#home{overflow:auto;padding:20px 16px 60px}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:1.6rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 16px}
+.search{display:flex;gap:8px;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:10px;margin:0 0 18px;flex-wrap:wrap}
+.search input{flex:1 1 220px;min-width:0;font:inherit;font-size:17px;font-family:var(--jp);padding:9px 12px;border:1px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--ink)}
+.search button{font:600 .85rem var(--tr);border:none;border-radius:10px;padding:9px 12px;cursor:pointer;color:#fff;background:var(--c)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--rule);border-left:6px solid var(--c);border-radius:14px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;text-align:left;color:var(--ink);font:inherit}
+.card:hover{border-color:var(--c)}
+.card .k{font:400 1.6rem var(--jp);color:var(--c)}
+.card .t{font-weight:700;font-size:1.05rem}
+.card .d{color:var(--muted);font-size:.86rem}
+.card .s{font-size:.78rem;color:var(--c);font-weight:600;margin-top:auto}
+h2{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+.flow{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.step{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:10px 12px;font-size:.9rem}
+.step b{display:block;margin-bottom:2px}
+.links a{color:var(--accent)}
+.hint{color:var(--muted);font-size:.84rem}
+@media (max-width:640px){
+  nav{top:auto;bottom:0;border-top:1px solid var(--rule);border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);height:calc(var(--nav) + env(safe-area-inset-bottom,0px))}
+  nav .brand,nav .right{display:none}
+  .tabs{justify-content:space-around}
+  .tab{flex-direction:column;gap:0;padding:4px 10px;font-size:.68rem}
+  #stage{top:0;bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px))}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand"><span>日本語</span> Defterlerim</div>
+  <div class="tabs" role="tablist">
+    <button class="tab" data-p="home" style="--c:var(--accent)"><b>家</b>Ana</button>
+    <button class="tab" data-p="defter" style="--c:var(--v)"><b>帳</b>Defter</button>
+    <button class="tab" data-p="tabi" style="--c:var(--a)"><b>旅</b>Tabi Kaiwa</button>
+    <button class="tab" data-p="cekimler" style="--c:var(--n)"><b>変</b>Çekimler</button>
+  </div>
+  <div class="right"><button class="ib" id="reload" title="Bu sekmeyi yeniden yükle">↻</button></div>
+</nav>
+
+<div id="stage">
+  <section class="pane" id="home" data-p="home">
+    <div class="wrap">
+      <h1>Japonca Defterlerim</h1>
+      <p class="sub">Üç uygulama tek sayfada, internetsiz. Üstteki sekmelerle geçiş yap; açtığın uygulama arkada açık kalır, kaldığın yerden devam edersin.</p>
+
+      <div class="search" style="--c:var(--accent)">
+        <input id="hq" placeholder="Kelime, kanji, kalıp ya da fiil yaz… (ör. 食べる, taberu, ahtapot, 〜ながら)" autocomplete="off">
+        <button data-go="defter" style="--c:var(--v)">帳 Kelimede ara</button>
+        <button data-go="tabi" style="--c:var(--a)">旅 Kalıpta ara</button>
+        <button data-go="cekimler" style="--c:var(--n)">変 Çek</button>
+      </div>
+
+      <div class="grid">
+        <button class="card" data-p="defter" style="--c:var(--v)"><span class="k">帳</span><span class="t">Japonca Defterim</span><span class="d">10.377 kelime, 2.139 kanji, 4.768 ikili kanji, 885 gramer; kartlarla aralıklı tekrar, okuma metinleri.</span><span class="s" id="st-defter">Aç →</span></button>
+        <button class="card" data-p="tabi" style="--c:var(--a)"><span class="k">旅</span><span class="t">Tabi Kaiwa Defteri</span><span class="d">Seyahat diyalogları, 205 kalıp kartı (N5–N1, bağlaçlar, durumlar), oyunla pratik.</span><span class="s" id="st-tabi">Aç →</span></button>
+        <button class="card" data-p="cekimler" style="--c:var(--n)"><span class="k">変</span><span class="t">Çekim Kuralları</span><span class="d">Fiil grupları, tüm çekimler, sıfatlar, keigo, kısaltmalar; fiil/sıfat çekici.</span><span class="s">Aç →</span></button>
+        <button class="card" data-lib="1" style="--c:var(--k)"><span class="k">庫</span><span class="t">Kütüphane paneli</span><span class="d">Her uygulamanın sağ altında 📚 düğmesi: 22.645 kelime, 10.384 kanji, 871 gramer; Türkçe/İngilizce/romaji arama. Sonuçtan diğer uygulamaya atlar.</span><span class="s">Defter'de aç →</span></button>
+      </div>
+
+      <h2>Birbirine nasıl bağlı</h2>
+      <div class="flow">
+        <div class="step"><b>Diyalogda kelime → Defter</b>Tabi Kaiwa'da 📚 panelinden kelime ara, “帳 Defterde aç” de; Defter o kelimeyi listeler.</div>
+        <div class="step"><b>Gramer → Kalıp kartı</b>Panelde gramer ara, “旅 Kalıplarda bul” de; Tabi Kaiwa kalıp kartını açar.</div>
+        <div class="step"><b>Fiil → Çekim</b>Herhangi bir yerden “📐 Çekimler”; fiili yaz, 35 çekimi gör.</div>
+        <div class="step"><b>İlerleme</b>Üç uygulama aynı adreste çalıştığı için kayıtların (kartlar, defter) tek yerde tutulur ve kaybolmaz.</div>
+      </div>
+
+      <h2>Orijinal sürümler</h2>
+      <p class="links hint"><a href="japonca-defterim/index.html">Japonca Defterim (orijinal)</a> · <a href="tabi-kaiwa-defteri.html">Tabi Kaiwa Defteri (orijinal)</a> — değiştirilmedi, yalnızca yedek.</p>
+      <p class="hint">Kısayollar: Alt+1 Ana, Alt+2 Defter, Alt+3 Tabi Kaiwa, Alt+4 Çekimler.</p>
+    </div>
+  </section>
+  <section class="pane" data-p="defter" data-src="japonca-defterim/offline.html"><div class="loading">Japonca Defterim yükleniyor…</div></section>
+  <section class="pane" data-p="tabi" data-src="tabi-kaiwa-defteri-offline.html"><div class="loading">Tabi Kaiwa yükleniyor…</div></section>
+  <section class="pane" data-p="cekimler" data-src="offline/cekimler.html"><div class="loading">Çekim kuralları yükleniyor…</div></section>
+</div>
+
+<script>
+(function(){
+  const ORDER = ['home','defter','tabi','cekimler'];
+  const panes = {}; document.querySelectorAll('.pane').forEach(p => panes[p.dataset.p] = p);
+  const tabs = [...document.querySelectorAll('.tab')];
+  let cur = null;
+  const store = { get(k, d){ try{ return localStorage.getItem('shell:' + k) ?? d; }catch(e){ return d; } }, set(k, v){ try{ localStorage.setItem('shell:' + k, v); }catch(e){} } };
+
+  function frameOf(p){ return panes[p].querySelector('iframe'); }
+  function ensure(p, hash){
+    const pane = panes[p]; if (!pane.dataset.src) return;
+    let f = frameOf(p);
+    if (!f){
+      f = document.createElement('iframe'); f.src = pane.dataset.src + (hash ? '?' + hash.slice(1).replace(/^kat:?/, 'kat=').replace(/^kat=$/, 'kat=') : ''); f.title = p; f.setAttribute('allow', 'autoplay; microphone');
+      f.addEventListener('load', () => pane.classList.add('ready'));
+      pane.appendChild(f);
+    } else if (hash){
+      try{ const w = f.contentWindow; if (w.location.hash === hash) w.dispatchEvent(new HashChangeEvent('hashchange')); else w.location.hash = hash; }catch(e){ f.src = pane.dataset.src + hash; }
+    }
+  }
+  function show(p, hash){
+    if (!panes[p]) p = 'home';
+    ensure(p, hash);
+    if (cur === p) return;
+    const from = ORDER.indexOf(cur), to = ORDER.indexOf(p);
+    Object.values(panes).forEach(x => { x.classList.remove('active'); x.classList.toggle('left', ORDER.indexOf(x.dataset.p) < to); });
+    panes[p].classList.add('active'); panes[p].classList.remove('left');
+    tabs.forEach(t => t.setAttribute('aria-current', String(t.dataset.p === p)));
+    cur = p; store.set('last', p);
+    if (location.hash.replace('#','') !== p) history.replaceState(null, '', '#' + p);
+    document.title = {home:'Japonca Defterlerim', defter:'Japonca Defterim', tabi:'Tabi Kaiwa Defteri', cekimler:'Çekim Kuralları'}[p];
+  }
+  // deep links from apps: {type:'nav', to, q, kat}
+  function navMsg(m){
+    if (!m || m.type !== 'nav') return;
+    const q = (m.q || '').trim(); let hash = '';
+    if (m.to === 'defter' && q) hash = '#q=' + encodeURIComponent(q);
+    if (m.to === 'tabi' && (m.kat || q)) hash = '#kat' + (q ? ':' + encodeURIComponent(q) : '');
+    if (m.to === 'cekimler' && q) hash = '#v=' + encodeURIComponent(q);
+    show(m.to, hash);
+  }
+  window.addEventListener('message', e => { if (e.origin === location.origin || e.origin === 'null') navMsg(e.data); });
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-p]'); if (t && !t.classList.contains('pane')){ show(t.dataset.p); return; }
+    const g = e.target.closest('[data-go]'); if (g){ navMsg({type:'nav', to:g.dataset.go, q:document.getElementById('hq').value, kat:true}); return; }
+    if (e.target.closest('[data-lib]')){ show('defter'); setTimeout(() => { try{ const d = frameOf('defter').contentDocument; const b = d && d.getElementById('ol-btn'); if (b) b.click(); }catch(x){} }, 700); }
+  });
+  document.getElementById('hq').addEventListener('keydown', e => { if (e.key === 'Enter') navMsg({type:'nav', to:'defter', q:e.target.value}); });
+  document.getElementById('reload').onclick = () => { const f = cur && frameOf(cur); if (f){ panes[cur].classList.remove('ready'); f.contentWindow.location.reload(); } };
+  window.addEventListener('hashchange', () => { const p = location.hash.replace('#',''); if (panes[p] && p !== cur) show(p); });
+  document.addEventListener('keydown', e => { if (e.altKey && /^[1-4]$/.test(e.key)){ e.preventDefault(); show(ORDER[+e.key - 1]); } });
+  // status lines from saved progress (same-origin localStorage)
+  try{
+    const st = JSON.parse(localStorage.getItem('okuma-study') || 'null'); const sr = JSON.parse(localStorage.getItem('okuma-sr') || 'null');
+    if (st){ const n = Object.keys(st.pin || {}).length; document.getElementById('st-defter').textContent = `Defterde ${n.toLocaleString('tr')} kelime · Aç →`; }
+    const tm = localStorage.getItem('tabi:mode') || localStorage.getItem('mode'); if (tm) document.getElementById('st-tabi').textContent = `Son bölüm: ${ {trip:'Seyahat', def:'Defter', kat:'Kalıplar', oyun:'Oyun', kur:'Kur'}[tm] || tm } · Aç →`;
+  }catch(e){}
+  const start = location.hash.replace('#','') || store.get('last', 'home');
+  show(panes[start] ? start : 'home');
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>

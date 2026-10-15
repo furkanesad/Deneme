@@ -4,6 +4,8 @@
 (function(){
   if (window.__offlineLib) return; window.__offlineLib = true;
   const BASE = (document.currentScript && document.currentScript.src || '').replace(/[^/]*$/, '');
+  const IN_SHELL = (function(){ try{ return window.parent !== window && !!window.parent.document.getElementById('stage'); }catch(e){ return false; } })();
+  function nav(to, q){ if (IN_SHELL){ window.parent.postMessage({type:'nav', to, q:q || '', kat:to === 'tabi'}, '*'); return; } const e = encodeURIComponent(q || ''); location.href = to === 'defter' ? BASE + '../japonca-defterim/offline.html' + (q ? '#q=' + e : '') : to === 'tabi' ? BASE + '../tabi-kaiwa-defteri-offline.html#kat' + (q ? ':' + e : '') : to === 'cekimler' ? BASE + 'cekimler.html' + (q ? '#v=' + e : '') : BASE + '../index.html'; }
   const GRAMMAR = [
     ['〜は〜です','N5','… …’dır (konu + isim cümlesi)','わたしは学生です。'],
     ['〜が好き / ほしい','N5','sevmek / istemek (nesne が alır)','ねこが好きです。'],
@@ -124,8 +126,9 @@
       '<div class="ol-s">' + (k[4] ? 'JLPT N' + (k[4] <= 2 ? k[4] + 2 : k[4] + 1) + ' · ' : '') + (k[3] ? 'okul sınıfı ' + k[3] + ' · ' : '') + (k[5] ? k[5] + ' çizgi' : '') + '</div></div></div>';
   }
   function wordHtml(w){
-    return '<div class="ol-w"><div class="ol-h"><b>' + esc(w[0].length ? w[0][0] : w[1][0]) + '</b> <span>' + esc(w[1].join('、')) + '</span> <i>' + esc(w[2].join(', ')) + '</i></div><div class="ol-m">' +
-      w[3].map((g, n) => (w[3].length > 1 ? (n + 1) + '. ' : '') + esc(g)).join('<br>') + '</div></div>';
+    const head = w[0].length ? w[0][0] : w[1][0], isV = w[2].some(p => /^(v|fiil|adj|i-sıfat|na-sıfat)/.test(p));
+    return '<div class="ol-w"><div class="ol-h"><b>' + esc(head) + '</b> <span>' + esc(w[1].join('、')) + '</span> <i>' + esc(w[2].join(', ')) + '</i></div><div class="ol-m">' +
+      w[3].map((g, n) => (w[3].length > 1 ? (n + 1) + '. ' : '') + esc(g)).join('<br>') + '</div><div class="ol-act"><button data-nav="defter" data-q="' + esc(head) + '">帳 Defterde aç</button>' + (isV ? '<button data-nav="cekimler" data-q="' + esc(head) + '">変 Çek</button>' : '') + '</div></div>';
   }
 
   const css = document.createElement('style');
@@ -138,7 +141,7 @@
     '#ol-tabs{display:flex;gap:6px;padding:0 14px 8px}#ol-tabs button{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--l);background:transparent;color:var(--m);border-radius:999px;padding:4px 12px;cursor:pointer}#ol-tabs button[aria-pressed=true]{background:var(--a);border-color:var(--a);color:var(--b)}' +
     '#ol-out{overflow:auto;padding:0 14px 18px;flex:1}.ol-hint{color:var(--m);font-size:13px;margin:6px 0}' +
     '.ol-w,.ol-k,.ol-g{border-top:1px solid var(--l);padding:9px 0}.ol-h b{font-size:18px}.ol-h span{color:var(--m);margin-left:6px}.ol-h i{color:var(--a);font-size:12px;margin-left:6px}.ol-m{font-size:14px}' +
-    '.ol-k{display:flex;gap:14px;align-items:flex-start}.ol-kc{font-size:44px;line-height:1.1;min-width:56px;text-align:center}.ol-s{color:var(--m);font-size:13px}.ol-g b{font-size:16px}.ol-g .ol-lv{font-size:11px;font-weight:700;color:var(--a);border:1px solid var(--a);border-radius:4px;padding:0 5px;margin-left:6px}.ol-g .ol-ex{color:var(--m);font-size:14px}';
+    '.ol-k{display:flex;gap:14px;align-items:flex-start}.ol-kc{font-size:44px;line-height:1.1;min-width:56px;text-align:center}.ol-s{color:var(--m);font-size:13px}.ol-g b{font-size:16px}.ol-g .ol-lv{font-size:11px;font-weight:700;color:var(--a);border:1px solid var(--a);border-radius:4px;padding:0 5px;margin-left:6px}.ol-g .ol-ex{color:var(--m);font-size:14px}.ol-act{display:flex;gap:6px;margin-top:5px}.ol-act button{font:600 12px system-ui,sans-serif;border:1px solid var(--l);background:transparent;color:var(--a);border-radius:999px;padding:3px 10px;cursor:pointer}#ol-home.hid{display:none}';
   document.head.appendChild(css);
 
   const home = document.createElement('a'); home.id = 'ol-home'; home.href = BASE + '../index.html'; home.textContent = '🏠 Ana sayfa';
@@ -148,6 +151,9 @@
   pan.innerHTML = '<div id="ol-box" role="dialog" aria-label="Çevrimdışı Japonca kütüphanesi"><div id="ol-top"><input id="ol-q" type="search" placeholder="Kelime, kanji, romaji ya da İngilizce yaz…" autocomplete="off"><button id="ol-x" type="button">Kapat</button></div>' +
     '<div id="ol-tabs"><button data-t="word" aria-pressed="true" type="button">Kelime</button><button data-t="kanji" aria-pressed="false" type="button">Kanji</button><button data-t="gram" aria-pressed="false" type="button">Gramer</button><a id="ol-cek" href="#" style="font:600 13px system-ui,sans-serif;border:1px solid var(--l);color:var(--m);border-radius:999px;padding:4px 12px;text-decoration:none">📐 Çekimler</a></div><div id="ol-out"></div></div>';
   pan.querySelector('#ol-cek').href = BASE + 'cekimler.html';
+  pan.querySelector('#ol-cek').addEventListener('click', e => { if (IN_SHELL){ e.preventDefault(); pan.hidden = true; nav('cekimler', ''); } });
+  if (IN_SHELL) home.classList.add('hid');
+  pan.addEventListener('click', e => { const b = e.target.closest('[data-nav]'); if (b){ pan.hidden = true; nav(b.dataset.nav, b.dataset.q); } });
   function mount(){ document.body.appendChild(home); document.body.appendChild(btn); document.body.appendChild(pan); }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
 
@@ -160,7 +166,7 @@
       if (!window.GRAMMAR_ALL && !gramTried){ gramTried = true; o.innerHTML = '<p class="ol-hint">Yükleniyor…</p>'; loadScript(BASE + 'grammar-all.js').catch(() => 0).then(render); return; }
       const src = window.GRAMMAR_ALL ? GRAMMAR_ALL.map(g => [g[0], g[2], g[1], g[3]]) : GRAMMAR;
       const list = src.filter(g => !t || (g[0] + g[1] + g[2] + g[3]).toLowerCase().includes(t)).slice(0, 400);
-      o.innerHTML = '<p class="ol-hint">' + (window.GRAMMAR_ALL ? 'N5–N1 gramer kalıpları (' + GRAMMAR_ALL.length + ' kalıp, ' + list.length + ' gösteriliyor)' : 'Temel kalıplar (' + list.length + ')') + '. Kalıp, seviye (N3), anlam ya da konu (Koşul) yazarak filtrele.</p>' + list.map(g => '<div class="ol-g"><b>' + esc(g[0]) + '</b><span class="ol-lv">' + g[1] + '</span><div class="ol-m">' + esc(g[2]) + '</div><div class="ol-ex">' + esc(g[3]) + '</div></div>').join('');
+      o.innerHTML = '<p class="ol-hint">' + (window.GRAMMAR_ALL ? 'N5–N1 gramer kalıpları (' + GRAMMAR_ALL.length + ' kalıp, ' + list.length + ' gösteriliyor)' : 'Temel kalıplar (' + list.length + ')') + '. Kalıp, seviye (N3), anlam ya da konu (Koşul) yazarak filtrele.</p>' + list.map(g => '<div class="ol-g"><b>' + esc(g[0]) + '</b><span class="ol-lv">' + g[1] + '</span><div class="ol-m">' + esc(g[2]) + '</div><div class="ol-ex">' + esc(g[3]) + '</div><div class="ol-act"><button data-nav="tabi" data-q="' + esc(g[0].replace(/\s*\([^)]*\)\s*$/, '')) + '">旅 Kalıplarda bul</button></div></div>').join('');
       return;
     }
     o.innerHTML = '<p class="ol-hint">Yükleniyor…</p>';

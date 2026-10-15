@@ -1,5 +1,8 @@
 # Çevrimdışı kullanım
 
+## Tek sayfa (kabuk): `index.html`
+Üç uygulama tek sayfada sekmelerle (家 Ana · 帳 Defter · 旅 Tabi Kaiwa · 変 Çekimler), kaydırmalı geçişle açılır; her uygulama arkada açık kalır. Ana sayfadaki arama kutusu kelimeyi Defter'de, kalıbı Tabi Kaiwa'da arar, fiili çeker. 📚 panelindeki sonuçlardan “帳 Defterde aç”, “旅 Kalıplarda bul”, “変 Çek” düğmeleri diğer uygulamaya atlar. Derin bağlantılar: `japonca-defterim/offline.html?q=…` / `#q=…`, `tabi-kaiwa-defteri-offline.html?kat=…` / `#kat:…`, `offline/cekimler.html?v=…` / `#v=…`. Kısayol: Alt+1…4.
+
 Orijinal dosyalar değişmedi. Çevrimdışı sürümler ayrı dosyalardır:
 
 - `japonca-defterim/offline.html`

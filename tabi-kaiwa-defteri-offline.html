@@ -1098,6 +1098,17 @@ document.getElementById('scene').addEventListener('click',e=>{
 applyToggles();renderChips();go(curIdx(),false);
 </script>
 
+<script>
+// Deep link: #kat ya da #kat:kalıp → Kalıplar bölümünü açıp arar
+(function(){
+  let first = true;
+  function apply(){ let q = null; const m = location.hash.match(/^#kat(?::(.*))?$/); if (m) q = m[1] ? decodeURIComponent(m[1]) : ''; else if (first){ const sp = new URLSearchParams(location.search); if (sp.has('kat')) q = sp.get('kat'); } first = false; if (q === null) return; try{
+    KQ = q; KLV = 'all'; KCAT = 'all'; state.mode = 'kat'; store.set('mode', 'kat'); PR = null; renderChips(); go(curIdx(), true);
+    setTimeout(() => { const kq = document.getElementById('kq'); if (kq){ kq.value = q; } window.scrollTo(0, 0); }, 50);
+  }catch(e){} }
+  window.addEventListener('hashchange', apply); setTimeout(apply, 700);
+})();
+</script>
 <script src="offline/lookup.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});</script>
 </body></html>

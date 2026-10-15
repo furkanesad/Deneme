@@ -1318,6 +1318,8 @@ function renderLists(){
   $('lists').innerHTML = html || `<p class="empty">${counts.some(c => c > 0) || Object.keys(STUDY.pin).length ? 'Bu filtreyle sonuç yok.' : 'Henüz bir metin okumadın. Metinlerde geçen kelime ve gramerler burada listelenir.'}</p>`;
   const el = arr.map((x,i)=>i).filter(i => eligible(isV, i)), n2 = el.filter(i => stOf(isV, i) === 2).length, n1 = el.filter(i => stOf(isV, i) === 1).length;
   const hid = isV ? Object.keys(STUDY.hide).length : 0;
+  const _shown = Object.values(groups).reduce((t, g) => t + g.length, 0);
+  if (lib) $('f-sum').innerHTML = `📚 Kütüphane: <b>${_shown.toLocaleString('tr')}</b> kelime listeleniyor · Defterinde (çalıştığın) ${el.length.toLocaleString('tr')} · Yeni ${el.length - n1 - n2} · Öğreniliyor ${n1} · Öğrenildi ${n2}`; else
   $('f-sum').innerHTML = `<span class="legend"><span class="sdot"></span>Yeni ${el.length - n1 - n2}<span class="sdot s1"></span>Öğreniliyor ${n1}<span class="sdot s2"></span>Öğrenildi ${n2}</span> · toplam ${el.length}${hid ? ` · Sildiğin ${hid} kelime gizli <button class="mini" id="unhide">geri getir</button>` : ''}`;
 }
 const MODE_OF = {today:'read', read:'read', texts:'read', vocab:'study', gram:'study', kanji:'study', sent:'study', gen:'study', stats:'study', cards:'study', settings:'set'};

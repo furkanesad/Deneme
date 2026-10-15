@@ -1,5 +1,5 @@
 // Çevrimdışı önbellek: ilk açılışta tüm dosyaları indirir, sonra internetsiz çalışır.
-const CACHE = 'japonca-v8';
+const CACHE = 'japonca-v9';
 const FILES = [
  "./",
  "index.html",
@@ -10,6 +10,8 @@ const FILES = [
  "offline/kanjidic.js",
  "offline/vocab-extra.js",
  "offline/kanji-extra.js",
+ "offline/grammar-extra.js",
+ "offline/grammar-all.js",
  "offline/lookup.js",
  "japonca-defterim/dict/base.dat.gz.wasm",
  "japonca-defterim/dict/cc.dat.gz.wasm",

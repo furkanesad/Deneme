@@ -67,7 +67,7 @@
   const hasJp = s => /[぀-ヿ㐀-鿿]/.test(s);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  let loaded = null, index = null, TR = [];
+  let loaded = null, index = null, TR = [], gramTried = false;
   function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error(src)); document.head.appendChild(s); }); }
   function ensureData(){
     if (loaded) return loaded;
@@ -156,8 +156,10 @@
     const o = out(), text = q().value;
     if (tab === 'gram'){
       const t = text.trim().toLowerCase();
-      const list = GRAMMAR.filter(g => !t || (g[0] + g[1] + g[2] + g[3]).toLowerCase().includes(t));
-      o.innerHTML = '<p class="ol-hint">Temel N5–N3 kalıpları (' + list.length + '). Yukarıya yazarak filtrele.</p>' + list.map(g => '<div class="ol-g"><b>' + esc(g[0]) + '</b><span class="ol-lv">' + g[1] + '</span><div class="ol-m">' + esc(g[2]) + '</div><div class="ol-ex">' + esc(g[3]) + '</div></div>').join('');
+      if (!window.GRAMMAR_ALL && !gramTried){ gramTried = true; o.innerHTML = '<p class="ol-hint">Yükleniyor…</p>'; loadScript(BASE + 'grammar-all.js').catch(() => 0).then(render); return; }
+      const src = window.GRAMMAR_ALL ? GRAMMAR_ALL.map(g => [g[0], g[2], g[1], g[3]]) : GRAMMAR;
+      const list = src.filter(g => !t || (g[0] + g[1] + g[2] + g[3]).toLowerCase().includes(t)).slice(0, 400);
+      o.innerHTML = '<p class="ol-hint">' + (window.GRAMMAR_ALL ? 'N5–N1 gramer kalıpları (' + GRAMMAR_ALL.length + ' kalıp, ' + list.length + ' gösteriliyor)' : 'Temel kalıplar (' + list.length + ')') + '. Kalıp, seviye (N3), anlam ya da konu (Koşul) yazarak filtrele.</p>' + list.map(g => '<div class="ol-g"><b>' + esc(g[0]) + '</b><span class="ol-lv">' + g[1] + '</span><div class="ol-m">' + esc(g[2]) + '</div><div class="ol-ex">' + esc(g[3]) + '</div></div>').join('');
       return;
     }
     o.innerHTML = '<p class="ol-hint">Yükleniyor…</p>';

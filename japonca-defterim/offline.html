@@ -2481,6 +2481,7 @@ async function loadStudy(){
   if (db && uid){ try{ const s = await db.doc(`data/users/${uid}/study`).get(); if (s.exists) d = thaw(s.data()); }catch(e){} }
   if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-study') || 'null'); }catch(e){} }
   STUDY = normStudy(d);
+  if (STUDY.allAdded !== 1){ V.forEach(v => { if (!STUDY.hide[v[0]]) STUDY.pin[v[0]] = 1; }); STUDY.allAdded = 1; saveStudy(); }   // çevrimdışı kopya: kütüphanedeki tüm kelimeler deftere eklenir
   if (!STUDY.seeded){ DEFAULT_CATS.forEach(addCat); STUDY.seeded = true; saveStudy(); }
 }
 function saveStudy(now){

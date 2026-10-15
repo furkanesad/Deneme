@@ -141,11 +141,13 @@
     '.ol-k{display:flex;gap:14px;align-items:flex-start}.ol-kc{font-size:44px;line-height:1.1;min-width:56px;text-align:center}.ol-s{color:var(--m);font-size:13px}.ol-g b{font-size:16px}.ol-g .ol-lv{font-size:11px;font-weight:700;color:var(--a);border:1px solid var(--a);border-radius:4px;padding:0 5px;margin-left:6px}.ol-g .ol-ex{color:var(--m);font-size:14px}';
   document.head.appendChild(css);
 
+  const home = document.createElement('a'); home.id = 'ol-home'; home.href = BASE + '../index.html'; home.textContent = '🏠 Ana sayfa';
+  home.style.cssText = 'position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:9998;font:600 14px system-ui,sans-serif;border-radius:999px;padding:11px 16px;background:#fff;color:#26478a;border:1px solid #26478a;box-shadow:0 4px 16px rgba(0,0,0,.2);text-decoration:none';
   const btn = document.createElement('button'); btn.id = 'ol-btn'; btn.type = 'button'; btn.textContent = '📚 Kütüphane';
   const pan = document.createElement('div'); pan.id = 'ol-p'; pan.hidden = true;
   pan.innerHTML = '<div id="ol-box" role="dialog" aria-label="Çevrimdışı Japonca kütüphanesi"><div id="ol-top"><input id="ol-q" type="search" placeholder="Kelime, kanji, romaji ya da İngilizce yaz…" autocomplete="off"><button id="ol-x" type="button">Kapat</button></div>' +
     '<div id="ol-tabs"><button data-t="word" aria-pressed="true" type="button">Kelime</button><button data-t="kanji" aria-pressed="false" type="button">Kanji</button><button data-t="gram" aria-pressed="false" type="button">Gramer</button></div><div id="ol-out"></div></div>';
-  function mount(){ document.body.appendChild(btn); document.body.appendChild(pan); }
+  function mount(){ document.body.appendChild(home); document.body.appendChild(btn); document.body.appendChild(pan); }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
 
   let tab = 'word';

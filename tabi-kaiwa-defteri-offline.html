@@ -1,4 +1,24 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+/* oyun iyileştirmeleri */
+.gset .seg{align-self:flex-start;max-width:100%;flex-wrap:wrap}
+.gprog{display:flex;gap:4px;width:100%;margin-top:10px}
+.gprog i{flex:1;height:6px;border-radius:3px;background:var(--rule)}
+.gprog i.ok{background:var(--ok)}.gprog i.no{background:#D3453A}.gprog i.cur{background:var(--accent)}
+.gtimer{height:4px;border-radius:2px;background:var(--rule);overflow:hidden;margin-top:-4px}
+.gtimer b{display:block;height:100%;background:var(--ok);transform-origin:left;animation:gtime 15s linear forwards}
+@keyframes gtime{from{transform:scaleX(1)}to{transform:scaleX(0);background:var(--muted)}}
+.card.sk{border-color:var(--muted)}
+.gpop{display:inline-block;animation:gpop .5s ease-out}
+@keyframes gpop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}
+.hearts .lost{animation:hlost .5s}
+@keyframes hlost{0%{transform:scale(1.4)}100%{transform:scale(1)}}
+.bank .blk[data-k]::after,.opts .opt[data-k]::after{content:attr(data-k);font:600 .62rem var(--tr);color:var(--muted);margin-left:6px;vertical-align:super}
+@media (pointer:coarse){.bank .blk[data-k]::after,.opts .opt[data-k]::after{display:none}}
+.gkeys{font-size:.78rem;color:var(--muted)}
+@media (pointer:coarse){.gkeys{display:none}}
+.gstart .gbig{font-size:1.05rem;padding:12px 26px}
+@media (prefers-reduced-motion:reduce){.gtimer b,.gpop,.hearts .lost,.card.shake{animation:none}}
+</style></head><body>
 <title>Tabi Kaiwa Defteri</title>
 <style>
 /* Layout: JR station-sign navigation with two lines (Seyahat / Defter); each scene or theme is a "station" with its own color. Dialogues as bubbles, then phrases or notebook word lists. */
@@ -452,9 +472,12 @@ DEF.themes.forEach(t=>{
 const canSpeak=('speechSynthesis' in window);
 if(!canSpeak)document.body.classList.add('nospeech');
 function clearPlaying(){document.querySelectorAll('.line.playing').forEach(e=>e.classList.remove('playing'));}
-function utter(t,pitch,onstart,onend){const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.85;u.pitch=pitch||1;if(onstart)u.onstart=onstart;if(onend)u.onend=onend;return u;}
-function speak(t){try{speechSynthesis.cancel();clearPlaying();speechSynthesis.speak(utter(t));}catch(e){}}
+function jaVoice(){try{const vs=speechSynthesis.getVoices();if(!vs.length)return undefined;return vs.find(v=>/^ja/i.test(v.lang))||null;}catch(e){return null;}}
+function noVoiceWarn(){if(jaVoice()===null){try{showToast('Bu cihazda Japonca ses yok; ayarlardan Japonca konuşma sesi ekle.');}catch(e){}return true;}return false;}
+function utter(t,pitch,onstart,onend){const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';const jv=jaVoice();if(jv)u.voice=jv;u.rate=.85;u.pitch=pitch||1;if(onstart)u.onstart=onstart;if(onend)u.onend=onend;return u;}
+function speak(t){if(!('speechSynthesis' in window)){try{showToast('Bu tarayıcı sesli okumayı desteklemiyor.');}catch(e){}return;}noVoiceWarn();try{speechSynthesis.cancel();clearPlaying();speechSynthesis.speak(utter(t));}catch(e){}}
 function playAll(block){
+  if(!('speechSynthesis' in window)){try{showToast('Bu tarayıcı sesli okumayı desteklemiyor.');}catch(e){}return;}noVoiceWarn();
   try{
     speechSynthesis.cancel();clearPlaying();
     const lines=[...block.querySelectorAll('.line')];
@@ -833,8 +856,9 @@ function nextQ(){
   G.cur=Q;
 }
 function gameHeader(){
-  const h=Array.from({length:3},(_,k)=>`<span class="${k<G.lives?'':'off'}">${HEART}</span>`).join('');
-  return `<div class="gtop"><div class="hearts" aria-label="${G.lives} can">${h}</div><div class="gstat"><span>Puan<b>${G.score}</b></span><span>Seri<b>${G.streak}</b></span><span>Soru<b>${Math.min(G.q+1,G.total)}/${G.total}</b></span></div></div>`;
+  const h=Array.from({length:3},(_,k)=>`<span class="${k<G.lives?'':'off'}${k===G.lives&&G.justLost?' lost':''}">${HEART}</span>`).join('');G.justLost=false;
+  const prog=Array.from({length:G.total},(_,k)=>{const l=G.log[k];return `<i class="${l?(l.ok?'ok':'no'):(k===G.q&&G.phase==='play'?'cur':'')}"></i>`;}).join('');
+  return `<div class="gprog" aria-hidden="true">${prog}</div><div class="gtop"><div class="hearts" aria-label="${G.lives} can">${h}</div><div class="gstat"><span>Puan<b>${G.score}</b></span><span>Seri<b>${G.streak}</b></span><span>Soru<b>${Math.min(G.q+1,G.total)}/${G.total}</b></span></div></div>`;
 }
 function ogName(){
   const og=state.og;
@@ -852,9 +876,9 @@ function renderGame(){
       <div class="gset"><span class="gl">Soru türü</span>${segH('otype','otype',[['mix','Karışık'],['build','Cümle kur'],['fill','Boşluk doldur']])}</div>
       <div class="gset"><span class="gl">Zorluk (çeldirici blok)</span>${segH('odiff','odiff',[['kolay','Kolay · 0'],['orta','Orta · 2'],['zor','Zor · 4']])}</div>
       <div class="gset"><span class="gl">Kalıp seviyesi</span>${segH('olv','olv',[['all','Hepsi'],['N5','N5'],['N4','N4'],['N3','N3']])}</div>
-      <ul><li>İlk denemede doğru: 10 puan, art arda doğrularda seri bonusu (+2, en fazla +10).</li><li>15 saniyeden hızlı doğru: +3 hız bonusu.</li><li>Her yanlış 1 can ve 4 puan, her ipucu 3 puan götürür. Yanlış yaptığın cümleler “Hatalarım”a eklenir.</li></ul>
-      <p>En yüksek puan: <b>${GST.best}</b> · Oynanan oyun: ${GST.played} · Hatalarım: ${GST.miss.length}</p>
-      <button class="go" style="--c:var(--accent);font-size:1rem;padding:12px 22px" data-g="start">Başla</button></div>`;
+      <ul><li>İlk denemede doğru: 10 puan + seri bonusu (+2, en fazla +10).</li><li>Yeşil çubuk bitmeden doğru: +3 hız bonusu.</li><li>Yanlış: −1 can, −4 puan. İpucu: −3 puan. Pas: −1 can, doğrusu gösterilir.</li></ul>
+      <p>Rekor: <b>${GST.best}</b> · Oynanan: ${GST.played} · Hatalarım: ${GST.miss.length}</p>
+      <button class="go gbig" style="--c:var(--accent)" data-g="start">Başla</button><span class="gkeys">Klavye: rakamlar blok/şık seçer · ⌫ geri al · Enter sonraki · H ipucu · L dinle</span></div>`;
     return;}
   if(G.phase!=='play'){
     const over=G.phase==='over',isBest=G.score>0&&G.score>=GST.best;
@@ -870,20 +894,20 @@ function renderGame(){
     ${cd?`<div class="gpill k" style="--kc:${kc(cd.t[0][2])}"><small>Kalıp · ${cd.lv}</small><div class="gw">${escH(cd.t[0][0])}</div><div class="gm">${escH(cd.t[0][1])}</div><button class="go ghost" style="margin-top:6px;padding:3px 10px;font-size:.75rem" data-card="${cd.id}">Kalıbı aç</button></div>`:''}</div>`;
   const cur={bl:L.bl,n:L.n,k:L.k};
   const done=C.state==='ok';
-  const foot=`<div class="crow"><span class="gpts">+${C.pts}</span>${C.bonus?`<span class="bonus">hız +${C.bonus}</span>`:''}<span class="msg">${C.miss||C.hint?'':'İlk denemede!'}</span><button class="go ghost" data-g="listen">Tekrar dinle</button><button class="go" style="--c:var(--accent)" data-g="next">${G.q+1<G.total?'Sonraki soru →':'Sonucu gör →'}</button></div>`;
+  const foot=`<div class="crow"><span class="gpts gpop">+${C.pts}</span>${C.bonus?`<span class="bonus">hız +${C.bonus}</span>`:''}<span class="msg">${C.skipped?'Pas geçildi, doğrusu yukarıda.':(C.miss||C.hint?'':'İlk denemede!')}</span><button class="go ghost" data-g="listen">Tekrar dinle</button><button class="go" style="--c:var(--accent)" data-g="next">${G.q+1<G.total?'Sonraki soru →':'Sonucu gör →'}</button></div>`;
   let mid='';
   if(C.type==='build'){
     const used=new Set(C.ans.map(x=>x.id));
     mid=done?`<p class="jp">${ruby(L.jp)}</p>`:`<div class="ans">${C.ans.map((x,k)=>blkHTML(x,C.bad.includes(k)?'bad':'',`data-a="${k}"`)).join('')}</div>
-      <div class="bank">${C.bank.map(x=>blkHTML(x,used.has(x.id)?'used':'',`data-b="${x.id}" ${used.has(x.id)?'tabindex="-1" aria-hidden="true"':''}`)).join('')}</div>`;
+      <div class="bank">${(()=>{let n=0;return C.bank.map(x=>{const u=used.has(x.id);const kk=!u&&n<9?++n:0;return blkHTML(x,u?'used':'',`data-b="${x.id}" ${kk?`data-k="${kk}"`:''} ${u?'tabindex="-1" aria-hidden="true"':''}`);}).join('');})()}</div>`;
   }else{
     const sent=L.bl.map((b,k)=>k===C.kb?(done?`<u style="color:var(--ok)">${ruby(b[0])}</u>`:`<span class="blank">？</span>`):ruby(b[0])).join('');
-    mid=`<p class="fsent">${sent}</p>${done?'':`<div class="opts">${C.opts.map((o,k)=>`<button class="opt ${C.bad.includes(k)?'bad':''}" data-opt="${k}" ${C.bad.includes(k)?'disabled':''}>${ruby(o.b)}</button>`).join('')}</div>`}`;
+    mid=`<p class="fsent">${sent}</p>${done?'':`<div class="opts">${C.opts.map((o,k)=>`<button class="opt ${C.bad.includes(k)?'bad':''}" data-opt="${k}" data-k="${k+1}" ${C.bad.includes(k)?'disabled':''}>${ruby(o.b)}</button>`).join('')}</div>`}`;
   }
   const body=done?anaHTML(cur,foot):`<div class="crow"><span class="msg ${C.state==='bad'?'err':''}">${C.msg||(C.type==='build'?'Bloklara sırayla dokun. Cümleye ait olmayan bloklar da olabilir.':'Boşluğa gelecek doğru parçayı seç.')}</span>
-       ${C.type==='build'?'<button class="go ghost" data-g="hint">İpucu</button>':''}<button class="go ghost" data-g="listen">Dinle</button>${C.type==='build'?'<button class="go ghost" data-g="clear">Temizle</button>':''}<button class="go ghost" data-g="skip">Pas (−1 can)</button></div>`;
+       ${C.type==='build'&&C.bad.length?'<button class="go" style="--c:#D3453A" data-g="fix">Yanlışları kaldır</button>':''}${C.type==='build'?'<button class="go ghost" data-g="undo" '+(C.ans.length?'':'disabled')+'>Geri al</button><button class="go ghost" data-g="hint">İpucu</button>':''}<button class="go ghost" data-g="listen">Dinle</button>${C.type==='build'?'<button class="go ghost" data-g="clear">Temizle</button>':''}<button class="go ghost" data-g="skip">Pas (−1 can)</button></div>`;
   el.innerHTML=`${gameHeader()}<div class="gq">${tags}
-    <div class="card ${done?'ok':''}" id="card" style="--c:${L.sc.c}">
+    ${!done&&!C.miss&&!C.hint?`<div class="gtimer" aria-hidden="true"><b style="animation-delay:-${Date.now()-C.t0}ms"></b></div>`:''}<div class="card ${done?(C.skipped?'sk':'ok'):''}" id="card" style="--c:${L.sc.c}">
       <div class="cw"><span>${escH(L.who)} · ${escH(plain(L.sc.jp))}</span><span>${C.type==='build'?'Bunu Japonca kur':'Boşluğu doldur'}</span></div>
       <div class="ctr">${escH(L.tr)}</div>${mid}${body}</div></div>`;
 }
@@ -903,14 +927,14 @@ function gameCorrect(){
   speak(plain(C.line.jp));renderGame();
 }
 function gameWrong(msg){
-  const C=G.cur;C.state='bad';C.miss++;G.lives--;G.streak=0;C.msg=msg;addMiss(C.line.key);
+  const C=G.cur;C.state='bad';C.miss++;G.lives--;G.justLost=true;G.streak=0;C.msg=msg;addMiss(C.line.key);
   if(G.lives<=0){G.log.push({line:C.line,card:C.card,ok:false,pts:0});endGame('over');return;}
   renderGame();const c=document.getElementById('card');if(c)c.classList.add('shake');
 }
 function gameCheck(){
   const C=G.cur,target=C.line.bl.map(b=>plain(b[0]));
   C.bad=C.ans.map((x,k)=>(!x.dis&&x.t===target[k])?-1:k).filter(k=>k>=0);
-  if(!C.bad.length)gameCorrect();else gameWrong(`${C.bad.length} blok yanlış. Kırmızılara dokunup geri al. (−1 can)`);
+  if(!C.bad.length)gameCorrect();else gameWrong(`${C.bad.length} blok yanlış (−1 can). “Yanlışları kaldır”a bas ya da kırmızılara dokun.`);
 }
 function endGame(ph){G.phase=ph;GST.played++;if(G.score>GST.best)GST.best=G.score;saveGame();renderGame();window.scrollTo({top:0});}
 function gameClick(e){
@@ -927,7 +951,9 @@ function gameClick(e){
     if(a==='next'){G.q++;if(G.q>=G.total){endGame('end');return;}nextQ();renderGame();window.scrollTo({top:0});return;}
     if(C.state==='ok')return;
     if(a==='clear'){C.ans=[];C.bad=[];C.state='build';C.msg='';renderGame();return;}
-    if(a==='skip'){G.lives--;G.streak=0;addMiss(C.line.key);G.log.push({line:C.line,card:C.card,ok:false,pts:0});if(G.lives<=0){endGame('over');return;}G.q++;if(G.q>=G.total){endGame('end');return;}nextQ();renderGame();return;}
+    if(a==='skip'){G.lives--;G.justLost=true;G.streak=0;addMiss(C.line.key);G.log.push({line:C.line,card:C.card,ok:false,pts:0});if(G.lives<=0){endGame('over');return;}C.state='ok';C.skipped=true;C.pts=0;C.bonus=0;speak(plain(C.line.jp));renderGame();return;}
+    if(a==='undo'&&C.type==='build'){C.ans.pop();C.bad=[];C.state='build';C.msg='';renderGame();return;}
+    if(a==='fix'&&C.type==='build'){const f0=C.bad.length?Math.min(...C.bad):C.ans.length;C.ans=C.ans.slice(0,f0);C.bad=[];C.state='build';C.msg='Doğru kısım kaldı, devam et.';renderGame();return;}
     if(a==='hint'&&C.type==='build'){const target=C.line.bl.map(b=>plain(b[0]));let k=0;while(k<C.ans.length&&!C.ans[k].dis&&C.ans[k].t===target[k])k++;
       C.ans=C.ans.slice(0,k);const used=new Set(C.ans.map(x=>x.id));const nx=C.bank.find(x=>!x.dis&&!used.has(x.id)&&x.t===target[k]);
       if(nx){C.ans.push(nx);C.hint++;}C.bad=[];C.state='build';C.msg='İpucu: sıradaki blok yerleştirildi (−3 puan).';
@@ -938,7 +964,7 @@ function gameClick(e){
   const op=e.target.closest('[data-opt]');
   if(op&&C.type==='fill'){const k=+op.dataset.opt;if(C.opts[k].ok)gameCorrect();else{C.bad.push(k);gameWrong('Yanlış parça. Bir daha dene. (−1 can)');}return;}
   const b=e.target.closest('[data-b]');
-  if(b){const id=+b.dataset.b;if(C.ans.some(x=>x.id===id))return;C.ans.push(C.bank.find(x=>x.id===id));if(C.state==='bad'){C.state='build';C.msg='';C.bad=[];}
+  if(b){const id=+b.dataset.b;if(C.ans.some(x=>x.id===id))return;if(C.ans.length>=C.line.bl.length){C.msg='Satır dolu: önce yanlış blokları kaldır.';renderGame();return;}C.ans.push(C.bank.find(x=>x.id===id));if(C.state==='bad'){C.state='build';C.msg='';C.bad=[];}
     if(C.ans.length===C.line.bl.length)return gameCheck();renderGame();return;}
   const ab=e.target.closest('[data-a]');
   if(ab){C.ans.splice(+ab.dataset.a,1);C.bad=[];C.state='build';C.msg='';renderGame();}
@@ -1110,5 +1136,19 @@ applyToggles();renderChips();go(curIdx(),false);
 })();
 </script>
 <script src="offline/lookup.js"></script>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+document.addEventListener('keydown',e=>{
+  if(state.mode!=='oyun'||e.ctrlKey||e.metaKey||e.altKey)return;
+  const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
+  const click=sel=>{const el=document.querySelector('#scene '+sel);if(el&&!el.disabled){el.click();return true;}return false;};
+  if(!G||G.phase!=='play'){if(e.key==='Enter'&&click('[data-g=start]'))e.preventDefault();return;}
+  const C=G.cur;
+  if(e.key==='Enter'){if(C.state==='ok'&&click('[data-g=next]'))e.preventDefault();return;}
+  if(/^[1-9]$/.test(e.key)&&C.state!=='ok'){if(click(`[data-k="${e.key}"]`))e.preventDefault();return;}
+  if(e.key==='Backspace'&&C.state!=='ok'){if(click('[data-g=fix]')||click('[data-g=undo]'))e.preventDefault();return;}
+  const k=e.key.toLowerCase();
+  if(k==='h'&&C.state!=='ok'){click('[data-g=hint]');return;}
+  if(k==='l'){click('[data-g=listen]');return;}
+});
+</script>
 </body></html>

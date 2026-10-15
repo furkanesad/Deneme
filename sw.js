@@ -1,5 +1,5 @@
 // Çevrimdışı önbellek: ilk açılışta tüm dosyaları indirir, sonra internetsiz çalışır.
-const CACHE = 'japonca-v11';
+const CACHE = 'japonca-v12';
 const FILES = [
  "./",
  "index.html",
@@ -31,6 +31,12 @@ self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c =>
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const isPage = e.request.mode === 'navigate' || /\.html?$|\/$/.test(new URL(e.request.url).pathname);
+  if (isPage){
+    // pages: try the network first so updates show up; fall back to the cache offline
+    e.respondWith(fetch(e.request).then(r => { if (r.ok){ const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); } return r; }).catch(() => caches.match(e.request, {ignoreSearch: true})));
+    return;
+  }
   e.respondWith(caches.match(e.request, {ignoreSearch: true}).then(hit => hit || fetch(e.request).then(r => {
     if (r.ok && new URL(e.request.url).origin === location.origin) { const c = r.clone(); caches.open(CACHE).then(x => x.put(e.request, c)); }
     return r;

@@ -4,85 +4,126 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Japonca Çekim Kuralları</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap">
 <style>
-:root{--bg:#EEF1F5;--surface:#fff;--ink:#18212F;--muted:#5A6577;--rule:#D5DCE5;--accent:#26478A;--soft:#E3EAF7;--ok:#3E7D3A;--ok-soft:#E4F0E1;--warn:#A4561D;--warn-soft:#FBEFE4;--v:#2346C8;--a:#C2185B;--n:#6A3FB5;--k:#C25E00;
- --jp:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;--tr:-apple-system,"Segoe UI",system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--ok:#94C98B;--ok-soft:#1E2E21;--warn:#F0AE63;--warn-soft:#3A2B18;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--ok:#94C98B;--ok-soft:#1E2E21;--warn:#F0AE63;--warn-soft:#3A2B18;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;color-scheme:dark}
+/* Layout: tek sütun; üstte çekici (asıl araç), altında arama + bölüm listesi */
+:root{--bg:#EEF1F6;--surface:#fff;--ink:#172033;--muted:#59647A;--rule:#DDE3EC;--accent:#26478A;--soft:#E6ECF8;--ok:#3E7D3A;--ok-soft:#E8F2E5;--warn:#A4561D;--warn-soft:#FBF0E6;--v:#2346C8;--a:#C2185B;--n:#6A3FB5;--k:#B85600;--onc:#fff;
+ --jp:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;--tr:"Figtree",-apple-system,"Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F141D;--surface:#182030;--ink:#E6EBF3;--muted:#9AA5B8;--rule:#2B3547;--accent:#93B2EE;--soft:#1F2C45;--ok:#94C98B;--ok-soft:#1C2B20;--warn:#F0AE63;--warn-soft:#352817;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--onc:#10141B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F141D;--surface:#182030;--ink:#E6EBF3;--muted:#9AA5B8;--rule:#2B3547;--accent:#93B2EE;--soft:#1F2C45;--ok:#94C98B;--ok-soft:#1C2B20;--warn:#F0AE63;--warn-soft:#352817;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--onc:#10141B;color-scheme:dark}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--tr);padding:0 16px 90px}
-.wrap{max-width:760px;margin:0 auto;padding-top:20px}
-h1{font-size:1.7rem;margin:0 0 4px}
-.sub{color:var(--muted);margin:0 0 14px}
-.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--rule);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.bar input{flex:1 1 200px;min-width:0;font:inherit;font-size:16px;padding:9px 12px;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink)}
-.btn{font:600 .85rem var(--tr);border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
-.btn.p{background:var(--accent);border-color:var(--accent);color:var(--bg)}
-.toc{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
-.toc a{font-size:.8rem;font-weight:600;text-decoration:none;color:var(--ink);border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 10px}
-details{background:var(--surface);border:1px solid var(--rule);border-radius:14px;margin:10px 0;overflow:hidden;scroll-margin-top:70px}
-details.sec{border-left:6px solid var(--c,var(--accent))}
-details.sub{margin:8px 10px;border-radius:10px;background:var(--bg)}
-summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:700;display:flex;gap:10px;align-items:center}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--tr);padding-block:0 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding-top:28px;display:flex;flex-direction:column;gap:16px}
+.head{display:flex;flex-direction:column;gap:2px}
+h1{font-size:1.6rem;line-height:1.2;margin:0;font-weight:800}
+h1 span{font-family:var(--jp);color:var(--n);margin-right:6px}
+.head p{margin:0;color:var(--muted)}
+
+/* Çekici */
+.tool{background:var(--surface);border:1px solid var(--rule);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.tool h2{margin:0;font-size:1.05rem}
+.row{display:flex;gap:8px}
+.row input{flex:1;min-width:0;font:500 1.25rem var(--jp);padding:11px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--bg);color:var(--ink)}
+.row input:focus{outline:none;border-color:var(--n)}
+.btn{font-weight:600;font-size:.88rem;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.p{background:var(--n);border-color:var(--n);color:var(--onc);font-size:1rem;padding:10px 20px;border-radius:12px}
+.hint{color:var(--muted);font-size:.86rem}
+.tool .hint{margin:0}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:500 .9rem var(--jp);border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.chip:hover{border-color:var(--n);color:var(--n)}
+#out:empty{display:none}
+#out{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--rule);padding-top:12px}
+.res-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
+.res-w{font:700 1.6rem var(--jp)}
+.res-m{color:var(--muted);font-size:.92rem}
+.grp{display:inline-block;font-size:.78rem;font-weight:700;border-radius:999px;padding:2px 10px;background:color-mix(in srgb,var(--n) 14%,var(--surface));color:var(--n)}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.cgb{border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.cgb h3{margin:0;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 12px;background:var(--bg)}
+.cgb dl{margin:0}
+.cgb .r{display:flex;justify-content:space-between;gap:12px;padding:7px 12px;border-top:1px solid var(--rule);align-items:baseline}
+.cgb dt{font-size:.84rem;color:var(--muted);min-width:0}
+.cgb dd{margin:0;font:500 1.05rem var(--jp);text-align:right;min-width:0;overflow-wrap:anywhere}
+
+/* Arama + içindekiler */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0;display:flex;flex-direction:column;gap:8px}
+.bar .row input{font:inherit;font-size:16px;padding:9px 12px;background:var(--surface)}
+.toc{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:none;font-size:.82rem;font-weight:600;text-decoration:none;color:var(--ink);border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.toc a:hover{border-color:var(--accent)}
+
+/* Bölümler */
+.secs{display:flex;flex-direction:column;gap:8px}
+details{background:var(--surface);border:1px solid var(--rule);border-radius:14px;overflow:hidden;scroll-margin-top:120px}
+details.sub{margin:8px 0;border-radius:12px;background:var(--bg);border-color:transparent}
+summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;display:flex;gap:10px;align-items:center}
 summary::-webkit-details-marker{display:none}
-summary::before{content:"▸";color:var(--muted);width:1em;flex:none}
-details[open]>summary::before{content:"▾"}
-details.sec>summary{font-size:1.1rem}
-details.sec>summary .n{color:var(--muted);font-weight:400;font-size:.85rem;margin-left:auto}
-.body{padding:0 14px 14px}
+summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);flex:none;margin-left:auto;transition:transform .2s}
+details[open]>summary::after{transform:rotate(-135deg)}
+details.sec>summary{font-size:1.02rem}
+details.sec>summary::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c,var(--accent));flex:none}
+details.sec>summary .n{color:var(--muted);font-weight:500;font-size:.78rem;margin-left:auto;white-space:nowrap}
+details.sec>summary .n+*{margin-left:0}
+details.sub>summary{padding:10px 12px;font-size:.95rem}
+.body{padding:0 16px 16px}
 details.sub .body{padding:0 12px 12px}
 p{margin:.5rem 0}
-.jp{font-family:var(--jp);font-size:1.08em}
-.box{border-radius:10px;padding:10px 12px;margin:8px 0}
-.rule{background:var(--soft);border-left:4px solid var(--accent)}
-.ex{background:var(--ok-soft);border-left:4px solid var(--ok)}
-.warn{background:var(--warn-soft);border-left:4px solid var(--warn)}
-.box b.t{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
-table{width:100%;border-collapse:collapse;font-size:.92rem;margin:8px 0;background:var(--surface);border-radius:10px;overflow:hidden}
-th,td{padding:7px 8px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
-th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+.jp{font-family:var(--jp);font-size:1.06em}
+.box{border-radius:10px;padding:10px 12px;margin:10px 0}
+.rule{background:var(--soft)}
+.ex{background:var(--ok-soft)}
+.warn{background:var(--warn-soft)}
+.box b.t{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.rule b.t{color:var(--accent)}.ex b.t{color:var(--ok)}.warn b.t{color:var(--warn)}
+.tw{overflow-x:auto;margin:10px 0;border:1px solid var(--rule);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:.92rem;background:var(--surface)}
+th,td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg);font-weight:700}
 td.j{font-family:var(--jp);font-size:1.05rem;white-space:nowrap}
 tr:last-child td{border-bottom:0}
-.tw{overflow-x:auto}
 mark{background:transparent;color:var(--a);font-weight:700}
 .stem{color:var(--v);font-weight:700}
 .end{color:var(--k);font-weight:700}
 ul{margin:.3rem 0;padding-left:1.2em}
-li{margin:2px 0}
-.tool{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:14px;margin:14px 0}
-.tool h2{margin:0 0 6px;font-size:1.15rem}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row input{flex:1 1 180px;min-width:0;font:inherit;font-size:18px;font-family:var(--jp);padding:9px 12px;border:1px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--ink)}
-.hint{color:var(--muted);font-size:.85rem}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chip{font:500 .85rem var(--jp);border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:999px;padding:3px 10px;cursor:pointer}
-#out{margin-top:10px}
-.grp{display:inline-block;font-size:.78rem;font-weight:700;border-radius:6px;padding:2px 8px;background:var(--soft);color:var(--accent);margin:4px 0}
+li{margin:3px 0}
 .hidden{display:none!important}
-@media (max-width:480px){td,th{padding:6px 5px}}
+@media (max-width:480px){th,td{padding:6px 7px}.cg{grid-template-columns:1fr}h1{font-size:1.4rem}}
+@media (prefers-reduced-motion:reduce){summary::after{transition:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>Japonca Çekim Kuralları</h1>
-<p class="sub">Fiil, sıfat, です/だ, saygı dili, kısaltmalar: hepsi burada. Başlığa dokun, açılsın. Her kuralın yanında kural + örnek + dikkat kutusu var. Hiç bilmeyen biri için yazıldı.</p>
-
-<div class="bar">
-  <input id="q" type="search" placeholder="Ara: て形, ない, sıfat, keigo, ちゃう…" autocomplete="off">
-  <button class="btn" id="openall">Hepsini aç</button>
-  <button class="btn" id="closeall">Hepsini kapat</button>
-</div>
-
-<div class="toc" id="toc"></div>
+<header class="head">
+<h1><span>変</span>Çekim Kuralları</h1>
+<p>Fiil, sıfat, saygı dili ve kısaltmalar. Bir kelime çek ya da aşağıdan bir konu aç.</p>
+</header>
 
 <div class="tool">
-  <h2>🔧 Fiil / sıfat çekici</h2>
-  <p class="hint">Sözlük biçimini yaz (食べる, 行く, 勉強する, 高い, 静か…) → bütün çekimleri çıkarır. Kana ile de yazabilirsin (たべる).</p>
-  <div class="row"><input id="vin" placeholder="食べる" autocomplete="off"><button class="btn p" id="vgo">Çek</button></div>
+  <h2>Fiil / sıfat çekici</h2>
+  <div class="row"><input id="vin" placeholder="食べる, iku, 静か…" autocomplete="off" aria-label="Sözlük biçimi"><button class="btn p" id="vgo">Çek</button></div>
   <div class="chips" id="vchips"></div>
+  <p class="hint">Sözlük biçimini kanji, kana ya da romaji ile yaz.</p>
   <div id="out"></div>
 </div>
 
+<div class="bar">
+  <div class="row">
+    <input id="q" type="search" placeholder="Kurallarda ara: て形, ない, keigo, ちゃう…" autocomplete="off" aria-label="Kurallarda ara">
+    <button class="btn" id="openall">Aç</button>
+    <button class="btn" id="closeall">Kapat</button>
+  </div>
+  <div class="toc" id="toc"></div>
+</div>
+
+<div class="secs">
 <!-- ============ 0 ============ -->
 <details class="sec" id="s0" style="--c:var(--accent)" open><summary>0. Önce şunu anla: kök, ek, "sözlük biçimi"<span class="n">temel</span></summary><div class="body">
 <p>Japoncada kelimenin <b>sonu</b> değişir, <b>başı</b> hemen hemen hiç değişmez. Değişmeyen kısma <b>kök</b>, değişen parçaya <b>ek</b> diyoruz.</p>
@@ -518,13 +559,14 @@ li{margin:2px 0}
 </div></details>
 
 </div>
+</div>
 
 <script src="lookup.js"></script>
 <script>
 (function(){
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   // toc
-  $('#toc').innerHTML = $$('details.sec').map(d => `<a href="#${d.id}">${d.querySelector('summary').firstChild.textContent.trim().split(':')[0]}</a>`).join('');
+  $('#toc').innerHTML = $$('details.sec').map(d => `<a href="#${d.id}">${d.querySelector('summary').firstChild.textContent.trim().split(':')[0].replace(/\s*\(.*$/, '').replace(/ ve hızlı.*$/, '')}</a>`).join('');
   $$('#toc a').forEach(a => a.onclick = e => { e.preventDefault(); const d = $(a.getAttribute('href')); d.open = true; d.scrollIntoView({behavior:'smooth'}); });
   $('#openall').onclick = () => $$('details').forEach(d => d.open = true);
   $('#closeall').onclick = () => $$('details').forEach(d => d.open = false);
@@ -627,7 +669,11 @@ li{margin:2px 0}
     const mean = e ? e[3][0] : '';
     const word = c.add ? w + c.add : w;
     const rows = c.k === 'adji' ? conjAdjI(word) : c.k === 'adjna' ? conjAdjNa(word) : conjVerb(word, c.k);
-    $('#out').innerHTML = `<div class="grp">${name}${c.guess ? ' · tahmin (sözlükte bulunamadı)' : ''}</div>${mean ? `<div class="hint">${esc(word)}${e && e[1][0] ? ' ・ ' + esc(e[1][0]) : ''} — ${esc(mean)}</div>` : ''}<div class="tw"><table><tr><th>biçim</th><th>sonuç</th></tr>${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="j">${esc(r[1])}</td></tr>`).join('')}</table></div>` +
+    const head = `<div class="res-top"><span class="res-w">${esc(word)}</span>${e && e[1][0] && e[1][0] !== word ? `<span class="res-m">${esc(e[1][0])}</span>` : ''}<span class="grp">${name}${c.guess ? ' · tahmin' : ''}</span></div>${mean ? `<div class="res-m">${esc(mean)}</div>` : ''}${c.guess ? '<div class="hint">Sözlükte bulunamadı, grup tahmin edildi.</div>' : ''}`;
+    const verb = !(c.k === 'adji' || c.k === 'adjna');
+    const G = verb ? [['Nazik (ます)',0,6],['Düz olumsuz',6,10],['て / た biçimleri',10,18],['Koşul, yetenek, emir',18,24],['Edilgen ve ettirgen',24,27],['ます kökü + ek',27,rows.length]] : [[c.k === 'adji' ? 'い-sıfat çekimleri' : 'な-sıfat / isim çekimleri',0,rows.length]];
+    const box = g => `<div class="cgb"><h3>${g[0]}</h3><dl>${rows.slice(g[1], g[2]).map(r => `<div class="r"><dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd></div>`).join('')}</dl></div>`;
+    $('#out').innerHTML = head + `<div class="cg">${G.filter(g => g[2] > g[1]).map(box).join('')}</div>` +
       (c.k === 'v1' || c.k === 'v2' ? `<p class="hint">Grup belirleme: ${c.k === 'v2' ? 'sonu e/i + る → Grup 2' : 'Grup 1 (五段)'}${G1_EXC.includes(w) ? ' — bu fiil "hain" listesinde, Grup 1' : ''}. Yanlışsa diğer gruba göre kuralı bölüm 2\'den uygula.</p>` : '');
   }
   function fromHash(){ const m = location.hash.match(/^#v=(.*)$/); const sp = new URLSearchParams(location.search); const v = m ? decodeURIComponent(m[1]) : sp.get('v'); if (v){ $('#vin').value = v; run(); } }

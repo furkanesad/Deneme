@@ -133,6 +133,7 @@
 
   const css = document.createElement('style');
   css.textContent = '#ol-btn{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:9998;font:600 14px system-ui,sans-serif;border:none;border-radius:999px;padding:11px 16px;background:#26478a;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.28);cursor:pointer}' +
+    '@media(max-width:640px){#ol-btn{font-size:0;padding:0;width:46px;height:46px;border-radius:50%}#ol-btn::before{content:"📚";font-size:20px}#ol-home{font-size:0!important;padding:0!important;width:46px;height:46px;border-radius:50%!important;display:grid;place-items:center}#ol-home::before{content:"🏠";font-size:20px}}' +
     '#ol-p{position:fixed;inset:0;z-index:9999;background:rgba(10,14,20,.55);display:flex;align-items:flex-end;justify-content:center}#ol-p[hidden]{display:none}' +
     '#ol-box{--b:#fff;--t:#18212f;--m:#5a6577;--l:#d5dce5;--a:#26478a;background:var(--b);color:var(--t);width:100%;max-width:680px;max-height:88vh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;font:15px/1.5 -apple-system,"Hiragino Sans","Yu Gothic",system-ui,sans-serif}' +
     '@media(prefers-color-scheme:dark){#ol-box{--b:#171f2c;--t:#e6ebf2;--m:#98a3b5;--l:#2a3445;--a:#93b2ee}}' +

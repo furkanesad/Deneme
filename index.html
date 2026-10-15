@@ -4,106 +4,176 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Japonca Defterlerim</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap">
 <style>
-:root{--bg:#EEF1F5;--surface:#fff;--ink:#18212F;--muted:#5A6577;--rule:#D5DCE5;--accent:#26478A;--soft:#E3EAF7;--v:#2346C8;--a:#C2185B;--n:#6A3FB5;--k:#C25E00;--ok:#3E7D3A;
- --tr:-apple-system,"Segoe UI",system-ui,sans-serif;--jp:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;--nav:52px}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--ok:#94C98B;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--ok:#94C98B;color-scheme:dark}
+/* Layout: uygulama kabuğu — masaüstünde üstte, telefonda altta sekme çubuğu; ana sayfa tek sütun, görev odaklı kartlar */
+:root{
+ --bg:#EEF1F6;--surface:#FFFFFF;--ink:#172033;--muted:#59647A;--rule:#D6DDE8;--accent:#26478A;
+ --v:#2346C8;--a:#C2185B;--n:#6A3FB5;--k:#B85600;
+ --tr:"Figtree",-apple-system,"Segoe UI",system-ui,sans-serif;
+ --jp:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
+ --nav:56px;--onc:#FFFFFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F141D;--surface:#182030;--ink:#E6EBF3;--muted:#9AA5B8;--rule:#2B3547;--accent:#93B2EE;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--onc:#10141B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F141D;--surface:#182030;--ink:#E6EBF3;--muted:#9AA5B8;--rule:#2B3547;--accent:#93B2EE;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;--onc:#10141B;color-scheme:dark}
+
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--tr);overflow:hidden}
-nav{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:20;background:var(--surface);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:6px;padding:0 10px;padding-top:env(safe-area-inset-top,0px)}
-nav .brand{font-weight:800;font-size:1rem;margin-right:6px;white-space:nowrap}
-nav .brand span{font-family:var(--jp);color:var(--accent)}
-.tabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;font:600 .85rem var(--tr);border:1px solid transparent;background:none;color:var(--muted);border-radius:999px;padding:6px 12px;cursor:pointer;display:flex;gap:6px;align-items:center;white-space:nowrap}
-.tab b{font:400 1rem var(--jp)}
-.tab[aria-current="true"]{background:var(--c,var(--accent));color:#fff}
-:root[data-theme="dark"] .tab[aria-current="true"]{color:#10141b}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tab[aria-current="true"]{color:#10141b}}
-.tab:hover{border-color:var(--rule)}
-nav .right{display:flex;gap:6px;flex:none}
-.ib{font:600 .8rem var(--tr);border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 10px;cursor:pointer}
-#stage{position:absolute;top:var(--nav);left:0;right:0;bottom:0;overflow:hidden}
-.pane{position:absolute;inset:0;background:var(--bg);transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .38s;transform:translateX(100%);opacity:0;pointer-events:none;will-change:transform}
-.pane.active{transform:translateX(0);opacity:1;pointer-events:auto}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--tr);overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* Sekme çubuğu */
+nav{position:fixed;top:0;left:0;right:0;z-index:20;height:calc(var(--nav) + env(safe-area-inset-top,0px));
+ padding-top:env(safe-area-inset-top,0px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+ background:var(--surface);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:12px}
+.brand{font-weight:800;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.brand span{font-family:var(--jp);color:var(--accent);font-weight:700}
+.tabs{display:flex;gap:6px;flex:1;min-width:0;justify-content:center}
+.tab{flex:none;border:0;background:none;color:var(--muted);border-radius:12px;padding:8px 14px;cursor:pointer;display:flex;gap:8px;align-items:center;font-weight:600;font-size:.95rem}
+.tab b{font:700 1.05rem var(--jp)}
+.tab:hover{background:var(--bg);color:var(--ink)}
+.tab[aria-current="true"]{background:var(--c);color:var(--onc)}
+.ib{border:1px solid var(--rule);background:var(--surface);border-radius:10px;padding:7px 12px;cursor:pointer;font-weight:600;font-size:.85rem;white-space:nowrap}
+.ib:hover{border-color:var(--muted)}
+
+/* Sahne */
+#stage{position:absolute;top:calc(var(--nav) + env(safe-area-inset-top,0px));left:0;right:0;bottom:0;overflow:hidden}
+.pane{position:absolute;inset:0;background:var(--bg);transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s;transform:translateX(100%);opacity:0;pointer-events:none}
+.pane.active{transform:none;opacity:1;pointer-events:auto}
 .pane.left{transform:translateX(-18%);opacity:0}
-.pane iframe{border:0;width:100%;height:100%;display:block;background:var(--bg)}
-.pane .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.9rem;pointer-events:none}
+.pane iframe{border:0;width:1px;min-width:100%;max-width:100%;height:100%;display:block;background:var(--bg)}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);pointer-events:none}
 .pane.ready .loading{display:none}
-#home{overflow:auto;padding:20px 16px 60px}
-.wrap{max-width:760px;margin:0 auto}
-h1{font-size:1.6rem;margin:0 0 4px}
-.sub{color:var(--muted);margin:0 0 16px}
-.search{display:flex;gap:8px;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:10px;margin:0 0 18px;flex-wrap:wrap}
-.search input{flex:1 1 220px;min-width:0;font:inherit;font-size:17px;font-family:var(--jp);padding:9px 12px;border:1px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--ink)}
-.search button{font:600 .85rem var(--tr);border:none;border-radius:10px;padding:9px 12px;cursor:pointer;color:#fff;background:var(--c)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
-.card{background:var(--surface);border:1px solid var(--rule);border-left:6px solid var(--c);border-radius:14px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;text-align:left;color:var(--ink);font:inherit}
-.card:hover{border-color:var(--c)}
-.card .k{font:400 1.6rem var(--jp);color:var(--c)}
-.card .t{font-weight:700;font-size:1.05rem}
-.card .d{color:var(--muted);font-size:.86rem}
-.card .s{font-size:.78rem;color:var(--c);font-weight:600;margin-top:auto}
-h2{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
-.flow{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
-.step{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:10px 12px;font-size:.9rem}
-.step b{display:block;margin-bottom:2px}
-.links a{color:var(--accent)}
-.hint{color:var(--muted);font-size:.84rem}
+@media (prefers-reduced-motion:reduce){.pane{transition:none}}
+
+/* Ana sayfa */
+#home{overflow:auto;padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.hello{display:flex;flex-direction:column;gap:2px}
+h1{margin:0;font-size:1.7rem;line-height:1.2;font-weight:800}
+h1 span{font-family:var(--jp);color:var(--accent)}
+.hello p{margin:0;color:var(--muted)}
+
+.resume{--c:var(--v);display:flex;align-items:center;gap:12px;background:color-mix(in srgb,var(--c) 10%,var(--surface));border-radius:14px;padding:10px 12px}
+.resume .rk{font:700 1.2rem var(--jp);color:var(--c);flex:none}
+.resume .rt{flex:1;min-width:0;line-height:1.3}
+.resume .rt span{display:block;font-size:.78rem;color:var(--muted)}
+.go{border:0;background:var(--c);color:var(--onc);border-radius:10px;padding:8px 14px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none}
+
+.apps{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--rule);border-radius:16px;overflow:hidden}
+.app{display:flex;gap:14px;align-items:center;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:14px 16px;cursor:pointer;width:100%}
+.app:first-child{border-top:0}
+.app:hover{background:color-mix(in srgb,var(--c) 7%,var(--surface))}
+.app .k{font:700 1.5rem var(--jp);color:var(--c);width:46px;height:46px;flex:none;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 13%,var(--surface))}
+.app .body{flex:1;min-width:0;display:flex;flex-direction:column}
+.app .task{font-weight:700;font-size:1.05rem}
+.app .d{font-size:.87rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.app .s{font-size:.8rem;color:var(--c);font-weight:600}
+.app .s:empty{display:none}
+.app .arrow{font-size:1.6rem;line-height:1;color:var(--muted);flex:none}
+
+.search{display:flex;gap:8px;flex-wrap:wrap}
+.search input{flex:1 1 200px;min-width:0;font:500 1rem var(--jp);padding:11px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink)}
+.search input:focus{outline:none;border-color:var(--accent)}
+.seg{display:flex;gap:6px;flex:1 1 auto}
+.seg button{flex:1;border:1px solid var(--rule);background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--c)}
+.seg button:hover{border-color:var(--c)}
+
+details{border-top:1px solid var(--rule);padding-top:4px}
+summary{cursor:pointer;padding:8px 0;font-weight:600;color:var(--muted);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";}
+details[open] summary::before{content:"▾ ";}
+.more{display:flex;flex-direction:column;gap:12px;padding:6px 0 4px;font-size:.9rem;color:var(--muted)}
+.more p{margin:0}
+.more b{display:block;color:var(--ink)}
+.more a{color:var(--accent)}
+.lib{display:flex;gap:12px;align-items:center}
+.lib p{flex:1;min-width:0}
+.lib .go{--c:var(--k)}
+kbd{font:600 .78rem var(--tr);border:1px solid var(--rule);border-bottom-width:2px;border-radius:6px;padding:0 5px;background:var(--surface);color:var(--ink)}
+
+/* Telefon: sekme çubuğu alta */
 @media (max-width:640px){
-  nav{top:auto;bottom:0;border-top:1px solid var(--rule);border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);height:calc(var(--nav) + env(safe-area-inset-bottom,0px))}
-  nav .brand,nav .right{display:none}
-  .tabs{justify-content:space-around}
-  .tab{flex-direction:column;gap:0;padding:4px 10px;font-size:.68rem}
-  #stage{top:0;bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px))}
+ nav{top:auto;bottom:0;border-top:1px solid var(--rule);border-bottom:0;padding-top:0;padding-bottom:env(safe-area-inset-bottom,0px);height:calc(var(--nav) + 6px + env(safe-area-inset-bottom,0px))}
+ .brand,nav .ib{display:none}
+ .tabs{justify-content:space-around;gap:2px}
+ .tab{flex:1;flex-direction:column;gap:0;padding:6px 2px;font-size:.72rem;border-radius:10px}
+ .tab b{font-size:1.15rem}
+ #stage{top:0;bottom:calc(var(--nav) + 6px + env(safe-area-inset-bottom,0px))}
+ #home{padding-block:24px 28px}
 }
 </style>
 </head>
 <body>
 <nav>
-  <div class="brand"><span>日本語</span> Defterlerim</div>
-  <div class="tabs" role="tablist">
-    <button class="tab" data-p="home" style="--c:var(--accent)"><b>家</b>Ana</button>
-    <button class="tab" data-p="defter" style="--c:var(--v)"><b>帳</b>Defter</button>
-    <button class="tab" data-p="tabi" style="--c:var(--a)"><b>旅</b>Tabi Kaiwa</button>
-    <button class="tab" data-p="cekimler" style="--c:var(--n)"><b>変</b>Çekimler</button>
+  <div class="brand"><span>日本語</span>Defterlerim</div>
+  <div class="tabs" role="tablist" aria-label="Uygulamalar">
+    <button class="tab" data-p="home" style="--c:var(--accent)" title="Ana sayfa (Alt+1)"><b>家</b>Ana sayfa</button>
+    <button class="tab" data-p="defter" style="--c:var(--v)" title="Kelime ve kanji (Alt+2)"><b>帳</b>Defter</button>
+    <button class="tab" data-p="tabi" style="--c:var(--a)" title="Seyahat konuşması (Alt+3)"><b>旅</b>Tabi Kaiwa</button>
+    <button class="tab" data-p="cekimler" style="--c:var(--n)" title="Fiil ve sıfat çekimi (Alt+4)"><b>変</b>Çekimler</button>
   </div>
-  <div class="right"><button class="ib" id="reload" title="Bu sekmeyi yeniden yükle">↻</button></div>
+  <button class="ib" id="reload" title="Açık uygulamayı yeniden yükle">↻ Yenile</button>
 </nav>
 
 <div id="stage">
   <section class="pane" id="home" data-p="home">
     <div class="wrap">
-      <h1>Japonca Defterlerim</h1>
-      <p class="sub">Üç uygulama tek sayfada, internetsiz. Üstteki sekmelerle geçiş yap; açtığın uygulama arkada açık kalır, kaldığın yerden devam edersin.</p>
+      <header class="hello">
+        <h1><span>日本語</span> Defterlerim</h1>
+        <p>Bir uygulama seç ya da aşağıda ara.</p>
+      </header>
 
-      <div class="search" style="--c:var(--accent)">
-        <input id="hq" placeholder="Kelime, kanji, kalıp ya da fiil yaz… (ör. 食べる, taberu, ahtapot, 〜ながら)" autocomplete="off">
-        <button data-go="defter" style="--c:var(--v)">帳 Kelimede ara</button>
-        <button data-go="tabi" style="--c:var(--a)">旅 Kalıpta ara</button>
-        <button data-go="cekimler" style="--c:var(--n)">変 Çek</button>
+      <div class="resume" id="resume" hidden>
+        <div class="rk" id="r-k">帳</div>
+        <div class="rt"><span>Kaldığın yer</span><strong id="r-name">Japonca Defterim</strong></div>
+        <button class="go" id="r-go">Devam et</button>
       </div>
 
-      <div class="grid">
-        <button class="card" data-p="defter" style="--c:var(--v)"><span class="k">帳</span><span class="t">Japonca Defterim</span><span class="d">10.377 kelime, 2.139 kanji, 4.768 ikili kanji, 885 gramer; kartlarla aralıklı tekrar, okuma metinleri.</span><span class="s" id="st-defter">Aç →</span></button>
-        <button class="card" data-p="tabi" style="--c:var(--a)"><span class="k">旅</span><span class="t">Tabi Kaiwa Defteri</span><span class="d">Seyahat diyalogları, 205 kalıp kartı (N5–N1, bağlaçlar, durumlar), oyunla pratik.</span><span class="s" id="st-tabi">Aç →</span></button>
-        <button class="card" data-p="cekimler" style="--c:var(--n)"><span class="k">変</span><span class="t">Çekim Kuralları</span><span class="d">Fiil grupları, tüm çekimler, sıfatlar, keigo, kısaltmalar; fiil/sıfat çekici.</span><span class="s">Aç →</span></button>
-        <button class="card" data-lib="1" style="--c:var(--k)"><span class="k">庫</span><span class="t">Kütüphane paneli</span><span class="d">Her uygulamanın sağ altında 📚 düğmesi: 22.645 kelime, 10.384 kanji, 871 gramer; Türkçe/İngilizce/romaji arama. Sonuçtan diğer uygulamaya atlar.</span><span class="s">Defter'de aç →</span></button>
+      <div class="apps">
+        <button class="app" data-p="defter" style="--c:var(--v)">
+          <span class="k">帳</span>
+          <span class="body"><span class="task">Japonca Defterim</span><span class="d">Kelime ve kanji · 10.377 kelime, 2.139 kanji</span><span class="s" id="st-defter"></span></span>
+          <span class="arrow">›</span>
+        </button>
+        <button class="app" data-p="tabi" style="--c:var(--a)">
+          <span class="k">旅</span>
+          <span class="body"><span class="task">Tabi Kaiwa</span><span class="d">Seyahat konuşması · 205 kalıp kartı</span><span class="s" id="st-tabi"></span></span>
+          <span class="arrow">›</span>
+        </button>
+        <button class="app" data-p="cekimler" style="--c:var(--n)">
+          <span class="k">変</span>
+          <span class="body"><span class="task">Çekimler</span><span class="d">Fiil ve sıfat çekimi · 35 çekim</span></span>
+          <span class="arrow">›</span>
+        </button>
       </div>
 
-      <h2>Birbirine nasıl bağlı</h2>
-      <div class="flow">
-        <div class="step"><b>Diyalogda kelime → Defter</b>Tabi Kaiwa'da 📚 panelinden kelime ara, “帳 Defterde aç” de; Defter o kelimeyi listeler.</div>
-        <div class="step"><b>Gramer → Kalıp kartı</b>Panelde gramer ara, “旅 Kalıplarda bul” de; Tabi Kaiwa kalıp kartını açar.</div>
-        <div class="step"><b>Fiil → Çekim</b>Herhangi bir yerden “📐 Çekimler”; fiili yaz, 35 çekimi gör.</div>
-        <div class="step"><b>İlerleme</b>Üç uygulama aynı adreste çalıştığı için kayıtların (kartlar, defter) tek yerde tutulur ve kaybolmaz.</div>
+      <div class="search">
+        <input id="hq" placeholder="Ara: 食べる, taberu, ahtapot…" autocomplete="off" aria-label="Kelime, kanji, kalıp ya da fiil ara">
+        <div class="seg">
+          <button data-go="defter" style="--c:var(--v)">Kelime</button>
+          <button data-go="tabi" style="--c:var(--a)">Kalıp</button>
+          <button data-go="cekimler" style="--c:var(--n)">Çekim</button>
+        </div>
       </div>
 
-      <h2>Orijinal sürümler</h2>
-      <p class="links hint"><a href="japonca-defterim/index.html">Japonca Defterim (orijinal)</a> · <a href="tabi-kaiwa-defteri.html">Tabi Kaiwa Defteri (orijinal)</a> — değiştirilmedi, yalnızca yedek.</p>
-      <p class="hint">Kısayollar: Alt+1 Ana, Alt+2 Defter, Alt+3 Tabi Kaiwa, Alt+4 Çekimler.</p>
+      <details>
+        <summary>Daha fazla</summary>
+        <div class="more">
+          <div class="lib">
+            <p><b>Kütüphane paneli</b>Her uygulamada sağ alttaki 📚 düğmesi: 22.645 kelime, 10.384 kanji, 871 gramer. Türkçe, İngilizce ya da romaji ile ara.</p>
+            <button class="go" data-lib="1">Aç</button>
+          </div>
+          <p><b>Uygulamalar arası geçiş</b>📚 panelinden bir kelimeyi “帳 Defterde aç”, bir grameri “旅 Kalıplarda bul”, bir fiili “📐 Çekimler” ile açabilirsin. Kayıtların (kartlar, defter) üç uygulamada ortak tutulur.</p>
+          <p><b>Yedekler</b><a href="japonca-defterim/index.html">Japonca Defterim (orijinal)</a> · <a href="tabi-kaiwa-defteri.html">Tabi Kaiwa Defteri (orijinal)</a></p>
+          <p><b>Kısayollar</b><kbd>Alt+1</kbd> Ana sayfa · <kbd>Alt+2</kbd> Defter · <kbd>Alt+3</kbd> Tabi Kaiwa · <kbd>Alt+4</kbd> Çekimler</p>
+        </div>
+      </details>
     </div>
   </section>
   <section class="pane" data-p="defter" data-src="japonca-defterim/offline.html"><div class="loading">Japonca Defterim yükleniyor…</div></section>
@@ -114,6 +184,8 @@ h2{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut
 <script>
 (function(){
   const ORDER = ['home','defter','tabi','cekimler'];
+  const NAMES = {home:'Japonca Defterlerim', defter:'Japonca Defterim', tabi:'Tabi Kaiwa Defteri', cekimler:'Çekim Kuralları'};
+  const META = {defter:['帳','var(--v)'], tabi:['旅','var(--a)'], cekimler:['変','var(--n)']};
   const panes = {}; document.querySelectorAll('.pane').forEach(p => panes[p.dataset.p] = p);
   const tabs = [...document.querySelectorAll('.tab')];
   let cur = null;
@@ -124,26 +196,38 @@ h2{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut
     const pane = panes[p]; if (!pane.dataset.src) return;
     let f = frameOf(p);
     if (!f){
-      f = document.createElement('iframe'); f.src = pane.dataset.src + (hash ? '?' + hash.slice(1).replace(/^kat:?/, 'kat=').replace(/^kat=$/, 'kat=') : ''); f.title = p; f.setAttribute('allow', 'autoplay; microphone');
+      f = document.createElement('iframe'); f.src = pane.dataset.src + (hash ? '?' + hash.slice(1).replace(/^kat:?/, 'kat=').replace(/^kat=$/, 'kat=') : ''); f.title = NAMES[p]; f.setAttribute('allow', 'autoplay; microphone');
       f.addEventListener('load', () => pane.classList.add('ready'));
       pane.appendChild(f);
     } else if (hash){
       try{ const w = f.contentWindow; if (w.location.hash === hash) w.dispatchEvent(new HashChangeEvent('hashchange')); else w.location.hash = hash; }catch(e){ f.src = pane.dataset.src + hash; }
     }
   }
+  function renderResume(){
+    const last = store.get('lastApp', '');
+    const box = document.getElementById('resume');
+    if (!META[last]){ box.hidden = true; return; }
+    box.style.setProperty('--c', META[last][1]);
+    document.getElementById('r-k').textContent = META[last][0];
+    document.getElementById('r-name').textContent = NAMES[last];
+    document.getElementById('r-go').onclick = () => show(last);
+    box.hidden = false;
+  }
   function show(p, hash){
     if (!panes[p]) p = 'home';
     ensure(p, hash);
     if (cur === p) return;
-    const from = ORDER.indexOf(cur), to = ORDER.indexOf(p);
+    const to = ORDER.indexOf(p);
     Object.values(panes).forEach(x => { x.classList.remove('active'); x.classList.toggle('left', ORDER.indexOf(x.dataset.p) < to); });
     panes[p].classList.add('active'); panes[p].classList.remove('left');
     tabs.forEach(t => t.setAttribute('aria-current', String(t.dataset.p === p)));
     cur = p; store.set('last', p);
+    document.getElementById('reload').hidden = p === 'home';
+    if (p !== 'home') store.set('lastApp', p); else renderResume();
     if (location.hash.replace('#','') !== p) history.replaceState(null, '', '#' + p);
-    document.title = {home:'Japonca Defterlerim', defter:'Japonca Defterim', tabi:'Tabi Kaiwa Defteri', cekimler:'Çekim Kuralları'}[p];
+    document.title = NAMES[p];
   }
-  // deep links from apps: {type:'nav', to, q, kat}
+  // uygulamalardan gelen derin bağlantılar: {type:'nav', to, q, kat}
   function navMsg(m){
     if (!m || m.type !== 'nav') return;
     const q = (m.q || '').trim(); let hash = '';
@@ -162,12 +246,14 @@ h2{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut
   document.getElementById('reload').onclick = () => { const f = cur && frameOf(cur); if (f){ panes[cur].classList.remove('ready'); f.contentWindow.location.reload(); } };
   window.addEventListener('hashchange', () => { const p = location.hash.replace('#',''); if (panes[p] && p !== cur) show(p); });
   document.addEventListener('keydown', e => { if (e.altKey && /^[1-4]$/.test(e.key)){ e.preventDefault(); show(ORDER[+e.key - 1]); } });
-  // status lines from saved progress (same-origin localStorage)
+  // kayıtlı ilerlemeden durum satırları (aynı adresteki localStorage)
   try{
-    const st = JSON.parse(localStorage.getItem('okuma-study') || 'null'); const sr = JSON.parse(localStorage.getItem('okuma-sr') || 'null');
-    if (st){ const n = Object.keys(st.pin || {}).length; document.getElementById('st-defter').textContent = `Defterde ${n.toLocaleString('tr')} kelime · Aç →`; }
-    const tm = localStorage.getItem('tabi:mode') || localStorage.getItem('mode'); if (tm) document.getElementById('st-tabi').textContent = `Son bölüm: ${ {trip:'Seyahat', def:'Defter', kat:'Kalıplar', oyun:'Oyun', kur:'Kur'}[tm] || tm } · Aç →`;
+    const st = JSON.parse(localStorage.getItem('okuma-study') || 'null');
+    if (st){ const n = Object.keys(st.pin || {}).length; document.getElementById('st-defter').textContent = `Defterinde ${n.toLocaleString('tr')} kelime var`; }
+    const tm = localStorage.getItem('tabi:mode') || localStorage.getItem('mode'); if (tm) document.getElementById('st-tabi').textContent = `Son bölüm: ${ {trip:'Seyahat', def:'Defter', kat:'Kalıplar', oyun:'Oyun', kur:'Kur'}[tm] || tm }`;
   }catch(e){}
+  if (!store.get('lastApp', '')){ const l = store.get('last', ''); if (META[l]) store.set('lastApp', l); }
+  renderResume();
   const start = location.hash.replace('#','') || store.get('last', 'home');
   show(panes[start] ? start : 'home');
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

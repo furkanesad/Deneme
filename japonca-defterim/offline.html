@@ -1,5 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Japonca Defterim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
 <script src="../offline/vocab-extra.js"></script>
 <script src="../offline/kanji-extra.js"></script>
 <script src="../offline/grammar-extra.js"></script>
@@ -395,12 +396,64 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
 .cnt.zero{background:var(--line);color:var(--muted)}
 @media (max-width:480px){.prog{grid-template-columns:1fr 1fr}.prog .pc:first-child{grid-column:1/-1}}
 .noai,[data-ai],[data-exmore],[data-mys="check"],#prac,#pop-ask,#next,#harvest,#analyze,#addbox,#pend-bar,#s-gram,#s-ana,#pop-an,[data-sact="ana"],[data-sact="gram"],[data-gact="ana"],[data-gact="gram"]{display:none!important}
+
+/* ===== Sade görünüm katmanı (kabukla uyumlu) ===== */
+.lmore{grid-column:1/-1;justify-self:center;margin:10px auto;display:block}
+.nav .tabs button[aria-selected="true"]{scroll-margin-inline:24px}
+:root{--f-display:"Figtree",-apple-system,"Segoe UI",system-ui,sans-serif;--f-body:"Figtree","Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;--paper:#EEF1F6;--line:#DDE3EC;--ai:#2346C8;--ink:#172033;--muted:#59647A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#0F141D;--surface:#182030;--line:#2B3547;--ink:#E6EBF3;--muted:#9AA5B8;--ai:#8FA8FF}}
+:root[data-theme="dark"]{--paper:#0F141D;--surface:#182030;--line:#2B3547;--ink:#E6EBF3;--muted:#9AA5B8;--ai:#8FA8FF}
+body{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:72px}
+.wrap{gap:14px;padding-top:24px}
+header{background:none;border-radius:0;padding:0;margin:0}
+header h1{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--ink);font-family:var(--f-display);font-weight:800;font-size:1.6rem;display:flex;align-items:center;gap:8px}
+header h1 .hk{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;color:var(--c-v);font-weight:700}
+header .sub{font-size:.9rem;margin-top:2px}
+h2,article h2,.vh h2{font-family:var(--f-display);font-weight:800}
+/* sekmeler: ekrana sığar, gerekirse iki satıra iner; yana kaymaz */
+html,body{max-width:100%;overflow-x:hidden}
+@supports (overflow:clip){html,body{overflow-x:clip}}
+.nav{display:block!important;overflow:visible!important;border-bottom:0;padding:8px 0;margin:0;gap:0}
+.nav .tabs{display:flex!important;flex-wrap:wrap!important;gap:4px!important;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;width:100%;max-width:100%}
+.nav .tabs button{white-space:nowrap;justify-content:center;flex:1 1 auto;display:inline-flex;align-items:center;gap:6px;border-radius:10px!important;padding:8px 12px!important;font-weight:600;font-size:.92rem;color:var(--muted)}
+.nav .tabs button .tk{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-weight:700;font-size:1rem}
+.nav .tabs button span{font-size:.75rem;opacity:.8}
+.nav .tabs button.minor{font-size:.85rem;font-weight:500}
+.nav .tabs button:hover{background:var(--paper);color:var(--ink)}
+.nav .tabs button[aria-selected="true"]{color:#fff!important;background:var(--ai)}
+:root[data-theme="dark"] .nav .tabs button[aria-selected="true"]{color:#10141B!important}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nav .tabs button[aria-selected="true"]{color:#10141B!important}}
+.nav .tsep{display:none}
+.nav .tabs button .tk,.nav .tabs button[aria-selected="true"] .tk{background:none!important;color:inherit!important;border:0!important;box-shadow:none!important;padding:0!important}
+.seg{max-width:100%;flex-wrap:wrap}
+@media (max-width:640px){.seg{display:flex!important;width:100%}.seg button{flex:1 1 auto;min-width:0;padding-left:6px!important;padding-right:6px!important}}
+@media (max-width:640px){
+ .nav .tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))}
+ .nav .tabs button{flex-direction:column;gap:1px!important;padding:6px 2px!important;font-size:.72rem!important;min-width:0}
+ .nav .tabs button .tk{font-size:1.05rem}
+ .nav .tabs button span{display:none}
+ .nav .tabs button.minor{grid-column:span 1;flex-direction:row;font-size:.72rem!important}
+ .nav .tabs button[data-v="stats"]{grid-column:1 / span 2;grid-row:2}
+ .nav .tabs button[data-v="settings"]{grid-column:3 / span 3;grid-row:2}
+ .nav .tabs button[hidden]{display:none!important}
+}
+/* özet kutuları ve "bugün" şeridi */
+.ovt{border-top-width:1px!important;border-top-color:var(--line)!important;border-radius:14px}
+.ovt .ojp{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
+.ovtoday{background:var(--ai);border-radius:14px;padding:12px 16px}
+:root[data-theme="dark"] .ovtoday{color:#10141B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ovtoday{color:#10141B}}
+.td-hero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.td-hero .pill{border-width:1px!important;border-color:var(--line)!important;background:var(--surface)!important;text-align:center;font-size:.82rem;color:var(--muted)}
+.td-hero .pill b{display:block;font-family:var(--f-display);font-size:1.4rem;color:var(--ink)}
+.task{border-left-width:1px!important}
+details{border-radius:12px}
 </style>
 
 <div class="wrap">
   <header>
-    <h1>Japonca Defterim</h1>
-    <p class="sub">Gramer, kanji ve kelimeler konulara ayrılmış halde. Bir konuya dokun, listesini gör; kartlarla tekrar et.</p>
+    <h1><span class="hk">帳</span>Japonca Defterim</h1>
+    <p class="sub">Kelime, gramer ve kanji konulara ayrılmış. Bir konu seç, kartlarla tekrar et.</p>
   </header>
 
   <section class="prog" aria-label="İlerleme">
@@ -413,17 +466,17 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
 
   <nav class="nav" aria-label="Bölümler">
     <div class="tabs" role="tablist">
-      <button role="tab" data-v="vocab" aria-selected="false">📒 Kelimeler</button>
-      <button role="tab" data-v="gram" aria-selected="false">📐 Gramer</button>
-      <button role="tab" data-v="kanji" aria-selected="false">漢 Kanji <span id="kn"></span></button>
-      <button role="tab" data-v="cards" aria-selected="false">🃏 Kartlar <span id="cn"></span></button>
-      <button role="tab" data-v="today" aria-selected="false">🏠 Bugün</button>
+      <button role="tab" data-v="today" aria-selected="false"><b class="tk">今</b>Bugün</button>
+      <button role="tab" data-v="cards" aria-selected="false"><b class="tk">札</b>Kartlar <span id="cn"></span></button>
+      <button role="tab" data-v="vocab" aria-selected="false"><b class="tk">語</b>Kelimeler</button>
+      <button role="tab" data-v="gram" aria-selected="false"><b class="tk">文</b>Gramer</button>
+      <button role="tab" data-v="kanji" aria-selected="false"><b class="tk">漢</b>Kanji <span id="kn"></span></button>
       <button role="tab" data-v="read" aria-selected="true" hidden>📖 Oku</button>
       <span class="tsep" aria-hidden="true"></span>
       <button role="tab" class="minor" data-v="texts" aria-selected="false" hidden>Metinler <span id="tn"></span></button>
       <button role="tab" class="minor" data-v="gen" aria-selected="false" hidden>Cümle Üret</button>
-      <button role="tab" class="minor" data-v="stats" aria-selected="false">📊 İstatistik</button>
-      <button role="tab" class="minor" data-v="settings" aria-selected="false">⚙️ Ayarlar</button>
+      <button role="tab" class="minor" data-v="stats" aria-selected="false">İstatistik</button>
+      <button role="tab" class="minor" data-v="settings" aria-selected="false">Ayarlar</button>
       <button role="tab" data-v="sent" aria-selected="false" hidden>Cümleler <span id="sn"></span></button>
     </div>
   </nav>
@@ -446,7 +499,7 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
     </details>
   </div>
 
-  <div id="view-read" class="view">
+  <div id="view-read" class="view" hidden>
   <div class="actions">
     <button class="btn" id="next" disabled>Yükleniyor…</button>
     <button class="ghost" id="furi" aria-pressed="true">Furigana açık</button>
@@ -608,6 +661,9 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
       <summary>💾 Yedekle / geri yükle</summary>
       <p class="hint">Tüm metinlerin, kelime ve gramer sayaçların, eklediğin kelimeler, kart ilerlemen ve kaldığın yer (açık metin ve sayfadaki konumu) tek bir .json dosyasına iner. Dosyayı burada geri yükleyip kaldığın yerden devam edebilirsin; aynı dosyayı N5–N4 Çalışma Listesi de okur.</p>
       <div class="actions"><button class="btn" id="bk-dl">Yedeği indir</button><button class="ghost" id="bk-pick">Yedek dosyası yükle</button><input type="file" id="bk-file" accept=".json,application/json" hidden><span class="hint" id="bk-status"></span></div>
+      <div id="bk-text" hidden style="margin-top:8px"><p class="hint" style="margin:0 0 6px">Bu görünümde dosya indirilemiyor. Aşağıdaki yedek metnini kopyalayıp bir not ya da dosyaya kaydet. Geri yüklemek için yedek metnini bu kutuya yapıştırıp “Metinden yükle”ye bas.</p>
+        <textarea id="bk-area" rows="5" style="width:100%;font:12px/1.4 ui-monospace,monospace;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)"></textarea>
+        <div class="actions" style="margin-top:6px"><button class="ghost" id="bk-copy">Kopyala</button><button class="ghost" id="bk-paste">Metinden yükle</button></div></div>
       <div class="pend" id="bk-confirm" hidden></div>
     </details>
     <details class="addbox libs" id="libbox">
@@ -1263,6 +1319,7 @@ document.addEventListener('click', e => {
   else showView(id);
   window.scrollTo({top:0});
 });
+const LMORE = {};
 function renderLists(){
   renderOvr(F.view);
   const isV = F.view==='vocab', arr = isV ? V : G, counts = isV ? st.cv : st.cg;
@@ -1316,7 +1373,9 @@ function renderLists(){
       const P = prog(ids), open = LST.open || openCats.has(k) || browsing;
       const studyBtn = zero ? '' : `<button class="ghost study" data-kind="${isV ? 'v' : 'g'}" data-cat="${esc(k)}" ${byCat ? `data-fc="${esc(k)}"` : ''}>🃏 Kartla çalış</button>`;
       html += `<details class="cat" data-cat="${esc(k)}" ${tiles ? `style="--h:${hueOf(nm)}"` : ''} ${open ? 'open' : ''}><summary><span class="ct">${tiles ? catIcon(nm) + ' ' : ''}${esc(nm)} <span class="gcount">${ids.length}</span></span><small>${zero ? ids.length + ' görülmemiş' : `${P.n2} öğrenildi · ${P.n1} öğreniliyor`} ${studyBtn}</small></summary>${zero ? '' : pbar(P)}<div class="tg">` +
-        ids.slice(0, lib ? 6000 : 400).map(i => itemHtml(isV, i, zero && !eligible(isV, i) && !(counts[i] > 0), seen)).join('') + (ids.length > (lib ? 6000 : 400) ? `<p class="hint">İlk 400 gösteriliyor; aramayla ya da seviyeyle daralt.</p>` : '') + '</div></details>';
+        (() => { const lim = lib ? 6000 : 400, all = ids.slice(0, lim), mk = i => itemHtml(isV, i, zero && !eligible(isV, i) && !(counts[i] > 0), seen), CH = 120;
+          LMORE[k] = {rest: all.slice(CH), mk};
+          return all.slice(0, CH).map(mk).join('') + (all.length > CH ? `<button class="ghost lmore" data-more="${esc(k)}">Daha fazla göster (${all.length - CH} kaldı)</button>` : '') + (ids.length > lim ? `<p class="hint">İlk ${lim} gösteriliyor; aramayla ya da seviyeyle daralt.</p>` : ''); })() + '</div></details>';
     });
   }
   $('lists').innerHTML = html || `<p class="empty">${counts.some(c => c > 0) || Object.keys(STUDY.pin).length ? 'Bu filtreyle sonuç yok.' : 'Henüz bir metin okumadın. Metinlerde geçen kelime ve gramerler burada listelenir.'}</p>`;
@@ -2190,6 +2249,13 @@ $('lists').addEventListener('click', e => {
   const t = e.target.closest('[data-open]'); if (t){ LST.open = t.dataset.open; renderLists(); window.scrollTo({top: $('lists').getBoundingClientRect().top + window.scrollY - 70, behavior:'smooth'}); return; }
   if (e.target.closest('#lst-back')){ LST.open = null; renderLists(); }
 });
+$('lists').addEventListener('click', e => {
+  const b = e.target.closest('.lmore'); if (!b) return;
+  const M = LMORE[b.dataset.more]; if (!M) return;
+  const part = M.rest.splice(0, 300);
+  b.insertAdjacentHTML('beforebegin', part.map(M.mk).join(''));
+  if (M.rest.length) b.textContent = `Daha fazla göster (${M.rest.length} kaldı)`; else b.remove();
+});
 $('lists').addEventListener('toggle', e => { const d = e.target; if (d.dataset && d.dataset.cat){ d.open ? openCats.add(d.dataset.cat) : openCats.delete(d.dataset.cat); } }, true);
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => showView(b.dataset.v));
 [['f-lvl','lvl'],['f-st','st']].forEach(([id,k]) => document.querySelectorAll('#'+id+' button').forEach(b => b.onclick = () => {
@@ -2739,14 +2805,23 @@ function renderKanji(){
   const all = KJ.filter(k => KF.lvl === 'all' || k[1] === KF.lvl);
   $('k-prog').innerHTML = ['N5','N4','N3','N2','N1'].map(l => { const a = KJ.filter(k => k[1] === l), d = a.filter(k => STUDY.kd[k[0]]).length, s = a.filter(k => (SR.k || {})[k[0]]).length; return `<div class="pc kp1"><div class="lab">${l} kanji</div><div class="val">${d}<small> / ${a.length} öğrenildi · ${s} kartta çalışıldı</small></div><div class="bar"><i style="width:${(d / a.length * 100).toFixed(1)}%"></i></div></div>`; }).join('');
   $('k-sum').textContent = `${arr.length} gösteriliyor · öğrenilen ${all.filter(k => STUDY.kd[k[0]]).length}/${all.length} · 📖 sayı: bu kanjinin okuduğun metinlerdeki kelimelerde kaç kez geçtiği. Karta dokun, defterindeki kelimeleri gör.`;
-  $('k-grid').innerHTML = arr.map(k => {
+  const kcard = k => {
     const ws = words[k[0]] || [], open = KF.open === k[0];
     return `<div class="kc ${STUDY.kd[k[0]] ? 'done' : ''}" data-k="${esc(k[0])}"><div class="top"><span class="ch">${esc(k[0])}</span><span style="display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="lv">${k[1]}</span>${cnt[k[0]] ? `<span class="rc">📖 ${cnt[k[0]]}</span>` : ''}<button class="mini" data-kd="${esc(k[0])}">${STUDY.kd[k[0]] ? '✓ Öğrendim' : 'Öğrendim'}</button><button class="mini" data-ai="kanji" data-k="${esc(k[0])}">🤖</button></span></div>
       <div class="rd">音 <b>${esc(k[2])}</b></div><div class="rd">訓 <b>${esc(k[3])}</b></div><div class="mn">${esc(k[4])}</div><div class="kw">${String(k[5] || '').split(/[、,]/).filter(Boolean).map(w => rubyWord(w.trim())).join('、')}</div>
       ${open ? `<div class="kw" style="margin-top:4px">${ws.length ? ws.slice(0, 8).map(i => `<div><b>${wordRuby(i)}</b> · ${esc(V[i][2])}</div>`).join('') : 'Defterinde bu kanjili kelime yok.'}</div>` : ''}</div>`;
-  }).join('') || '<p class="empty">Bu filtreyle kanji yok.</p>';
+  };
+  if (typeof KMORE === 'undefined') window.KMORE = {n:150, arr:[], card:null, key:''};
+  const kkey = arr.length + '|' + (arr[0] && arr[0][0]) + '|' + (arr[arr.length-1] && arr[arr.length-1][0]);
+  if (kkey !== KMORE.key){ KMORE.key = kkey; KMORE.n = 150; }
+  const oi = KF.open ? arr.findIndex(k => k[0] === KF.open) : -1;
+  if (oi >= KMORE.n) KMORE.n = oi + 1;
+  KMORE.arr = arr; KMORE.card = kcard;
+  $('k-grid').innerHTML = (arr.slice(0, KMORE.n).map(kcard).join('') + (arr.length > KMORE.n ? `<button class="ghost lmore" id="k-more">Daha fazla göster (${arr.length - KMORE.n} kaldı)</button>` : '')) || '<p class="empty">Bu filtreyle kanji yok.</p>';
 }
+var KMORE = {n:150, arr:[], card:null, key:''};
 $('k-grid').addEventListener('click', e => {
+  if (e.target.id === 'k-more'){ const b = e.target, from = KMORE.n; KMORE.n += 300; b.insertAdjacentHTML('beforebegin', KMORE.arr.slice(from, KMORE.n).map(KMORE.card).join('')); if (KMORE.arr.length > KMORE.n) b.textContent = `Daha fazla göster (${KMORE.arr.length - KMORE.n} kaldı)`; else b.remove(); return; }
   const kd = e.target.closest('[data-kd]');
   if (kd){ const k = kd.dataset.kd; STUDY.kd[k] ? delete STUDY.kd[k] : (STUDY.kd[k] = 1); saveStudy(); renderKanji(); return; }
   const c = e.target.closest('.kc'); if (c){ KF.open = KF.open === c.dataset.k ? null : c.dataset.k; renderKanji(); }
@@ -3568,6 +3643,7 @@ function restorePlace(){
   if (PLACE.ck){ Object.assign(CK, PLACE.ck); try{ syncCardControls(); }catch(e){} }
   const v = PLACE.view || (()=>{ try{ return localStorage.getItem('okuma-view'); }catch(e){ return null; } })();
   if (v && v !== 'read') showView(v);
+  else if (!current) showView('today');
   else if (current && PLACE.scroll > 0.02){ const r = $('reader'); window.scrollTo({top: r.offsetTop + PLACE.scroll * r.offsetHeight - 20}); }
   restoring = false;
 }
@@ -3591,8 +3667,8 @@ function buildBackup(){
 }
 async function downloadBackup(){
   const s = $('bk-status');
-  if (!downloads){ s.innerHTML = '<span class="err">Bu görünümde dosya indirme kullanılamıyor.</span>'; return; }
-  if (!texts.length && !st.n){ s.innerHTML = `<span class="err">Yedek alınmadı: uygulama ${db && uid ? 'henüz veri yüklemedi' : 'hesabındaki verilere bağlanamadı'}, dosya boş olurdu. Sayfayı claude.ai'de giriş yapmış olarak açıp metinlerin göründüğünden emin ol, sonra tekrar dene.</span>`; return; }
+  if (!downloads){ backupFallback(); return; }
+  if (!texts.length && !st.n && !Object.keys(SR.v || {}).length && !Object.keys(SR.g || {}).length && !Object.keys(SR.k || {}).length){ s.innerHTML = `<span class="err">Yedek alınmadı: uygulama ${db && uid ? 'henüz veri yüklemedi' : 'hesabındaki verilere bağlanamadı'}, dosya boş olurdu. Sayfayı claude.ai'de giriş yapmış olarak açıp metinlerin göründüğünden emin ol, sonra tekrar dene.</span>`; return; }
   if (!(db && uid)) s.innerHTML = '<span class="err">Uyarı: hesabına bağlanılamadı; bu yedek sadece bu tarayıcıdaki verileri içeriyor.</span>';
   savePlace(false);
   const d = new Date(), stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -3602,6 +3678,14 @@ async function downloadBackup(){
   }catch(e){
     s.innerHTML = e && e.code === 'declined' ? 'İndirme iptal edildi.' : `<span class="err">İndirilemedi (kod: ${esc(e && e.code || 'hata')}).</span>`;
   }
+}
+function backupFallback(){
+  const s = $('bk-status'), json = JSON.stringify(buildBackup());
+  const d = new Date(), name = `okuma-defteri-yedek-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
+  // works when the page is opened directly (e.g. GitHub Pages); inside claude.ai the text box below is the way
+  try{ const u = URL.createObjectURL(new Blob([json], {type:'application/json'})), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }catch(e){}
+  $('bk-area').value = json; $('bk-text').hidden = false;
+  s.textContent = `Yedek hazır (${Math.round(json.length / 1024)} KB). İndirme başlamadıysa metni kopyala.`;
 }
 function readBackupFile(f){
   const s = $('bk-status'), box = $('bk-confirm');
@@ -3657,12 +3741,15 @@ async function applyBackup(){
 function setupBackup(){
   $('bk-dl').onclick = downloadBackup;
   $('bk-pick').onclick = () => $('bk-file').click();
+  $('bk-copy').onclick = async () => { const a = $('bk-area'); try{ await navigator.clipboard.writeText(a.value); $('bk-status').textContent = 'Kopyalandı.'; }catch(e){ a.focus(); a.select(); $('bk-status').textContent = 'Metin seçildi; Ctrl+C / Kopyala ile kopyala.'; } };
+  $('bk-paste').onclick = () => { const t = $('bk-area').value.trim(); if (!t){ $('bk-status').innerHTML = '<span class="err">Önce yedek metnini kutuya yapıştır.</span>'; return; } readBackupFile(new File([t], 'yedek.json', {type:'application/json'})); };
+  if (!downloads) $('bk-text').hidden = false;
   $('bk-file').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) readBackupFile(f); e.target.value = ''; };
   $('bk-confirm').addEventListener('click', e => {
     if (e.target.id === 'bk-go') applyBackup();
     if (e.target.id === 'bk-no'){ pendingBackup = null; $('bk-confirm').hidden = true; }
   });
-  if (!downloads) $('bk-dl').title = 'Dosya indirme bu görünümde kullanılamıyor';
+
 }
 
 // any unexpected error is shown instead of a silently dead button

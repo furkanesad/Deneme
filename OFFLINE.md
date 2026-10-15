@@ -14,6 +14,7 @@ Her ikisinde sağ altta **📚 Kütüphane** düğmesi vardır (kelime, kanji, g
 3. Tabi Kaiwa dosyasını doğrudan çift tıklayıp da açabilirsin. Japonca Defterim'in kuromoji sözlüğü için sunucu şarttır.
 
 ## İçerik (`offline/`)
+- `cekimler.html`: çekim kuralları sayfası (açılır-kapanır bölümler, arama, fiil/sıfat çekici). Ana sayfadan ve 📚 panelindeki 📐 Çekimler düğmesinden açılır.
 - `kuromoji.js`: morfolojik analiz kütüphanesi (CDN yerine yerel). Sözlüğü `japonca-defterim/dict/` içinde.
 - `jmdict-common.js`: JMdict yaygın kelimeler, 22.645 giriş, İngilizce anlamlı.
 - `kanjidic.js`: KANJIDIC2, 10.384 kanji (okunuşlar, anlam, JLPT, çizgi sayısı).

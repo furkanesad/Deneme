@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Japonca Çekim Kuralları</title>
+<style>
+:root{--bg:#EEF1F5;--surface:#fff;--ink:#18212F;--muted:#5A6577;--rule:#D5DCE5;--accent:#26478A;--soft:#E3EAF7;--ok:#3E7D3A;--ok-soft:#E4F0E1;--warn:#A4561D;--warn-soft:#FBEFE4;--v:#2346C8;--a:#C2185B;--n:#6A3FB5;--k:#C25E00;
+ --jp:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;--tr:-apple-system,"Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--ok:#94C98B;--ok-soft:#1E2E21;--warn:#F0AE63;--warn-soft:#3A2B18;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F141C;--surface:#171F2C;--ink:#E6EBF2;--muted:#98A3B5;--rule:#2A3445;--accent:#93B2EE;--soft:#1F2D47;--ok:#94C98B;--ok-soft:#1E2E21;--warn:#F0AE63;--warn-soft:#3A2B18;--v:#8FA8FF;--a:#F48FB1;--n:#C3A6FF;--k:#FFB26B;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--tr);padding:0 16px 90px}
+.wrap{max-width:760px;margin:0 auto;padding-top:20px}
+h1{font-size:1.7rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 14px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--rule);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar input{flex:1 1 200px;min-width:0;font:inherit;font-size:16px;padding:9px 12px;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink)}
+.btn{font:600 .85rem var(--tr);border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+.btn.p{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.toc a{font-size:.8rem;font-weight:600;text-decoration:none;color:var(--ink);border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:4px 10px}
+details{background:var(--surface);border:1px solid var(--rule);border-radius:14px;margin:10px 0;overflow:hidden;scroll-margin-top:70px}
+details.sec{border-left:6px solid var(--c,var(--accent))}
+details.sub{margin:8px 10px;border-radius:10px;background:var(--bg)}
+summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:700;display:flex;gap:10px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸";color:var(--muted);width:1em;flex:none}
+details[open]>summary::before{content:"▾"}
+details.sec>summary{font-size:1.1rem}
+details.sec>summary .n{color:var(--muted);font-weight:400;font-size:.85rem;margin-left:auto}
+.body{padding:0 14px 14px}
+details.sub .body{padding:0 12px 12px}
+p{margin:.5rem 0}
+.jp{font-family:var(--jp);font-size:1.08em}
+.box{border-radius:10px;padding:10px 12px;margin:8px 0}
+.rule{background:var(--soft);border-left:4px solid var(--accent)}
+.ex{background:var(--ok-soft);border-left:4px solid var(--ok)}
+.warn{background:var(--warn-soft);border-left:4px solid var(--warn)}
+.box b.t{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+table{width:100%;border-collapse:collapse;font-size:.92rem;margin:8px 0;background:var(--surface);border-radius:10px;overflow:hidden}
+th,td{padding:7px 8px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+td.j{font-family:var(--jp);font-size:1.05rem;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.tw{overflow-x:auto}
+mark{background:transparent;color:var(--a);font-weight:700}
+.stem{color:var(--v);font-weight:700}
+.end{color:var(--k);font-weight:700}
+ul{margin:.3rem 0;padding-left:1.2em}
+li{margin:2px 0}
+.tool{background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:14px;margin:14px 0}
+.tool h2{margin:0 0 6px;font-size:1.15rem}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row input{flex:1 1 180px;min-width:0;font:inherit;font-size:18px;font-family:var(--jp);padding:9px 12px;border:1px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--ink)}
+.hint{color:var(--muted);font-size:.85rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font:500 .85rem var(--jp);border:1px solid var(--rule);background:var(--bg);color:var(--ink);border-radius:999px;padding:3px 10px;cursor:pointer}
+#out{margin-top:10px}
+.grp{display:inline-block;font-size:.78rem;font-weight:700;border-radius:6px;padding:2px 8px;background:var(--soft);color:var(--accent);margin:4px 0}
+.hidden{display:none!important}
+@media (max-width:480px){td,th{padding:6px 5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Japonca Çekim Kuralları</h1>
+<p class="sub">Fiil, sıfat, です/だ, saygı dili, kısaltmalar: hepsi burada. Başlığa dokun, açılsın. Her kuralın yanında kural + örnek + dikkat kutusu var. Hiç bilmeyen biri için yazıldı.</p>
+
+<div class="bar">
+  <input id="q" type="search" placeholder="Ara: て形, ない, sıfat, keigo, ちゃう…" autocomplete="off">
+  <button class="btn" id="openall">Hepsini aç</button>
+  <button class="btn" id="closeall">Hepsini kapat</button>
+</div>
+
+<div class="toc" id="toc"></div>
+
+<div class="tool">
+  <h2>🔧 Fiil / sıfat çekici</h2>
+  <p class="hint">Sözlük biçimini yaz (食べる, 行く, 勉強する, 高い, 静か…) → bütün çekimleri çıkarır. Kana ile de yazabilirsin (たべる).</p>
+  <div class="row"><input id="vin" placeholder="食べる" autocomplete="off"><button class="btn p" id="vgo">Çek</button></div>
+  <div class="chips" id="vchips"></div>
+  <div id="out"></div>
+</div>
+
+<!-- ============ 0 ============ -->
+<details class="sec" id="s0" style="--c:var(--accent)" open><summary>0. Önce şunu anla: kök, ek, "sözlük biçimi"<span class="n">temel</span></summary><div class="body">
+<p>Japoncada kelimenin <b>sonu</b> değişir, <b>başı</b> hemen hemen hiç değişmez. Değişmeyen kısma <b>kök</b>, değişen parçaya <b>ek</b> diyoruz.</p>
+<div class="box rule"><b class="t">Kural</b><span class="jp"><span class="stem">たべ</span><span class="end">る</span> → <span class="stem">たべ</span><span class="end">ます</span> → <span class="stem">たべ</span><span class="end">ない</span> → <span class="stem">たべ</span><span class="end">た</span></span><br>Mavi kısım kök (hiç değişmedi), turuncu kısım ek.</div>
+<p><b>Sözlük biçimi (辞書形)</b>: Fiilin sözlükte yazan hâli. Her zaman <b>u</b> sesiyle biter: 食べ<b>る</b>, 行<b>く</b>, 話<b>す</b>, 待<b>つ</b>, 読<b>む</b>… Bütün çekimler bu biçimden türetilir, o yüzden önce bunu bil.</p>
+<p><b>ます biçimi</b>: Nazik hâl. Günlük hayatta yabancıya, büyüğe, mağazada bunu kullanırsın. 食べ<b>ます</b>.</p>
+<p><b>Düz biçim (普通形)</b>: Arkadaşa, aileye, kendi içinden konuşurken. 食べる / 食べない / 食べた / 食べなかった. Ayrıca cümle içinde (〜と思う, 〜とき, 〜から…) hep düz biçim kullanılır.</p>
+<div class="box warn"><b class="t">Dikkat</b>Japoncada kişi eki yok: 食べる = ben yerim, sen yersin, o yer… hepsi aynı. Çoğul eki de yok. Zaman sadece ikidir: <b>geçmiş olmayan</b> (şimdi + gelecek) ve <b>geçmiş</b>.</div>
+</div></details>
+
+<!-- ============ 1 ============ -->
+<details class="sec" id="s1" style="--c:var(--v)"><summary>1. Fiil grupları: her fiil 3 gruptan birine girer<span class="n">en önemli adım</span></summary><div class="body">
+<p>Çekim yapmadan önce fiilin hangi grupta olduğunu bilmen <b>şart</b>. Her grup farklı çekilir.</p>
+<div class="tw"><table>
+<tr><th>Grup</th><th>Başka adı</th><th>Nasıl tanırsın</th><th>Örnek</th></tr>
+<tr><td><b>Grup 2</b></td><td>一段 (ichidan), る-fiili</td><td>Sonu <b>る</b> ve ondan önceki ses <b>i</b> ya da <b>e</b> sesi (い・き・し・ち・に・ひ・み・り / え・け・せ・て・ね・へ・め・れ)</td><td class="j">食べる、見る、起きる、寝る、教える、着る</td></tr>
+<tr><td><b>Grup 1</b></td><td>五段 (godan), u-fiili</td><td>Grup 2 ve 3 değilse Grup 1'dir. Sonu う・く・ぐ・す・つ・ぬ・ぶ・む・る olabilir. Sonu る olup önceki ses <b>a/u/o</b> ise kesin Grup 1 (ある、作る、乗る)</td><td class="j">買う、書く、泳ぐ、話す、待つ、死ぬ、遊ぶ、読む、乗る</td></tr>
+<tr><td><b>Grup 3</b></td><td>düzensiz</td><td>Sadece iki fiil: <b>する</b> ve <b>来る（くる）</b>. Ama する ile biten yüzlerce fiil var (勉強する, 電話する…) hepsi する gibi çekilir.</td><td class="j">する、来る、勉強する、散歩する</td></tr>
+</table></div>
+<div class="box warn"><b class="t">Dikkat: "e/i + る" olup yine de Grup 1 olan hainler</b>Bunları ezberle, başka yolu yok:<br><span class="jp">帰る（かえる）eve dönmek · 入る（はいる）girmek · 走る（はしる）koşmak · 知る（しる）bilmek · 切る（きる）kesmek · 要る（いる）gerekmek · 減る（へる）azalmak · 限る（かぎる） · 蹴る（ける）tekmelemek · 喋る（しゃべる）konuşmak · 滑る（すべる）kaymak · 焦る（あせる） · 握る（にぎる） · 参る（まいる） · 混じる（まじる） · 湿る（しめる） · 散る（ちる） · 照る（てる） · 練る（ねる）</span><br>Test: 帰る → 帰<b>り</b>ます (Grup 1). Eğer Grup 2 olsaydı 帰ます olurdu, böyle bir kelime yok.</div>
+<div class="box ex"><b class="t">Pratik ipucu</b>ます biçimini biliyorsan grubu hemen anlarsın: ます'tan önce <b>i sesi</b> varsa (書<b>き</b>ます, 読<b>み</b>ます) Grup 1; doğrudan kök + ます ise (食べます, 見ます) Grup 2.</div>
+<p>Grup 1 fiilleri "beş basamak" (五段) diye anılır çünkü sonundaki ses 5 sıra (a-i-u-e-o) değişir: 書<b>か</b>ない・書<b>き</b>ます・書<b>く</b>・書<b>け</b>ば・書<b>こ</b>う. Aşağıdaki bütün Grup 1 kuralları bu beş sıraya dayanır.</p>
+<div class="tw"><table>
+<tr><th>Sözlük sonu</th><th>a-sırası (ない, 受身, 使役)</th><th>i-sırası (ます)</th><th>u-sırası (sözlük)</th><th>e-sırası (ば, 可能, 命令)</th><th>o-sırası (意向)</th></tr>
+<tr><td class="j">う</td><td class="j">わ</td><td class="j">い</td><td class="j">う</td><td class="j">え</td><td class="j">お</td></tr>
+<tr><td class="j">く</td><td class="j">か</td><td class="j">き</td><td class="j">く</td><td class="j">け</td><td class="j">こ</td></tr>
+<tr><td class="j">ぐ</td><td class="j">が</td><td class="j">ぎ</td><td class="j">ぐ</td><td class="j">げ</td><td class="j">ご</td></tr>
+<tr><td class="j">す</td><td class="j">さ</td><td class="j">し</td><td class="j">す</td><td class="j">せ</td><td class="j">そ</td></tr>
+<tr><td class="j">つ</td><td class="j">た</td><td class="j">ち</td><td class="j">つ</td><td class="j">て</td><td class="j">と</td></tr>
+<tr><td class="j">ぬ</td><td class="j">な</td><td class="j">に</td><td class="j">ぬ</td><td class="j">ね</td><td class="j">の</td></tr>
+<tr><td class="j">ぶ</td><td class="j">ば</td><td class="j">び</td><td class="j">ぶ</td><td class="j">べ</td><td class="j">ぼ</td></tr>
+<tr><td class="j">む</td><td class="j">ま</td><td class="j">み</td><td class="j">む</td><td class="j">め</td><td class="j">も</td></tr>
+<tr><td class="j">る</td><td class="j">ら</td><td class="j">り</td><td class="j">る</td><td class="j">れ</td><td class="j">ろ</td></tr>
+</table></div>
+<div class="box warn"><b class="t">Dikkat</b>う ile biten fiilin a-sırası <b>わ</b>'dır, あ değil: 買う → 買<b>わ</b>ない (買あない ❌).</div>
+</div></details>
+
+<!-- ============ 2 ============ -->
+<details class="sec" id="s2" style="--c:var(--v)"><summary>2. Fiil çekimleri: tek tek, her grup için<span class="n">19 biçim</span></summary><div class="body">
+<p>Her alt başlıkta: ne işe yarar → kural (3 grup) → örnekler → dikkat. Önce 2.1 ve 2.2'yi öğren, çoğu şey onlardan türer.</p>
+
+<details class="sub"><summary>2.1 ます biçimi (nazik hâl) ve ます ailesi</summary><div class="body">
+<p>Nazik konuşmanın temeli. Dört hâli var, hepsi ます'ın sonunu değiştirir:</p>
+<div class="tw"><table><tr><th>anlam</th><th>ek</th><th>örnek</th></tr>
+<tr><td>yaparım / yapacağım</td><td class="j">〜ます</td><td class="j">食べます</td></tr>
+<tr><td>yapmam</td><td class="j">〜ません</td><td class="j">食べません</td></tr>
+<tr><td>yaptım</td><td class="j">〜ました</td><td class="j">食べました</td></tr>
+<tr><td>yapmadım</td><td class="j">〜ませんでした</td><td class="j">食べませんでした</td></tr>
+<tr><td>yapalım</td><td class="j">〜ましょう</td><td class="j">食べましょう</td></tr>
+<tr><td>yapmaz mısın? (davet)</td><td class="j">〜ませんか</td><td class="j">食べませんか</td></tr>
+<tr><td>yapayım mı?</td><td class="j">〜ましょうか</td><td class="j">食べましょうか</td></tr></table></div>
+<div class="box rule"><b class="t">Kural: ます kökü (連用形) nasıl bulunur</b>
+<b>Grup 1:</b> son sesi <b>i</b>-sırasına çevir + ます → 書く→書<b>き</b>ます, 読む→読<b>み</b>ます, 買う→買<b>い</b>ます, 話す→話<b>し</b>ます, 待つ→待<b>ち</b>ます<br>
+<b>Grup 2:</b> る'yu at + ます → 食べる→食べます, 見る→見ます<br>
+<b>Grup 3:</b> する→<b>し</b>ます, 来る→<b>き</b>ます（来ます）</div>
+<div class="box ex"><b class="t">ます kökü tek başına da çok işe yarar</b>Kök = ます'ı attığın parça (食べ, 書き, し). Şunlara bu kök eklenir:<br><span class="jp">食べ<b>たい</b>（istemek）· 食べ<b>ながら</b>（-erken）· 食べ<b>に行く</b>（-meye gitmek）· 食べ<b>方</b>（yeme şekli）· 食べ<b>やすい／にくい</b>（kolay/zor）· 食べ<b>すぎる</b>（fazla）· 食べ<b>始める／終わる／続ける</b> · 食べ<b>なさい</b>（emir, yumuşak）· 食べ<b>そう</b>（gibi görünüyor）· お食べ<b>ください</b></span></div>
+</div></details>
+
+<details class="sub"><summary>2.2 て biçimi (bağlama, rica, şimdiki zaman) ★ en çok kullanılan</summary><div class="body">
+<p>て biçimi tek başına anlam taşımaz; cümleleri bağlar ("…ip"), rica yapar (〜てください), süren eylemi anlatır (〜ている). Bunu bilmeden konuşamazsın.</p>
+<div class="box rule"><b class="t">Kural: Grup 2 ve 3 (kolay)</b><span class="jp">食べる→食べ<b>て</b> · 見る→見<b>て</b> · する→<b>して</b> · 来る→<b>きて</b></span><br>Yani ます kökü + て.</div>
+<div class="box rule"><b class="t">Kural: Grup 1 (son sese göre 5 kural)</b>
+<div class="tw"><table><tr><th>son ses</th><th>olur</th><th>örnek</th><th>akılda tutma</th></tr>
+<tr><td class="j">う・つ・る</td><td class="j"><b>って</b></td><td class="j">買う→買って · 待つ→待って · 乗る→乗って</td><td>u-tsu-ru → tte</td></tr>
+<tr><td class="j">む・ぶ・ぬ</td><td class="j"><b>んで</b></td><td class="j">読む→読んで · 遊ぶ→遊んで · 死ぬ→死んで</td><td>mu-bu-nu → nde</td></tr>
+<tr><td class="j">く</td><td class="j"><b>いて</b></td><td class="j">書く→書いて · 聞く→聞いて</td><td>ku → ite</td></tr>
+<tr><td class="j">ぐ</td><td class="j"><b>いで</b></td><td class="j">泳ぐ→泳いで · 急ぐ→急いで</td><td>gu → ide (noktalı kalır)</td></tr>
+<tr><td class="j">す</td><td class="j"><b>して</b></td><td class="j">話す→話して · 貸す→貸して</td><td>su → shite</td></tr></table></div></div>
+<div class="box warn"><b class="t">Tek istisna</b><span class="jp">行く → 行<b>って</b></span>（行いて ❌）. Sadece bu fiil kuralı bozar.</div>
+<div class="box ex"><b class="t">Şarkı gibi ezberle</b>うつる→って、むぶぬ→んで、く→いて、ぐ→いで、す→して。 (Japon çocuklar da böyle ezberler.)</div>
+<p><b>て biçiminin kullanıldığı yerler (hepsi aynı て):</b></p>
+<ul>
+<li><span class="jp">〜てください</span> lütfen … yap · <span class="jp">〜ている</span> …iyor / …miş durumda · <span class="jp">〜てもいい</span> …ebilirsin · <span class="jp">〜てはいけない</span> …me (yasak)</li>
+<li><span class="jp">〜てから</span> …dikten sonra · <span class="jp">〜てみる</span> …meyi denemek · <span class="jp">〜ておく</span> önceden …mek · <span class="jp">〜てしまう</span> …ip bitirmek / maalesef …</li>
+<li><span class="jp">〜てあげる・くれる・もらう</span> …mek (birisi için) · <span class="jp">〜ていく／てくる</span> …e gitmek/gelmek · <span class="jp">〜てほしい</span> …mesini istemek</li>
+<li><span class="jp">食べて、飲んで、寝た</span> = yedim, içtim, uyudum (sıralama). Son fiil zamanı belirler.</li></ul>
+</div></details>
+
+<details class="sub"><summary>2.3 た biçimi (düz geçmiş: yaptım)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>て biçimini al, <b>て→た, で→だ</b> yap. Hepsi bu.<br><span class="jp">食べて→食べ<b>た</b> · 書いて→書い<b>た</b> · 読んで→読ん<b>だ</b> · 泳いで→泳い<b>だ</b> · 買って→買っ<b>た</b> · して→し<b>た</b> · きて→き<b>た</b> · 行って→行っ<b>た</b></span></div>
+<p><b>Kullanım:</b> düz geçmiş (arkadaşa: 食べた "yedim"), ve şu kalıplar: <span class="jp">〜たことがある</span>（hiç …dim）, <span class="jp">〜たほうがいい</span>（…sen iyi olur）, <span class="jp">〜たり〜たりする</span>（bazen … bazen …）, <span class="jp">〜たら</span>（…ince / …sa）, <span class="jp">〜たあとで</span>（…dikten sonra）, <span class="jp">〜たばかり</span>（yeni …dim）, <span class="jp">〜たところ</span>（tam …dim）.</p>
+</div></details>
+
+<details class="sub"><summary>2.4 ない biçimi (düz olumsuz: yapmam)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>
+<b>Grup 1:</b> son sesi <b>a</b>-sırasına çevir + ない → 書く→書<b>か</b>ない, 読む→読<b>ま</b>ない, 話す→話<b>さ</b>ない, 待つ→待<b>た</b>ない, 買う→買<b>わ</b>ない（わ!）<br>
+<b>Grup 2:</b> る'yu at + ない → 食べ<b>ない</b>, 見<b>ない</b><br>
+<b>Grup 3:</b> する→<b>しない</b>, 来る→<b>こない</b>（来ない）</div>
+<div class="box warn"><b class="t">İstisna</b><span class="jp">ある（var olmak）→ <b>ない</b></span>（あらない ❌）. "Yok" demek için sadece ない.</div>
+<p><b>ない'nin kendi çekimi</b> (い-sıfat gibi davranır):</p>
+<div class="tw"><table><tr><th>anlam</th><th>biçim</th><th>örnek</th></tr>
+<tr><td>yapmam</td><td class="j">〜ない</td><td class="j">食べない</td></tr>
+<tr><td>yapmadım</td><td class="j">〜なかった</td><td class="j">食べなかった</td></tr>
+<tr><td>yapmayıp (bağlama)</td><td class="j">〜なくて</td><td class="j">食べなくて</td></tr>
+<tr><td>yapmadan (başka eylem yaparken)</td><td class="j">〜ないで</td><td class="j">食べないで寝た = yemeden uyudum</td></tr>
+<tr><td>yapmazsa</td><td class="j">〜なければ／〜なかったら</td><td class="j">食べなければ</td></tr>
+<tr><td>lütfen yapma</td><td class="j">〜ないでください</td><td class="j">食べないでください</td></tr>
+<tr><td>yapmak zorunda</td><td class="j">〜なければならない／〜なくてはいけない</td><td class="j">食べなければならない</td></tr>
+<tr><td>yapmasa da olur</td><td class="j">〜なくてもいい</td><td class="j">食べなくてもいい</td></tr>
+<tr><td>yapmasan iyi olur</td><td class="j">〜ないほうがいい</td><td class="j">食べないほうがいい</td></tr></table></div>
+<div class="box ex"><b class="t">ないで mi なくて mi?</b>ないで = "yapmadan" (eylem tarzı: 傘を持た<b>ないで</b>出かけた). なくて = "yapmadığı için / yapmayıp" (sebep: 時間が<b>なくて</b>行けなかった).</div>
+<p><b>Yazı dilinde ない yerine:</b> <span class="jp">〜ず（に）</span> = …meden (食べ<b>ずに</b>, し<b>ずに</b>→<b>せずに</b>!), <span class="jp">〜ぬ</span> = …mez (知ら<b>ぬ</b>, eski/edebî).</p>
+</div></details>
+
+<details class="sub"><summary>2.5 Düz biçim özet tablosu (4 hâl)</summary><div class="body">
+<div class="tw"><table><tr><th></th><th>Grup 1 書く</th><th>Grup 2 食べる</th><th>する</th><th>来る</th></tr>
+<tr><td>yapar</td><td class="j">書く</td><td class="j">食べる</td><td class="j">する</td><td class="j">くる</td></tr>
+<tr><td>yapmaz</td><td class="j">書かない</td><td class="j">食べない</td><td class="j">しない</td><td class="j">こない</td></tr>
+<tr><td>yaptı</td><td class="j">書いた</td><td class="j">食べた</td><td class="j">した</td><td class="j">きた</td></tr>
+<tr><td>yapmadı</td><td class="j">書かなかった</td><td class="j">食べなかった</td><td class="j">しなかった</td><td class="j">こなかった</td></tr></table></div>
+<p>Bu dört hâl + isim/sıfat düz hâlleri = "普通形". Şu kalıplar hep düz biçim ister: <span class="jp">〜と思う、〜と言う、〜かもしれない、〜でしょう、〜はずだ、〜そうだ（duyum）、〜らしい、〜ようだ、〜とき、〜から、〜ので、〜のに、〜し、〜か（どうか）、〜こと、〜の</span> ve isim tamlaması (<span class="jp">食べた人、行かない日</span>).</p>
+</div></details>
+
+<details class="sub"><summary>2.6 Yetenek: 〜える／〜られる (yapabilirim, 可能形)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>
+<b>Grup 1:</b> son sesi <b>e</b>-sırasına çevir + る → 書く→書<b>ける</b>, 読む→読<b>める</b>, 話す→話<b>せる</b>, 買う→買<b>える</b>, 泳ぐ→泳<b>げる</b><br>
+<b>Grup 2:</b> る'yu at + <b>られる</b> → 食べ<b>られる</b>, 見<b>られる</b><br>
+<b>Grup 3:</b> する→<b>できる</b>（できるす ❌）, 来る→<b>こられる</b></div>
+<div class="box ex"><b class="t">Örnek</b><span class="jp">日本語が話せます。</span> Japonca konuşabiliyorum. · <span class="jp">漢字が読めない。</span> Kanji okuyamıyorum.</div>
+<div class="box warn"><b class="t">Dikkat</b>1) Nesne を yerine çoğunlukla <b>が</b> olur: 魚<b>が</b>食べられる. 2) Yetenek fiili artık Grup 2 gibi çekilir: 書ける→書けます→書けない→書けた. 3) Günlük konuşmada ら düşer: 食べ<b>れる</b>, 見<b>れる</b>（ら抜き言葉）. Sınavda yazma, konuşmada duyarsın. 4) 分かる, 見える, 聞こえる zaten "yetenek" anlamı taşır, bunları 可能形'a çevirme.</div>
+<p>Alternatif: <span class="jp">辞書形 + ことができる</span> → 日本語を話す<b>ことができます</b>（daha resmî）.</p>
+</div></details>
+
+<details class="sub"><summary>2.7 Niyet: 〜よう／〜おう (yapayım, 意向形)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>
+<b>Grup 1:</b> son sesi <b>o</b>-sırasına çevir + う → 書く→書<b>こう</b>, 読む→読<b>もう</b>, 買う→買<b>おう</b>, 話す→話<b>そう</b>, 待つ→待<b>とう</b><br>
+<b>Grup 2:</b> る'yu at + <b>よう</b> → 食べ<b>よう</b>, 見<b>よう</b><br>
+<b>Grup 3:</b> する→<b>しよう</b>, 来る→<b>こよう</b></div>
+<p>Nazik karşılığı ましょう'dur. Düz "hadi yapalım / yapayım" anlamı. Ayrıca:</p>
+<ul><li><span class="jp">〜（よ）うと思う</span> …mayı düşünüyorum: 行こうと思います。</li>
+<li><span class="jp">〜（よ）うとする</span> …mek üzere / …meye çalışmak: 出かけようとしたとき…</li>
+<li><span class="jp">〜（よ）うか</span> …sem mi?: 帰ろうか。</li>
+<li><span class="jp">〜（よ）うとしない</span> …mek istemiyor (inat).</li></ul>
+</div></details>
+
+<details class="sub"><summary>2.8 Koşul: 〜ば biçimi (…sa, 条件形)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>
+<b>Grup 1:</b> son sesi <b>e</b>-sırasına çevir + ば → 書く→書<b>けば</b>, 読む→読<b>めば</b>, 買う→買<b>えば</b>, 行く→行<b>けば</b><br>
+<b>Grup 2:</b> る'yu at + <b>れば</b> → 食べ<b>れば</b>, 見<b>れば</b><br>
+<b>Grup 3:</b> する→<b>すれば</b>, 来る→<b>くれば</b><br>
+<b>Olumsuz:</b> ない→<b>なければ</b> → 食べなければ, 行かなければ<br>
+<b>い-sıfat:</b> い→<b>ければ</b> → 安ければ, いい→<b>よければ</b><br>
+<b>な-sıfat / isim:</b> + <b>なら（ば）</b> → 静かなら, 学生なら（ya da であれば）</div>
+<div class="box ex"><b class="t">Örnek</b><span class="jp">安ければ買います。</span> Ucuzsa alırım. · <span class="jp">どうすればいいですか。</span> Ne yapsam iyi olur?</div>
+<p>Kalıplar: <span class="jp">〜ばいい</span>（…sen yeter）, <span class="jp">〜ばよかった</span>（keşke …seydim）, <span class="jp">〜ば〜ほど</span>（…dikçe …）, <span class="jp">〜さえ〜ば</span>（yeter ki …）.</p>
+</div></details>
+
+<details class="sub"><summary>2.9 Emir ve yasak: 〜ろ／〜え, 〜な, 〜なさい</summary><div class="body">
+<div class="box rule"><b class="t">Sert emir (命令形) — erkek konuşması, tabela, acil durum</b>
+<b>Grup 1:</b> son sesi <b>e</b>-sırasına çevir → 書く→書<b>け</b>, 読む→読<b>め</b>, 行く→行<b>け</b>, 待つ→待<b>て</b>, 買う→買<b>え</b><br>
+<b>Grup 2:</b> る'yu at + <b>ろ</b> → 食べ<b>ろ</b>, 見<b>ろ</b>（yazıda bazen 〜よ: 見よ）<br>
+<b>Grup 3:</b> する→<b>しろ</b>, 来る→<b>こい</b></div>
+<div class="box rule"><b class="t">Yasak (禁止形)</b>sözlük biçimi + <b>な</b> → 食べる<b>な</b>（yeme!）, 行く<b>な</b>, する<b>な</b>, 来る<b>な</b></div>
+<div class="box rule"><b class="t">Yumuşak emir</b>ます kökü + <b>なさい</b> → 食べ<b>なさい</b>（anne çocuğa, öğretmen öğrenciye）· daha da yumuşak: 〜てください, 〜て（günlük）, 〜ないで（yapma）</div>
+<div class="box warn"><b class="t">Dikkat</b>命令形 ve 〜な çok serttir. Yabancı olarak neredeyse hiç kullanma; anlaman yeter (頑張れ! "hadi!", 止まれ "DUR" tabelası, 気をつけろ).</div>
+</div></details>
+
+<details class="sub"><summary>2.10 Edilgen: 〜れる／〜られる (yapılmak, 受身形)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>
+<b>Grup 1:</b> son sesi <b>a</b>-sırasına çevir + <b>れる</b> → 書く→書<b>かれる</b>, 読む→読<b>まれる</b>, 買う→買<b>われる</b>, 話す→話<b>される</b><br>
+<b>Grup 2:</b> る'yu at + <b>られる</b> → 食べ<b>られる</b>, 見<b>られる</b>（yetenekle aynı şekil! bağlamdan anlaşılır）<br>
+<b>Grup 3:</b> する→<b>される</b>, 来る→<b>こられる</b></div>
+<p>Fail <b>に</b> ile söylenir: <span class="jp">先生<b>に</b>ほめられた。</span> Öğretmen tarafından övüldüm.</p>
+<div class="box ex"><b class="t">Japoncaya özgü: "zarar görme" edilgeni (迷惑の受身)</b><span class="jp">雨に降られた。</span> Yağmura yakalandım (yağmur bana yağdı). · <span class="jp">友だちに来られて、勉強できなかった。</span> Arkadaş gelince çalışamadım. Geçişsiz fiiller bile edilgen olur, "başıma geldi" anlamı taşır.</div>
+<p>Edilgen fiil Grup 2 gibi çekilir: 書かれる→書かれます→書かれない→書かれた.</p>
+</div></details>
+
+<details class="sub"><summary>2.11 Ettirgen: 〜せる／〜させる (yaptırmak, 使役形)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>
+<b>Grup 1:</b> son sesi <b>a</b>-sırasına çevir + <b>せる</b> → 書く→書<b>かせる</b>, 読む→読<b>ませる</b>, 買う→買<b>わせる</b>, 待つ→待<b>たせる</b><br>
+<b>Grup 2:</b> る'yu at + <b>させる</b> → 食べ<b>させる</b>, 見<b>させる</b><br>
+<b>Grup 3:</b> する→<b>させる</b>, 来る→<b>こさせる</b></div>
+<p>İki anlam: <b>zorlamak</b> (母は子どもに野菜を食べさせた) ve <b>izin vermek</b> (行かせてください = gitmeme izin verin). Yaptırılan kişi: geçişli fiilde <b>に</b>, geçişsizde <b>を</b> (子ども<b>を</b>行かせる).</p>
+<div class="box ex"><b class="t">Çok kullanılan kalıp</b><span class="jp">〜させてください</span> = …yapmama izin verin (nazik rica): 休ませてください。 · <span class="jp">〜させていただきます</span> = (izninizle) yapacağım (iş Japoncası).</div>
+<p>Kısa ettirgen (konuşma dili): Grup 1 a-sırası + <b>す</b> (書か<b>す</b>, 読ま<b>す</b>), Grup 2 + <b>さす</b> (食べ<b>さす</b>). Anlaman yeter.</p>
+</div></details>
+
+<details class="sub"><summary>2.12 Ettirgen-edilgen: 〜させられる (yapmaya zorlanmak)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>ettirgen biçimi al, せる→<b>せられる</b> yap.<br>
+<b>Grup 1:</b> 書か<b>せられる</b>, 読ま<b>せられる</b>, 買わ<b>せられる</b> · konuşmada kısası: 書か<b>される</b>, 読ま<b>される</b>, 買わ<b>される</b>（す ile biten fiillerde kısa biçim yok: 話させられる）<br>
+<b>Grup 2:</b> 食べ<b>させられる</b>, 見<b>させられる</b><br>
+<b>Grup 3:</b> <b>させられる</b>, <b>こさせられる</b></div>
+<div class="box ex"><b class="t">Örnek</b><span class="jp">子どものとき、野菜を食べさせられた。</span> Çocukken (zorla) sebze yedirildim. · <span class="jp">上司に残業させられた。</span> Müdür bana mesai yaptırdı (istemediğim hâlde).</div>
+</div></details>
+
+<details class="sub"><summary>2.13 たい ve たがる (istemek)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>ます kökü + <b>たい</b> → 食べ<b>たい</b>, 行き<b>たい</b>, し<b>たい</b>, き<b>たい</b>. たい artık <b>い-sıfat</b> gibi çekilir: 食べたく<b>ない</b>, 食べた<b>かった</b>, 食べたく<b>なかった</b>, 食べたく<b>て</b>, 食べた<b>ければ</b>.</div>
+<div class="box warn"><b class="t">Dikkat</b>たい yalnızca <b>kendi</b> isteğin (ya da soruda karşındakinin). Üçüncü kişi için <b>たがる</b> / <b>たがっている</b>: 弟は行き<b>たがっている</b>（kardeşim gitmek istiyor）. Nesne を ya da が: 水<b>が</b>飲みたい.</div>
+<p>İsim istemek: <span class="jp">〜が<b>ほしい</b></span>（い-sıfat: ほしくない, ほしかった）; başkası: <span class="jp">ほしがる</span>. Birinin yapmasını istemek: <span class="jp">〜て<b>ほしい</b></span>.</p>
+</div></details>
+
+<details class="sub"><summary>2.14 〜ている (devam / durum / alışkanlık)</summary><div class="body">
+<div class="box rule"><b class="t">Kural</b>て biçimi + <b>いる</b>（nazik: います）. いる Grup 2'dir: 食べている→食べています→食べていない→食べていた.</div>
+<p>Üç anlam:</p>
+<ul><li><b>Şu an devam:</b> 今、ご飯を食べ<b>ている</b>。 Şu an yemek yiyorum.</li>
+<li><b>Durum (olmuş, hâlâ öyle):</b> 結婚し<b>ている</b>（evli）· 知っ<b>ている</b>（biliyorum）· 住ん<b>でいる</b>（oturuyorum）· 持っ<b>ている</b>（sahibim）· 窓が開い<b>ている</b>（pencere açık）</li>
+<li><b>Alışkanlık:</b> 毎朝走っ<b>ている</b>。 Her sabah koşarım.</li></ul>
+<div class="box warn"><b class="t">Dikkat</b>知っていますか → cevap <b>知りません</b>（知っていません ❌）. · Konuşmada い düşer: 食べ<b>てる</b>, 読ん<b>でる</b>. · Nazik durum: 〜ている yerine 〜て<b>ある</b> (biri bilerek yapmış: 窓が開けてある).</div>
+</div></details>
+
+<details class="sub"><summary>2.15 たら, たり, と, なら (koşul ve "bazen")</summary><div class="body">
+<div class="tw"><table><tr><th>biçim</th><th>yapılışı</th><th>anlam</th><th>örnek</th></tr>
+<tr><td class="j">〜たら</td><td>た biçimi + ら</td><td>…ince / …se (en genel koşul)</td><td class="j">駅に着いたら電話して。</td></tr>
+<tr><td class="j">〜たり〜たり（する）</td><td>た biçimi + り</td><td>bazen … bazen …; … falan</td><td class="j">休みは寝たり読んだりする。</td></tr>
+<tr><td class="j">〜と</td><td>sözlük biçimi + と</td><td>…ince (kesin sonuç, doğa kuralı)</td><td class="j">春になると花が咲く。</td></tr>
+<tr><td class="j">〜なら</td><td>düz biçim + なら</td><td>…se (karşıdakinin dediğine göre)</td><td class="j">日本に行くなら、京都がいい。</td></tr>
+<tr><td class="j">〜ば</td><td>bkz. 2.8</td><td>…sa (şart, varsayım)</td><td class="j">安ければ買う。</td></tr></table></div>
+<div class="box ex"><b class="t">Hangisi ne zaman?</b>Kararsızsan <b>たら</b> kullan, neredeyse her yerde olur. と: sonuç otomatikse. なら: "madem öyle" anlamı varsa. ば: genel şart, atasözü tadı.</div>
+</div></details>
+
+<details class="sub"><summary>2.16 〜そう, 〜すぎる, 〜やすい/にくい (ます köküne eklenenler)</summary><div class="body">
+<div class="tw"><table><tr><th>ek</th><th>anlam</th><th>örnek</th><th>not</th></tr>
+<tr><td class="j">〜そう（だ）</td><td>… gibi görünüyor / …ecek gibi</td><td class="j">雨が降りそうだ。おいしそう。</td><td>い-sıfatta い at: 高い→高そう; いい→<b>よさそう</b>; ない→<b>なさそう</b></td></tr>
+<tr><td class="j">〜すぎる</td><td>fazla …</td><td class="j">食べすぎた。高すぎる。</td><td>Grup 2 gibi çekilir; isim hâli 食べすぎ</td></tr>
+<tr><td class="j">〜やすい</td><td>…mesi kolay</td><td class="j">読みやすい</td><td>い-sıfat gibi çekilir</td></tr>
+<tr><td class="j">〜にくい</td><td>…mesi zor</td><td class="j">読みにくい</td><td>い-sıfat gibi çekilir</td></tr>
+<tr><td class="j">〜方（かた）</td><td>…me şekli</td><td class="j">使い方、作り方</td><td>isim olur</td></tr>
+<tr><td class="j">〜ながら</td><td>…erken (aynı anda)</td><td class="j">歩きながら話す</td><td>iki eylemin öznesi aynı</td></tr>
+<tr><td class="j">〜に行く／来る</td><td>…meye gitmek/gelmek</td><td class="j">映画を見に行く</td><td>する fiilleri: 勉強<b>しに</b> ya da 勉強<b>に</b></td></tr>
+<tr><td class="j">〜始める／終わる／続ける／出す</td><td>…meye başlamak / bitirmek / sürdürmek / aniden …</td><td class="j">読み始める、降り出す</td><td></td></tr></table></div>
+</div></details>
+
+<details class="sub"><summary>2.17 Konuşma dili kısaltmaları (ちゃう, とく, なきゃ…)</summary><div class="body">
+<p>Konuşmada ve mesajlaşmada bunları çok duyarsın. Kuralı bil, anlamını yakala:</p>
+<div class="tw"><table><tr><th>tam hâli</th><th>kısa hâli</th><th>örnek</th><th>anlam</th></tr>
+<tr><td class="j">〜てしまう</td><td class="j">〜<b>ちゃう</b>（でしまう→<b>じゃう</b>）</td><td class="j">食べちゃった、読んじゃった</td><td>yiyiverdim / maalesef yedim</td></tr>
+<tr><td class="j">〜ておく</td><td class="j">〜<b>とく</b>（でおく→<b>どく</b>）</td><td class="j">買っとく、読んどく</td><td>önceden alayım</td></tr>
+<tr><td class="j">〜ている</td><td class="j">〜<b>てる</b>（でいる→<b>でる</b>）</td><td class="j">食べてる、読んでる</td><td>yiyorum</td></tr>
+<tr><td class="j">〜ていく</td><td class="j">〜<b>てく</b></td><td class="j">持ってく</td><td>götürürüm</td></tr>
+<tr><td class="j">〜なければ</td><td class="j">〜<b>なきゃ</b></td><td class="j">行かなきゃ</td><td>gitmeliyim</td></tr>
+<tr><td class="j">〜なくては</td><td class="j">〜<b>なくちゃ</b></td><td class="j">食べなくちゃ</td><td>yemeliyim</td></tr>
+<tr><td class="j">〜ては</td><td class="j">〜<b>ちゃ</b>（では→<b>じゃ</b>）</td><td class="j">食べちゃだめ</td><td>yemek yasak</td></tr>
+<tr><td class="j">〜という</td><td class="j">〜<b>って</b></td><td class="j">田中って人</td><td>Tanaka diye biri</td></tr>
+<tr><td class="j">〜のだ／〜のです</td><td class="j">〜<b>んだ</b>／〜<b>んです</b></td><td class="j">行くんです</td><td>gidiyorum (açıklama)</td></tr>
+<tr><td class="j">〜ない</td><td class="j">〜<b>ん</b>（batı ağzı）／〜<b>ねえ</b>（kaba）</td><td class="j">知らん、知らねえ</td><td>bilmiyorum</td></tr>
+<tr><td class="j">〜ているの？</td><td class="j">〜<b>てんの</b>？</td><td class="j">何してんの？</td><td>ne yapıyorsun?</td></tr>
+<tr><td class="j">〜れば</td><td class="j">〜<b>りゃ</b></td><td class="j">食べりゃいい</td><td>yesen yeter</td></tr>
+<tr><td class="j">〜である</td><td class="j">〜<b>だ</b></td><td class="j">学生だ</td><td>öğrenciyim</td></tr></table></div>
+</div></details>
+
+<details class="sub"><summary>2.18 Geçişli / geçişsiz çiftler (開ける・開く, 出す・出る…)</summary><div class="body">
+<p>Türkçedeki "açmak / açılmak" farkı. Geçişli (他動詞) nesne alır <b>を</b>; geçişsiz (自動詞) kendiliğinden olur, özne <b>が</b>. Japoncada her çift ayrı fiildir, ezber gerekir ama kalıplar var:</p>
+<div class="tw"><table><tr><th>kalıp</th><th>geçişli (…ı yapmak)</th><th>geçişsiz (…olmak)</th></tr>
+<tr><td>〜える ↔ 〜く／〜う</td><td class="j">開ける açmak · 閉める kapatmak · 付ける takmak · 消ける? ❌ → 消す</td><td class="j">開く açılmak · 閉まる kapanmak · 付く takılı olmak</td></tr>
+<tr><td>〜す ↔ 〜る</td><td class="j">出す çıkarmak · 直す düzeltmek · 起こす uyandırmak · 回す çevirmek · 残す bırakmak · 落とす düşürmek · 消す söndürmek · 壊す kırmak</td><td class="j">出る çıkmak · 直る düzelmek · 起きる uyanmak · 回る dönmek · 残る kalmak · 落ちる düşmek · 消える sönmek · 壊れる kırılmak</td></tr>
+<tr><td>〜める ↔ 〜まる</td><td class="j">止める durdurmak · 始める başlatmak · 集める toplamak · 決める karar vermek · 温める ısıtmak</td><td class="j">止まる durmak · 始まる başlamak · 集まる toplanmak · 決まる kararlaşmak · 温まる ısınmak</td></tr>
+<tr><td>〜る ↔ 〜れる</td><td class="j">割る kırmak · 切る kesmek · 売る satmak · 折る katlamak</td><td class="j">割れる kırılmak · 切れる kesilmek · 売れる satılmak · 折れる katlanmak</td></tr>
+<tr><td>〜える ↔ 〜わる</td><td class="j">変える değiştirmek · 伝える iletmek · 加える eklemek</td><td class="j">変わる değişmek · 伝わる iletilmek · 加わる eklenmek</td></tr>
+<tr><td>〜やす ↔ 〜える</td><td class="j">増やす artırmak · 冷やす soğutmak · 燃やす yakmak</td><td class="j">増える artmak · 冷える soğumak · 燃える yanmak</td></tr>
+<tr><td>düzensiz</td><td class="j">入れる koymak · 見る bakmak · 寝かせる yatırmak · 乗せる bindirmek · 着せる giydirmek</td><td class="j">入る girmek · 見える görünmek · 寝る yatmak · 乗る binmek · 着る giymek</td></tr></table></div>
+<div class="box ex"><b class="t">Kullanım farkı</b><span class="jp">ドア<b>を</b>開け<b>ました</b>。</span> Kapıyı açtım. · <span class="jp">ドア<b>が</b>開き<b>ました</b>。</span> Kapı açıldı. · Durum anlatırken: 開け<b>てある</b>（biri açmış）/ 開い<b>ている</b>（açık）.</div>
+</div></details>
+
+<details class="sub"><summary>2.19 Hepsi bir arada: tam çekim tablosu</summary><div class="body">
+<div class="tw"><table><tr><th>biçim</th><th>Grup 1 書く</th><th>Grup 1 買う</th><th>Grup 2 食べる</th><th>する</th><th>来る</th></tr>
+<tr><td>sözlük</td><td class="j">書く</td><td class="j">買う</td><td class="j">食べる</td><td class="j">する</td><td class="j">くる</td></tr>
+<tr><td>ます</td><td class="j">書きます</td><td class="j">買います</td><td class="j">食べます</td><td class="j">します</td><td class="j">きます</td></tr>
+<tr><td>ない</td><td class="j">書かない</td><td class="j">買わない</td><td class="j">食べない</td><td class="j">しない</td><td class="j">こない</td></tr>
+<tr><td>て</td><td class="j">書いて</td><td class="j">買って</td><td class="j">食べて</td><td class="j">して</td><td class="j">きて</td></tr>
+<tr><td>た</td><td class="j">書いた</td><td class="j">買った</td><td class="j">食べた</td><td class="j">した</td><td class="j">きた</td></tr>
+<tr><td>なかった</td><td class="j">書かなかった</td><td class="j">買わなかった</td><td class="j">食べなかった</td><td class="j">しなかった</td><td class="j">こなかった</td></tr>
+<tr><td>たら</td><td class="j">書いたら</td><td class="j">買ったら</td><td class="j">食べたら</td><td class="j">したら</td><td class="j">きたら</td></tr>
+<tr><td>ば</td><td class="j">書けば</td><td class="j">買えば</td><td class="j">食べれば</td><td class="j">すれば</td><td class="j">くれば</td></tr>
+<tr><td>yetenek</td><td class="j">書ける</td><td class="j">買える</td><td class="j">食べられる</td><td class="j">できる</td><td class="j">こられる</td></tr>
+<tr><td>niyet</td><td class="j">書こう</td><td class="j">買おう</td><td class="j">食べよう</td><td class="j">しよう</td><td class="j">こよう</td></tr>
+<tr><td>emir</td><td class="j">書け</td><td class="j">買え</td><td class="j">食べろ</td><td class="j">しろ</td><td class="j">こい</td></tr>
+<tr><td>yasak</td><td class="j">書くな</td><td class="j">買うな</td><td class="j">食べるな</td><td class="j">するな</td><td class="j">くるな</td></tr>
+<tr><td>edilgen</td><td class="j">書かれる</td><td class="j">買われる</td><td class="j">食べられる</td><td class="j">される</td><td class="j">こられる</td></tr>
+<tr><td>ettirgen</td><td class="j">書かせる</td><td class="j">買わせる</td><td class="j">食べさせる</td><td class="j">させる</td><td class="j">こさせる</td></tr>
+<tr><td>ettirgen-edilgen</td><td class="j">書かせられる／書かされる</td><td class="j">買わせられる／買わされる</td><td class="j">食べさせられる</td><td class="j">させられる</td><td class="j">こさせられる</td></tr>
+<tr><td>istek</td><td class="j">書きたい</td><td class="j">買いたい</td><td class="j">食べたい</td><td class="j">したい</td><td class="j">きたい</td></tr>
+<tr><td>yumuşak emir</td><td class="j">書きなさい</td><td class="j">買いなさい</td><td class="j">食べなさい</td><td class="j">しなさい</td><td class="j">きなさい</td></tr>
+<tr><td>…meden (yazı)</td><td class="j">書かずに</td><td class="j">買わずに</td><td class="j">食べずに</td><td class="j">せずに</td><td class="j">こずに</td></tr></table></div>
+<p class="hint">Üstteki 🔧 çekiciye fiili yaz, aynı tabloyu o fiil için verir.</p>
+</div></details>
+</div></details>
+
+<!-- ============ 3 ============ -->
+<details class="sec" id="s3" style="--c:var(--a)"><summary>3. い-sıfatlar (高い, 安い, おいしい…)<span class="n">sıfat</span></summary><div class="body">
+<p>い ile biten sıfatlar. Çekim hep <b>son い</b>'yi değiştirir. İsmin önüne olduğu gibi gelir: 高い<b>山</b>.</p>
+<div class="tw"><table><tr><th>anlam</th><th>kural</th><th>高い</th><th>nazik</th></tr>
+<tr><td>…dır</td><td class="j">〜い</td><td class="j">高い</td><td class="j">高いです</td></tr>
+<tr><td>…değil</td><td class="j">い→<b>くない</b></td><td class="j">高くない</td><td class="j">高くないです／高くありません</td></tr>
+<tr><td>…idi</td><td class="j">い→<b>かった</b></td><td class="j">高かった</td><td class="j">高かったです</td></tr>
+<tr><td>…değildi</td><td class="j">い→<b>くなかった</b></td><td class="j">高くなかった</td><td class="j">高くなかったです／高くありませんでした</td></tr>
+<tr><td>…ve (bağlama)</td><td class="j">い→<b>くて</b></td><td class="j">高くて</td><td class="j">高くて、おいしい</td></tr>
+<tr><td>…şekilde (zarf)</td><td class="j">い→<b>く</b></td><td class="j">高く</td><td class="j">高く<b>なる</b>（pahalılaşmak）· 高く<b>する</b>（pahalılaştırmak）</td></tr>
+<tr><td>…sa</td><td class="j">い→<b>ければ</b></td><td class="j">高ければ</td><td class="j">高かったら da olur</td></tr>
+<tr><td>…lik (isim)</td><td class="j">い→<b>さ</b></td><td class="j">高さ（yükseklik）</td><td class="j">〜み: 重み, 甘み（his olarak）</td></tr>
+<tr><td>… gibi görünüyor</td><td class="j">い→<b>そう</b></td><td class="j">高そう</td><td class="j">高そうな店</td></tr>
+<tr><td>fazla …</td><td class="j">い→<b>すぎる</b></td><td class="j">高すぎる</td><td class="j"></td></tr>
+<tr><td>…ymiş gibi</td><td class="j">い→<b>がる</b></td><td class="j">ほしがる、こわがる</td><td class="j">başkasının duygusu</td></tr></table></div>
+<div class="box warn"><b class="t">Tek istisna: いい（iyi）</b>Çekimde <b>よい</b> olur: <span class="jp">よ<b>くない</b> · よ<b>かった</b> · よ<b>くなかった</b> · よ<b>くて</b> · よ<b>く</b> · よ<b>ければ</b> · よ<b>さ</b> · よ<b>さそう</b></span>（いくない ❌）. かっこいい → かっこよかった.</div>
+<div class="box warn"><b class="t">Tuzak</b>Sonu い olup <b>な-sıfat</b> olanlar: <span class="jp">きれい（güzel）· きらい（sevmeme）· ゆうめい（ünlü）· ていねい（kibar）</span>. きれい<b>な</b>花, きれい<b>じゃない</b>（きれくない ❌）.</div>
+<div class="box ex"><b class="t">ない ve たい de い-sıfattır</b>Aynı tabloyu uygula: 食べたい→食べたく<b>ない</b>→食べた<b>かった</b>; 行かない→行かな<b>かった</b>→行かな<b>くて</b>.</div>
+</div></details>
+
+<!-- ============ 4 ============ -->
+<details class="sec" id="s4" style="--c:var(--a)"><summary>4. な-sıfatlar ve isimler (静か, 元気, 学生…)<span class="n">sıfat + isim</span></summary><div class="body">
+<p>な-sıfatlar ve isimler <b>aynı</b> çekilir, çünkü ikisi de kendisi değişmez; arkasına <b>だ／です</b> ailesi gelir. Tek fark: ismin önüne gelirken な-sıfat <b>な</b> alır, isim <b>の</b> alır.</p>
+<div class="tw"><table><tr><th>anlam</th><th>düz (arkadaşa)</th><th>nazik</th><th>静か</th><th>学生</th></tr>
+<tr><td>…dır</td><td class="j">〜だ</td><td class="j">〜です</td><td class="j">静かだ／静かです</td><td class="j">学生だ／学生です</td></tr>
+<tr><td>…değil</td><td class="j">〜じゃない／〜ではない</td><td class="j">〜じゃないです／〜ではありません</td><td class="j">静かじゃない</td><td class="j">学生じゃない</td></tr>
+<tr><td>…idi</td><td class="j">〜だった</td><td class="j">〜でした</td><td class="j">静かだった</td><td class="j">学生だった</td></tr>
+<tr><td>…değildi</td><td class="j">〜じゃなかった</td><td class="j">〜じゃなかったです／〜ではありませんでした</td><td class="j">静かじゃなかった</td><td class="j">学生じゃなかった</td></tr>
+<tr><td>…ve (bağlama)</td><td class="j">〜で</td><td class="j">〜で</td><td class="j">静かで、きれいだ</td><td class="j">学生で、二十歳だ</td></tr>
+<tr><td>…şekilde (zarf)</td><td class="j">〜に</td><td class="j">〜に</td><td class="j">静かに<b>なる</b>／静かに<b>する</b></td><td class="j">学生に<b>なる</b></td></tr>
+<tr><td>…sa</td><td class="j">〜なら（ば）／〜だったら</td><td class="j"></td><td class="j">静かなら</td><td class="j">学生なら</td></tr>
+<tr><td>ismin önünde</td><td class="j">〜<b>な</b> N（sıfat）／〜<b>の</b> N（isim）</td><td class="j"></td><td class="j">静か<b>な</b>部屋</td><td class="j">学生<b>の</b>田中さん</td></tr>
+<tr><td>… gibi görünüyor</td><td class="j">〜そう</td><td class="j"></td><td class="j">静かそう</td><td class="j">—</td></tr>
+<tr><td>…lik (isim)</td><td class="j">〜さ</td><td class="j"></td><td class="j">静かさ</td><td class="j">—</td></tr>
+<tr><td>galiba …</td><td class="j">〜だろう</td><td class="j">〜でしょう</td><td class="j">静かでしょう</td><td class="j">学生でしょう</td></tr></table></div>
+<div class="box rule"><b class="t">Cümle içinde だ ne olur?</b>Düz biçim isteyen kalıplardan önce:<br>
+• <b>だ kalır:</b> 〜と思う（学生<b>だ</b>と思う）, 〜だろう, 〜から, 〜し, 〜けど<br>
+• <b>だ → な:</b> 〜ので（学生<b>な</b>ので）, 〜のに（静か<b>な</b>のに）, 〜んです（学生<b>な</b>んです）, 〜ようだ<br>
+• <b>だ düşer:</b> 〜かもしれない（学生かもしれない）, 〜でしょう, 〜らしい, 〜みたい, 〜か（学生か）<br>
+• <b>だ → の:</b> isim + の + はず／つもり／とき（学生<b>の</b>とき）</div>
+<div class="box warn"><b class="t">Dikkat</b>同じ（aynı）istisna: 同じ<b>な</b> ❌ → 同じ本（な yok）, ama 同じ<b>な</b>ので ✓. · じゃない konuşma, ではない yazı/resmî, でない çok resmî. · Yazı dilinde だ yerine <b>である</b>（学生である）.</div>
+</div></details>
+
+<!-- ============ 5 ============ -->
+<details class="sec" id="s5" style="--c:var(--n)"><summary>5. Saygı dili (敬語): 尊敬語・謙譲語・丁寧語<span class="n">keigo</span></summary><div class="body">
+<p>Üç kat var. Hepsini aynı anda kullanmak zorunda değilsin; <b>丁寧語</b> (です/ます) yeter. Diğer ikisini önce <b>anla</b>, sonra iş hayatında kullanırsın.</p>
+<div class="tw"><table><tr><th>tür</th><th>kime</th><th>ne yapar</th><th>örnek</th></tr>
+<tr><td><b>丁寧語</b> nazik dil</td><td>herkese</td><td>cümleyi kibarlaştırır</td><td class="j">です・ます・ございます</td></tr>
+<tr><td><b>尊敬語</b> yüceltme</td><td>karşıdakinin / büyüğün eylemi</td><td>karşıdakini yükseltir</td><td class="j">先生が<b>いらっしゃる</b>（öğretmen gelir）</td></tr>
+<tr><td><b>謙譲語</b> alçakgönüllülük</td><td>kendi / kendi tarafının eylemi</td><td>kendini alçaltır</td><td class="j">私が<b>参ります</b>（ben gelirim）</td></tr></table></div>
+
+<details class="sub"><summary>5.1 尊敬語 (karşıdakinin eylemi) — 3 yol</summary><div class="body">
+<div class="box rule"><b class="t">Yol 1: お + ます kökü + になる</b><span class="jp">書く→<b>お</b>書き<b>になる</b> · 読む→お読みになる · 帰る→お帰りになる · する-fiilleri: <b>ご</b>説明<b>になる</b></span><br>Tek heceli köklerde (見る, 着る, 来る) kullanılmaz.</div>
+<div class="box rule"><b class="t">Yol 2: edilgen şekil (れる／られる) — daha hafif</b><span class="jp">書く→書か<b>れる</b> · 行く→行か<b>れる</b> · 来る→来<b>られる</b> · する→<b>される</b></span><br>Şekil edilgenle aynı; bağlamdan anlaşılır. Ofiste çok duyulur.</div>
+<div class="box rule"><b class="t">Yol 3: özel fiiller (ezber)</b>
+<div class="tw"><table><tr><th>normal</th><th>尊敬語</th><th>ます hâli</th></tr>
+<tr><td class="j">いる・行く・来る</td><td class="j"><b>いらっしゃる</b>／おいでになる</td><td class="j">いらっしゃ<b>い</b>ます（いらっしゃります ❌）</td></tr>
+<tr><td class="j">する</td><td class="j"><b>なさる</b></td><td class="j">なさ<b>い</b>ます</td></tr>
+<tr><td class="j">言う</td><td class="j"><b>おっしゃる</b></td><td class="j">おっしゃ<b>い</b>ます</td></tr>
+<tr><td class="j">食べる・飲む</td><td class="j"><b>召し上がる</b></td><td class="j">召し上がります</td></tr>
+<tr><td class="j">見る</td><td class="j"><b>ご覧になる</b></td><td class="j">ご覧になります</td></tr>
+<tr><td class="j">知っている</td><td class="j"><b>ご存じだ</b></td><td class="j">ご存じです</td></tr>
+<tr><td class="j">くれる</td><td class="j"><b>くださる</b></td><td class="j">くださ<b>い</b>ます</td></tr>
+<tr><td class="j">寝る</td><td class="j">お休みになる</td><td class="j"></td></tr>
+<tr><td class="j">着る</td><td class="j">お召しになる</td><td class="j"></td></tr>
+<tr><td class="j">死ぬ</td><td class="j">お亡くなりになる</td><td class="j"></td></tr>
+<tr><td class="j">〜ている</td><td class="j">〜て<b>いらっしゃる</b></td><td class="j">読んでいらっしゃいます</td></tr>
+<tr><td class="j">〜てください</td><td class="j">お〜<b>ください</b>／ご〜ください</td><td class="j">お待ちください、ご記入ください</td></tr></table></div></div>
+<div class="box warn"><b class="t">Dikkat</b>いらっしゃる・なさる・おっしゃる・くださる・ござる: ます'tan önce り değil <b>い</b>: いらっしゃ<b>い</b>ます, ござ<b>い</b>ます. · İki kat yapma: お読みになられる ❌（二重敬語）.</div>
+</div></details>
+
+<details class="sub"><summary>5.2 謙譲語 (kendi eylemin) — 2 yol</summary><div class="body">
+<div class="box rule"><b class="t">Yol 1: お + ます kökü + する（いたす）</b><span class="jp">持つ→<b>お</b>持ち<b>します</b>（taşıyayım）· 送る→お送りします · 知らせる→お知らせします · する-fiilleri: <b>ご</b>案内<b>します</b>／ご連絡いたします</span><br>Karşıdaki için yaptığın işlerde kullanılır.</div>
+<div class="box rule"><b class="t">Yol 2: özel fiiller (ezber)</b>
+<div class="tw"><table><tr><th>normal</th><th>謙譲語</th><th>örnek</th></tr>
+<tr><td class="j">行く・来る</td><td class="j"><b>参る</b>／<b>伺う</b>（ziyaret）</td><td class="j">明日伺います。</td></tr>
+<tr><td class="j">いる</td><td class="j"><b>おる</b></td><td class="j">社長はただ今おりません。</td></tr>
+<tr><td class="j">する</td><td class="j"><b>いたす</b></td><td class="j">私がいたします。</td></tr>
+<tr><td class="j">言う</td><td class="j"><b>申す</b>／<b>申し上げる</b></td><td class="j">田中と申します。</td></tr>
+<tr><td class="j">食べる・飲む・もらう</td><td class="j"><b>いただく</b></td><td class="j">いただきます。</td></tr>
+<tr><td class="j">見る</td><td class="j"><b>拝見する</b></td><td class="j">資料を拝見しました。</td></tr>
+<tr><td class="j">聞く・訪ねる</td><td class="j"><b>伺う</b></td><td class="j">お話を伺います。</td></tr>
+<tr><td class="j">知っている</td><td class="j"><b>存じている</b>／存じ上げている</td><td class="j">存じております。</td></tr>
+<tr><td class="j">会う</td><td class="j"><b>お目にかかる</b></td><td class="j">お目にかかれて光栄です。</td></tr>
+<tr><td class="j">あげる</td><td class="j"><b>さしあげる</b></td><td class="j"></td></tr>
+<tr><td class="j">見せる</td><td class="j">お目にかける／ご覧に入れる</td><td class="j"></td></tr>
+<tr><td class="j">〜ている</td><td class="j">〜て<b>おる</b></td><td class="j">勉強しております。</td></tr>
+<tr><td class="j">〜てもらう</td><td class="j">〜て<b>いただく</b></td><td class="j">教えていただきました。</td></tr>
+<tr><td class="j">〜させてもらう</td><td class="j">〜させて<b>いただく</b></td><td class="j">休ませていただきます。</td></tr></table></div></div>
+<div class="box ex"><b class="t">En çok kullanacağın cümleler</b><span class="jp">田中と<b>申します</b>。</span> Adım Tanaka. · <span class="jp">お願い<b>いたします</b>。</span> Rica ederim. · <span class="jp">少々<b>お待ちください</b>。</span> Biraz bekleyin. · <span class="jp">〜て<b>いただけますか</b>。</span> …yapabilir misiniz? · <span class="jp">失礼<b>いたします</b>。</span> İzninizle.</div>
+</div></details>
+
+<details class="sub"><summary>5.3 丁寧語 ve güzelleştirme (お／ご)</summary><div class="body">
+<div class="tw"><table><tr><th>düz</th><th>nazik</th><th>daha nazik</th></tr>
+<tr><td class="j">だ</td><td class="j">です</td><td class="j">でございます</td></tr>
+<tr><td class="j">ある</td><td class="j">あります</td><td class="j">ございます</td></tr>
+<tr><td class="j">いい</td><td class="j">いいです</td><td class="j">よろしいです</td></tr>
+<tr><td class="j">どう</td><td class="j">どうですか</td><td class="j">いかがですか</td></tr>
+<tr><td class="j">だれ</td><td class="j">だれですか</td><td class="j">どなたですか</td></tr>
+<tr><td class="j">ちょっと</td><td class="j">少し</td><td class="j">少々</td></tr>
+<tr><td class="j">今</td><td class="j">今</td><td class="j">ただ今</td></tr>
+<tr><td class="j">すみません</td><td class="j">すみません</td><td class="j">申し訳ございません</td></tr>
+<tr><td class="j">あとで</td><td class="j">あとで</td><td class="j">のちほど</td></tr>
+<tr><td class="j">きのう／きょう／あした</td><td class="j"></td><td class="j">昨日（さくじつ）／本日／明日（みょうにち）</td></tr></table></div>
+<div class="box rule"><b class="t">お mu ご mu?</b>Japonca kökenli (kun okunuşlu) kelimeye <b>お</b>: お名前, お金, お水, お仕事. Çince kökenli (on okunuşlu) kelimeye <b>ご</b>: ご家族, ご連絡, ご住所, ご説明. İstisnalar: お電話, お時間, お料理, お勉強（on okunuşlu ama お）.</div>
+</div></details>
+</div></details>
+
+<!-- ============ 6 ============ -->
+<details class="sec" id="s6" style="--c:var(--k)"><summary>6. Ses değişimleri: sayaçlar, rendaku, っ・ん<span class="n">telaffuz kuralları</span></summary><div class="body">
+<details class="sub"><summary>6.1 Sayaçlarda ses değişimi (一本 いっぽん, 三匹 さんびき…)</summary><div class="body">
+<p>Sayı + sayaç birleşince bazı sesler değişir. Kural: <b>1, 6, 8, 10</b> küçük っ yapar; <b>3</b> ve <b>何</b> yumuşatır (h→b/p, k→g); <b>4, 7, 9</b> genelde よん・なな・きゅう okunur.</p>
+<div class="tw"><table><tr><th></th><th>〜本 (uzun şey)</th><th>〜匹 (küçük hayvan)</th><th>〜分 (dakika)</th><th>〜回 (kez)</th><th>〜階 (kat)</th><th>〜杯 (bardak)</th><th>〜個 (adet)</th><th>〜人</th><th>〜つ</th></tr>
+<tr><td>1</td><td class="j">いっぽん</td><td class="j">いっぴき</td><td class="j">いっぷん</td><td class="j">いっかい</td><td class="j">いっかい</td><td class="j">いっぱい</td><td class="j">いっこ</td><td class="j">ひとり</td><td class="j">ひとつ</td></tr>
+<tr><td>2</td><td class="j">にほん</td><td class="j">にひき</td><td class="j">にふん</td><td class="j">にかい</td><td class="j">にかい</td><td class="j">にはい</td><td class="j">にこ</td><td class="j">ふたり</td><td class="j">ふたつ</td></tr>
+<tr><td>3</td><td class="j">さん<b>ぼ</b>ん</td><td class="j">さん<b>び</b>き</td><td class="j">さん<b>ぷ</b>ん</td><td class="j">さんかい</td><td class="j">さん<b>が</b>い</td><td class="j">さん<b>ば</b>い</td><td class="j">さんこ</td><td class="j">さんにん</td><td class="j">みっつ</td></tr>
+<tr><td>4</td><td class="j">よんほん</td><td class="j">よんひき</td><td class="j">よん<b>ぷ</b>ん</td><td class="j">よんかい</td><td class="j">よんかい</td><td class="j">よんはい</td><td class="j">よんこ</td><td class="j">よにん</td><td class="j">よっつ</td></tr>
+<tr><td>5</td><td class="j">ごほん</td><td class="j">ごひき</td><td class="j">ごふん</td><td class="j">ごかい</td><td class="j">ごかい</td><td class="j">ごはい</td><td class="j">ごこ</td><td class="j">ごにん</td><td class="j">いつつ</td></tr>
+<tr><td>6</td><td class="j">ろっ<b>ぽ</b>ん</td><td class="j">ろっ<b>ぴ</b>き</td><td class="j">ろっ<b>ぷ</b>ん</td><td class="j">ろっかい</td><td class="j">ろっかい</td><td class="j">ろっ<b>ぱ</b>い</td><td class="j">ろっこ</td><td class="j">ろくにん</td><td class="j">むっつ</td></tr>
+<tr><td>7</td><td class="j">ななほん</td><td class="j">ななひき</td><td class="j">ななふん</td><td class="j">ななかい</td><td class="j">ななかい</td><td class="j">ななはい</td><td class="j">ななこ</td><td class="j">しちにん</td><td class="j">ななつ</td></tr>
+<tr><td>8</td><td class="j">はっ<b>ぽ</b>ん</td><td class="j">はっ<b>ぴ</b>き</td><td class="j">はっ<b>ぷ</b>ん</td><td class="j">はっかい</td><td class="j">はっかい</td><td class="j">はっ<b>ぱ</b>い</td><td class="j">はっこ</td><td class="j">はちにん</td><td class="j">やっつ</td></tr>
+<tr><td>9</td><td class="j">きゅうほん</td><td class="j">きゅうひき</td><td class="j">きゅうふん</td><td class="j">きゅうかい</td><td class="j">きゅうかい</td><td class="j">きゅうはい</td><td class="j">きゅうこ</td><td class="j">きゅうにん</td><td class="j">ここのつ</td></tr>
+<tr><td>10</td><td class="j">じゅっ<b>ぽ</b>ん</td><td class="j">じゅっ<b>ぴ</b>き</td><td class="j">じゅっ<b>ぷ</b>ん</td><td class="j">じゅっかい</td><td class="j">じゅっかい</td><td class="j">じゅっ<b>ぱ</b>い</td><td class="j">じゅっこ</td><td class="j">じゅうにん</td><td class="j">とお</td></tr>
+<tr><td>?</td><td class="j">なん<b>ぼ</b>ん</td><td class="j">なん<b>び</b>き</td><td class="j">なん<b>ぷ</b>ん</td><td class="j">なんかい</td><td class="j">なん<b>が</b>い</td><td class="j">なん<b>ば</b>い</td><td class="j">なんこ</td><td class="j">なんにん</td><td class="j">いくつ</td></tr></table></div>
+<p>Değişmeyen sayaçlar: 〜枚（kâğıt）, 〜台（makine）, 〜冊（kitap: ama いっさつ, はっさつ, じゅっさつ）, 〜円（ama よえん ❌ → よ<b>ん</b>えん）, 〜年（よねん）, 〜時（よじ, くじ）, 〜月（しがつ, しちがつ, くがつ）, 〜日（ついたち, ふつか, みっか, よっか, いつか, むいか, なのか, ようか, ここのか, とおか, じゅうよっか, はつか, にじゅうよっか）.</p>
+</div></details>
+<details class="sub"><summary>6.2 Rendaku (連濁): bileşik kelimede ikinci parça yumuşar</summary><div class="body">
+<p>İki kelime birleşince ikincisinin ilk sesi noktalı olur: <span class="jp">手 + 紙（かみ）→ 手紙（て<b>が</b>み）· 花 + 火（ひ）→ 花火（はな<b>び</b>）· 本 + 棚（たな）→ 本棚（ほん<b>だ</b>な）· 時 + 時（とき）→ 時々（とき<b>ど</b>き）· 人 + 人 → 人々（ひと<b>び</b>と）</span></p>
+<div class="box rule"><b class="t">Olmadığı durumlar</b>İkinci kelimede zaten noktalı ses varsa olmaz（ライマンの法則）: 山 + 風（かぜ）→ やまか<b>ぜ</b>（ぜ var, か değişmez）. Yabancı kelimelerde olmaz. Kesin kural yok, sözlüğe bak; ama "çoğu zaman olur" diye bekle.</div>
+</div></details>
+<details class="sub"><summary>6.3 Çift ünsüz っ ve ん: bileşik ve on-okunuşlarda</summary><div class="body">
+<p>Kanji bileşiklerinde ilk kanji つ・ち・く・き ile bitip ikincisi k/s/t/p ile başlarsa küçük っ olur: <span class="jp">学（がく）+ 校（こう）→ 学校（が<b>っ</b>こう）· 一（いち）+ 回 → 一回（い<b>っ</b>かい）· 出（しゅつ）+ 発 → 出発（しゅ<b>っ</b>ぱつ）· 日（にち）+ 記 → 日記（に<b>っ</b>き）</span></p>
+<p>ん'den sonra h sesi p ya da b olur: <span class="jp">新聞（しん<b>ぶ</b>ん）· 三百（さん<b>びゃ</b>く）· 散歩（さん<b>ぽ</b>）· 何本（なん<b>ぼ</b>ん）</span></p>
+</div></details>
+</div></details>
+
+<!-- ============ 7 ============ -->
+<details class="sec" id="s7" style="--c:var(--ok)"><summary>7. Sık yapılan hatalar ve hızlı kontrol listesi<span class="n">özet</span></summary><div class="body">
+<ul>
+<li>❌ 食べれる (sınavda) → ✓ 食べ<b>られる</b>; konuşmada れる duyarsın, sorun değil.</li>
+<li>❌ 行いて → ✓ 行<b>って</b>（tek istisna）.</li>
+<li>❌ 買あない → ✓ 買<b>わ</b>ない.</li>
+<li>❌ いくない／いかった → ✓ <b>よ</b>くない／<b>よ</b>かった.</li>
+<li>❌ きれくない → ✓ きれい<b>じゃない</b>（な-sıfat）.</li>
+<li>❌ 帰ます → ✓ 帰<b>り</b>ます（Grup 1 hain）.</li>
+<li>❌ あらない → ✓ <b>ない</b>.</li>
+<li>❌ 知っていません → ✓ <b>知りません</b>.</li>
+<li>❌ 学生だので → ✓ 学生<b>な</b>ので; ❌ 学生だかもしれない → ✓ 学生かもしれない.</li>
+<li>❌ お読みになられる（iki kat keigo）→ ✓ お読みになる.</li>
+<li>❌ いらっしゃります → ✓ いらっしゃ<b>い</b>ます.</li>
+<li>❌ 先生は参ります（kendi tarafın için olan 謙譲語'yu büyüğe kullanma）→ ✓ 先生はいらっしゃいます.</li>
+<li>❌ 彼は行きたい（üçüncü kişi）→ ✓ 彼は行き<b>たがっている</b>.</li>
+<li>❌ 三ほん → ✓ さん<b>ぼ</b>ん; ❌ いちかい → ✓ い<b>っ</b>かい.</li>
+</ul>
+<div class="box rule"><b class="t">Bir fiili çekerken 3 soru</b>1) Hangi grup? (bkz. 1) 2) Hangi biçim lazım? (bkz. 2) 3) Grup 1 ise son ses hangi sıraya gidiyor (a/i/u/e/o)? → tablo 1'e bak. Hepsi bu.</div>
+</div></details>
+
+</div>
+
+<script src="lookup.js"></script>
+<script>
+(function(){
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  // toc
+  $('#toc').innerHTML = $$('details.sec').map(d => `<a href="#${d.id}">${d.querySelector('summary').firstChild.textContent.trim().split(':')[0]}</a>`).join('');
+  $$('#toc a').forEach(a => a.onclick = e => { e.preventDefault(); const d = $(a.getAttribute('href')); d.open = true; d.scrollIntoView({behavior:'smooth'}); });
+  $('#openall').onclick = () => $$('details').forEach(d => d.open = true);
+  $('#closeall').onclick = () => $$('details').forEach(d => d.open = false);
+  let t; $('#q').oninput = () => { clearTimeout(t); t = setTimeout(() => {
+    const q = $('#q').value.trim().toLowerCase();
+    $$('details.sub').forEach(d => { const hit = !q || d.textContent.toLowerCase().includes(q); d.classList.toggle('hidden', !hit); if (q && hit) d.open = true; });
+    $$('details.sec').forEach(d => { const subs = $$('details.sub', d), any = !q || d.textContent.toLowerCase().includes(q); d.classList.toggle('hidden', !any); if (q && any) d.open = true; });
+  }, 150); };
+
+  // ---------- conjugator ----------
+  const A = {'う':'わ','く':'か','ぐ':'が','す':'さ','つ':'た','ぬ':'な','ぶ':'ば','む':'ま','る':'ら'};
+  const I = {'う':'い','く':'き','ぐ':'ぎ','す':'し','つ':'ち','ぬ':'に','ぶ':'び','む':'み','る':'り'};
+  const E = {'う':'え','く':'け','ぐ':'げ','す':'せ','つ':'て','ぬ':'ね','ぶ':'べ','む':'め','る':'れ'};
+  const O = {'う':'お','く':'こ','ぐ':'ご','す':'そ','つ':'と','ぬ':'の','ぶ':'ぼ','む':'も','る':'ろ'};
+  const TE = {'う':'って','く':'いて','ぐ':'いで','す':'して','つ':'って','ぬ':'んで','ぶ':'んで','む':'んで','る':'って'};
+  const G1_EXC = ['帰る','かえる','入る','はいる','走る','はしる','知る','しる','切る','きる','要る','いる','減る','へる','限る','かぎる','蹴る','ける','喋る','しゃべる','滑る','すべる','焦る','あせる','握る','にぎる','参る','まいる','混じる','まじる','湿る','しめる','散る','ちる','照る','てる','練る','ねる','嘲る','あざける','陥る','おちいる','覆る','くつがえる','遮る','さえぎる','罵る','ののしる','捻る','ひねる','茂る','しげる','滅入る','めいる','耽る','ふける','蘇る','よみがえる','競る','せる','詰る','なじる'];
+  const toHira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+  const ROM = (function(){ const t={a:'あ',i:'い',u:'う',e:'え',o:'お',ka:'か',ki:'き',ku:'く',ke:'け',ko:'こ',sa:'さ',shi:'し',si:'し',su:'す',se:'せ',so:'そ',ta:'た',chi:'ち',ti:'ち',tsu:'つ',tu:'つ',te:'て',to:'と',na:'な',ni:'に',nu:'ぬ',ne:'ね',no:'の',ha:'は',hi:'ひ',fu:'ふ',hu:'ふ',he:'へ',ho:'ほ',ma:'ま',mi:'み',mu:'む',me:'め',mo:'も',ya:'や',yu:'ゆ',yo:'よ',ra:'ら',ri:'り',ru:'る',re:'れ',ro:'ろ',wa:'わ',wo:'を',ga:'が',gi:'ぎ',gu:'ぐ',ge:'げ',go:'ご',za:'ざ',ji:'じ',zi:'じ',zu:'ず',ze:'ぜ',zo:'ぞ',da:'だ',de:'で',do:'ど',ba:'ば',bi:'び',bu:'ぶ',be:'べ',bo:'ぼ',pa:'ぱ',pi:'ぴ',pu:'ぷ',pe:'ぺ',po:'ぽ',kya:'きゃ',kyu:'きゅ',kyo:'きょ',sha:'しゃ',shu:'しゅ',sho:'しょ',cha:'ちゃ',chu:'ちゅ',cho:'ちょ',nya:'にゃ',nyu:'にゅ',nyo:'にょ',hya:'ひゃ',hyu:'ひゅ',hyo:'ひょ',mya:'みゃ',myu:'みゅ',myo:'みょ',rya:'りゃ',ryu:'りゅ',ryo:'りょ',gya:'ぎゃ',gyu:'ぎゅ',gyo:'ぎょ',ja:'じゃ',ju:'じゅ',jo:'じょ',bya:'びゃ',byu:'びゅ',byo:'びょ',pya:'ぴゃ',pyu:'ぴゅ',pyo:'ぴょ',n:'ん'};
+    return s => { s=s.toLowerCase().replace(/[^a-z']/g,''); let o='',i=0; while(i<s.length){ const c=s[i]; if(c==="'"){i++;continue;} if(c===s[i+1]&&!'aiueon'.includes(c)){o+='っ';i++;continue;} let hit=false; for(let l=3;l>=1;l--){const k=s.substr(i,l); if(t[k]&&!(k==='n'&&/[aiueoy]/.test(s[i+1]||''))){o+=t[k];i+=l;hit=true;break;}} if(!hit){o+=c;i++;} } return o; }; })();
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let dict = null;
+  function loadDict(){ if (dict) return dict; dict = new Promise(res => { if (window.JMDICT) return res(); const s = document.createElement('script'); s.src = 'jmdict-common.js'; s.onload = () => res(); s.onerror = () => res(); document.head.appendChild(s); }); return dict; }
+  function lookup(w){
+    if (!window.JMDICT) return null; const h = toHira(w); const c = [];
+    for (const e of JMDICT){ if (e[0].includes(w) || e[1].map(toHira).includes(h)) c.push(e); if (c.length > 20) break; }
+    return c.find(e => e[0].includes(w) && e[2].some(p => /^(v|adj)/.test(p))) || c.find(e => e[2].some(p => /^(v|adj)/.test(p))) || c[0] || null;
+  }
+  function classify(w, e){
+    const pos = e ? e[2] : [];
+    if (w === '来る' || w === 'くる') return {k:'kuru'};
+    if (w === 'する' || w === 'いい' || w === '良い') return {k: w === 'する' ? 'suru' : 'adji'};
+    if (pos.includes('adj-i')) return {k:'adji'};
+    if (pos.includes('adj-na')) return {k:'adjna'};
+    if (pos.some(p => /^v1/.test(p))) return {k:'v2'};
+    if (pos.includes('vk')) return {k:'kuru'};
+    if (pos.some(p => /^vs/.test(p)) && /する$/.test(w)) return {k:'suru'};
+    if (pos.some(p => /^v5/.test(p))) return {k:'v1'};
+    if (pos.some(p => /^vs/.test(p)) && !/する$/.test(w)) return {k:'suru', add:'する'};
+    // heuristics
+    if (/(する)$/.test(w)) return {k:'suru'};
+    if (w === '来る' || w === 'くる') return {k:'kuru'};
+    if (/[いきしちにひみりぎじびぢぴえけせてねへめれげぜでべぺ]る$/.test(toHira(w)) && !G1_EXC.includes(w)) return {k:'v2', guess:true};
+    if (/[うくぐすつぬぶむる]$/.test(w)) return {k:'v1', guess:true};
+    if (/い$/.test(w)) return {k:'adji', guess:true};
+    return {k:'adjna', guess:true};
+  }
+  function conjVerb(w, k){
+    const last = w.slice(-1), base = w.slice(0, -1);
+    let f = {};
+    if (k === 'v1'){
+      const a = base + A[last], i = base + I[last], e = base + E[last], o = base + O[last];
+      const te = (w === '行く' || w === 'いく') ? base + 'って' : base + TE[last];
+      const ta = te.replace(/て$/, 'た').replace(/で$/, 'だ');
+      const nai = (w === 'ある') ? 'ない' : a + 'ない';
+      if (w === 'ある'){ f = {dict:w, masu:'あります', stem:'あり', nai:'ない', te:'あって', ta:'あった', ba:'あれば', pot:'あり得る（ありうる）', vol:'あろう', imp:'あれ', pass:'—', caus:'—', causpass:'—', zu:'なく／あらず'}; return mkRows(f); }
+      f = {dict:w, masu:i+'ます', stem:i, nai, te, ta, ba:e+'ば', pot:e+'る', vol:o+'う', imp:e, pass:a+'れる', caus:a+'せる', causpass:a+'せられる' + (last === 'す' ? '' : '／' + a + 'される'), zu:a+'ず(に)'};
+    } else if (k === 'v2'){
+      f = {dict:w, masu:base+'ます', stem:base, nai:base+'ない', te:base+'て', ta:base+'た', ba:base+'れば', pot:base+'られる', vol:base+'よう', imp:base+'ろ', pass:base+'られる', caus:base+'させる', causpass:base+'させられる', zu:base+'ず(に)'};
+    } else if (k === 'suru'){
+      const b = w.replace(/する$/, '');
+      f = {dict:w, masu:b+'します', stem:b+'し', nai:b+'しない', te:b+'して', ta:b+'した', ba:b+'すれば', pot:b+'できる', vol:b+'しよう', imp:b+'しろ', pass:b+'される', caus:b+'させる', causpass:b+'させられる', zu:b+'せず(に)'};
+    } else {
+      const b = w.replace(/(来る|くる)$/, ''), kj = /来る$/.test(w);
+      const K = (kana, kanji) => b + (kj ? kanji + '（' + kana + '）' : kana);
+      f = {dict:w, masu:K('きます','来ます'), stem:K('き','来'), nai:K('こない','来ない'), te:K('きて','来て'), ta:K('きた','来た'), ba:K('くれば','来れば'), pot:K('こられる','来られる'), vol:K('こよう','来よう'), imp:K('こい','来い'), pass:K('こられる','来られる'), caus:K('こさせる','来させる'), causpass:K('こさせられる','来させられる'), zu:K('こず(に)','来ず(に)')};
+      return mkRows(f);
+    }
+    return mkRows(f);
+  }
+  function mkRows(f){
+    const R = (s, from, to) => s.split(from).join(to);
+    const masu = x => R(f.masu, 'ます', x), nai = x => R(f.nai, 'ない', x), ta = () => f.ta.replace(/た(（[^）]*）)?$/, (m, r) => 'たら' + (r ? r.replace('た）', 'たら）') : '')).replace(/だ$/, 'だら');
+    {
+    const rows = [
+      ['Sözlük biçimi (yapar)', f.dict], ['ます (nazik: yaparım)', f.masu], ['ません (yapmam)', masu('ません')], ['ました (yaptım)', masu('ました')], ['ませんでした (yapmadım)', masu('ませんでした')], ['ましょう (yapalım)', masu('ましょう')],
+      ['ない (düz: yapmam)', f.nai], ['なかった (düz: yapmadım)', nai('なかった')], ['なくて / ないで', nai('なくて') + ' / ' + nai('ないで')], ['なければ (yapmazsa)', nai('なければ')],
+      ['て biçimi', f.te], ['た (düz: yaptı)', f.ta], ['たら (…ince / …sa)', R(R(f.ta, 'た', 'たら'), 'だ', 'だら')], ['たり (bazen …)', R(R(f.ta, 'た', 'たり'), 'だ', 'だり')],
+      ['ている (…iyor)', f.te + 'いる'], ['ておく → とく', f.te + 'おく'], ['てしまう → ちゃう/じゃう', f.te + 'しまう'], ['てください (lütfen)', f.te + 'ください'],
+      ['ば (…sa)', f.ba], ['yetenek (yapabilir)', f.pot], ['niyet (yapayım)', f.vol], ['emir (sert)', f.imp], ['yasak (yapma!)', f.dict + 'な'], ['なさい (yumuşak emir)', f.stem + 'なさい'],
+      ['edilgen (yapılır)', f.pass], ['ettirgen (yaptırır)', f.caus], ['ettirgen-edilgen (zorlanır)', f.causpass],
+      ['たい (istiyorum)', f.stem + 'たい'], ['たくない / たかった', f.stem + 'たくない / ' + f.stem + 'たかった'], ['ながら (…erken)', f.stem + 'ながら'], ['やすい / にくい', f.stem + 'やすい / ' + f.stem + 'にくい'], ['すぎる (fazla)', f.stem + 'すぎる'], ['方 (…me şekli)', f.stem + '方'], ['そう (…ecek gibi)', f.stem + 'そう'], ['ず(に) (…meden, yazı)', f.zu]
+    ];
+    return rows;
+  }}
+  function conjAdjI(w){
+    const b = (w === 'いい' || w === '良い') ? 'よ' : w.slice(0, -1);
+    return [['…dır', w], ['です (nazik)', w + 'です'], ['くない (değil)', b+'くない'], ['かった (idi)', b+'かった'], ['くなかった (değildi)', b+'くなかった'], ['くて (…ve)', b+'くて'], ['く (zarf: …şekilde)', b+'く'], ['くなる (…laşmak)', b+'くなる'], ['くする (…laştırmak)', b+'くする'], ['ければ (…sa)', b+'ければ'], ['かったら (…sa)', b+'かったら'], ['さ (…lik)', b+'さ'], ['そう (gibi görünüyor)', (w === 'いい' || w === '良い') ? 'よさそう' : /ない$/.test(w) ? w.slice(0,-1) + 'さそう' : b + 'そう'], ['すぎる (fazla)', b+'すぎる'], ['い + isim', w + ' + 本']];
+  }
+  function conjAdjNa(w){
+    return [['だ / です', w+'だ / '+w+'です'], ['じゃない (değil)', w+'じゃない'], ['だった (idi)', w+'だった'], ['じゃなかった (değildi)', w+'じゃなかった'], ['で (…ve)', w+'で'], ['に (zarf)', w+'に'], ['になる / にする', w+'になる / '+w+'にする'], ['なら (…sa)', w+'なら'], ['だったら (…sa)', w+'だったら'], ['な + isim', w+'な + 人'], ['そう (gibi görünüyor)', w+'そう'], ['さ (…lik)', w+'さ'], ['でしょう (galiba)', w+'でしょう'], ['である (yazı dili)', w+'である']];
+  }
+  async function run(){
+    let w = $('#vin').value.trim(); if (!w) return;
+    if (/^[a-zA-Z']+$/.test(w)) w = ROM(w);
+    w = w.replace(/[。、\s]/g, '');
+    $('#out').innerHTML = '<p class="hint">Bakılıyor…</p>';
+    await loadDict();
+    const e = lookup(w); const c = classify(w, e);
+    const name = {v1:'Grup 1 (五段 / u-fiili)', v2:'Grup 2 (一段 / る-fiili)', suru:'Grup 3 (する fiili)', kuru:'Grup 3 (来る)', adji:'い-sıfat', adjna:'な-sıfat / isim'}[c.k];
+    const mean = e ? e[3][0] : '';
+    const word = c.add ? w + c.add : w;
+    const rows = c.k === 'adji' ? conjAdjI(word) : c.k === 'adjna' ? conjAdjNa(word) : conjVerb(word, c.k);
+    $('#out').innerHTML = `<div class="grp">${name}${c.guess ? ' · tahmin (sözlükte bulunamadı)' : ''}</div>${mean ? `<div class="hint">${esc(word)}${e && e[1][0] ? ' ・ ' + esc(e[1][0]) : ''} — ${esc(mean)}</div>` : ''}<div class="tw"><table><tr><th>biçim</th><th>sonuç</th></tr>${rows.map(r => `<tr><td>${esc(r[0])}</td><td class="j">${esc(r[1])}</td></tr>`).join('')}</table></div>` +
+      (c.k === 'v1' || c.k === 'v2' ? `<p class="hint">Grup belirleme: ${c.k === 'v2' ? 'sonu e/i + る → Grup 2' : 'Grup 1 (五段)'}${G1_EXC.includes(w) ? ' — bu fiil "hain" listesinde, Grup 1' : ''}. Yanlışsa diğer gruba göre kuralı bölüm 2\'den uygula.</p>` : '');
+  }
+  $('#vgo').onclick = run; $('#vin').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+  $('#vchips').innerHTML = ['食べる','行く','買う','話す','待つ','読む','泳ぐ','死ぬ','遊ぶ','帰る','勉強する','来る','高い','いい','静か','きれい'].map(w => `<button class="chip" data-w="${w}">${w}</button>`).join('');
+  $('#vchips').onclick = e => { const b = e.target.closest('.chip'); if (b){ $('#vin').value = b.dataset.w; run(); } };
+})();
+</script>
+</body>
+</html>

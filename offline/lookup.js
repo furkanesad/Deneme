@@ -146,7 +146,8 @@
   const btn = document.createElement('button'); btn.id = 'ol-btn'; btn.type = 'button'; btn.textContent = '📚 Kütüphane';
   const pan = document.createElement('div'); pan.id = 'ol-p'; pan.hidden = true;
   pan.innerHTML = '<div id="ol-box" role="dialog" aria-label="Çevrimdışı Japonca kütüphanesi"><div id="ol-top"><input id="ol-q" type="search" placeholder="Kelime, kanji, romaji ya da İngilizce yaz…" autocomplete="off"><button id="ol-x" type="button">Kapat</button></div>' +
-    '<div id="ol-tabs"><button data-t="word" aria-pressed="true" type="button">Kelime</button><button data-t="kanji" aria-pressed="false" type="button">Kanji</button><button data-t="gram" aria-pressed="false" type="button">Gramer</button></div><div id="ol-out"></div></div>';
+    '<div id="ol-tabs"><button data-t="word" aria-pressed="true" type="button">Kelime</button><button data-t="kanji" aria-pressed="false" type="button">Kanji</button><button data-t="gram" aria-pressed="false" type="button">Gramer</button><a id="ol-cek" href="#" style="font:600 13px system-ui,sans-serif;border:1px solid var(--l);color:var(--m);border-radius:999px;padding:4px 12px;text-decoration:none">📐 Çekimler</a></div><div id="ol-out"></div></div>';
+  pan.querySelector('#ol-cek').href = BASE + 'cekimler.html';
   function mount(){ document.body.appendChild(home); document.body.appendChild(btn); document.body.appendChild(pan); }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
 

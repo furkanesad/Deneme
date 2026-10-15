@@ -13,6 +13,11 @@ Her ikisinde sağ altta **📚 Kütüphane** düğmesi vardır (kelime, kanji, g
    (İlk seferde sağ tık → Aç demen gerekebilir.)
 3. Tabi Kaiwa dosyasını doğrudan çift tıklayıp da açabilirsin. Japonca Defterim'in kuromoji sözlüğü için sunucu şarttır.
 
+## Tabi Kaiwa (çevrimdışı kopya) ekleri
+- Kalıp kartları 143 → 205: 37 N3/N2 kalıbı, 12 bağlaç kartı (yeni “Bağlaçlar & cümle bağlama” kategorisi), 6 durum/senaryo kartı (rezervasyon değiştirme, nazik şikâyet, tavsiye isteme, özür seviyeleri, yumuşak itiraz, hava sohbeti), 5 N1 kartı. Her kartta “📍 nerede duyarsın” etiketleri ve örneklerde durum etiketi var.
+- Kalıplar ekranına N2/N1 seviye düğmeleri eklendi; 7 eski kartın diyalog eşleme regex'i genişletildi.
+- Defter modundaki gramer listesi 288 → 694 (N5–N2 ek kalıplar).
+
 ## İçerik (`offline/`)
 - `cekimler.html`: çekim kuralları sayfası (açılır-kapanır bölümler, arama, fiil/sıfat çekici). Ana sayfadan ve 📚 panelindeki 📐 Çekimler düğmesinden açılır.
 - `kuromoji.js`: morfolojik analiz kütüphanesi (CDN yerine yerel). Sözlüğü `japonca-defterim/dict/` içinde.

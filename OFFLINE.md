@@ -18,6 +18,7 @@ Her ikisinde sağ altta **📚 Kütüphane** düğmesi vardır (kelime, kanji, g
 - `jmdict-common.js`: JMdict yaygın kelimeler, 22.645 giriş, İngilizce anlamlı.
 - `kanjidic.js`: KANJIDIC2, 10.384 kanji (okunuşlar, anlam, JLPT, çizgi sayısı).
 - `vocab-extra.js`: ek 4.987 kelime (JLPT N1 listesi + sık kullanılan JMdict kelimeleri), Türkçe anlamlı. Japonca Defterim'de kelime listesine N1 seviyesiyle eklenir, arama panelinde Türkçe aranabilir.
+- `kanji-extra.js`: defterde olmayan 1.128 jōyō kanji (KANJIDIC2; N2/N1), Türkçe anlamlı. Kanji listesi 1.011 → 2.139; ikili kanji (熟語) listesi 1.728 → 4.768.
 - `lookup.js`: arama paneli. Gramer sekmesinde N5–N3 temel kalıpları var.
 
 Çevrimdışıyken çalışmayanlar (Japonca Defterim): Google/MyMemory çevirisi, Google IME kanji önerisi, Aozora ses bağlantıları.

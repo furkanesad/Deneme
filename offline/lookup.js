@@ -67,11 +67,12 @@
   const hasJp = s => /[぀-ヿ㐀-鿿]/.test(s);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  let loaded = null, index = null;
+  let loaded = null, index = null, TR = [];
   function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error(src)); document.head.appendChild(s); }); }
   function ensureData(){
     if (loaded) return loaded;
-    loaded = Promise.all([window.JMDICT ? 0 : loadScript(BASE + 'jmdict-common.js'), window.KANJIDIC ? 0 : loadScript(BASE + 'kanjidic.js')]).then(() => {
+    loaded = Promise.all([window.JMDICT ? 0 : loadScript(BASE + 'jmdict-common.js'), window.KANJIDIC ? 0 : loadScript(BASE + 'kanjidic.js'), window.VOCAB_EXTRA ? 0 : loadScript(BASE + 'vocab-extra.js').catch(() => 0)]).then(() => {
+      TR = (window.VOCAB_EXTRA || []).map(v => ({ w: [[v[0]], v[1] ? [v[1]] : [], [v[4]], [v[2]]], f: v[0], k: toHira(v[1] || v[0]), t: v[2].toLowerCase() }));
       index = window.JMDICT.map((w, i) => ({ i, forms: w[0], kana: w[1].map(toHira), g: w[3].join(' ').toLowerCase() }));
     });
     return loaded;
@@ -83,6 +84,12 @@
     const kana = jp ? toHira(raw) : ROM(raw);
     const eng = !jp ? raw.toLowerCase() : null;
     const exact = [], pre = [], part = [];
+    const trHits = [];
+    for (const e of TR){
+      if (jp ? (e.f === raw || e.k === kana) : (e.k === kana && /[ぁ-ん]/.test(kana) || e.t.split(/[,;] ?/).includes(raw.toLowerCase()))) trHits.push(e.w);
+      else if (jp ? (e.f.startsWith(raw) || e.k.startsWith(kana)) : (e.t.includes(raw.toLowerCase()) && raw.length > 2)) part.push(e.w);
+    }
+    for (const w of trHits) exact.push(w);
     for (const e of index){
       const w = window.JMDICT[e.i];
       if (jp){

@@ -1,5 +1,5 @@
 // Çevrimdışı önbellek: ilk açılışta tüm dosyaları indirir, sonra internetsiz çalışır.
-const CACHE = 'japonca-v3';
+const CACHE = 'japonca-v4';
 const FILES = [
  "./",
  "index.html",

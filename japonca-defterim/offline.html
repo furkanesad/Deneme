@@ -503,7 +503,7 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
       </div>
       <div class="row2" style="gap:14px;flex-wrap:wrap;margin-top:8px"><label class="hint" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="l-hidem"> Anlamları gizle (dokununca açılır)</label><label class="hint" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="l-hidedone"> Öğrendiklerimi gizle</label></div>
       <div class="flab">Okumalarında geçme</div>
-      <div class="seg" id="f-st"><button data-x="all" aria-pressed="true">Hepsi</button><button data-x="mid" aria-pressed="false">1–4 metinde</button><button data-x="ok" aria-pressed="false">5+ metinde</button><button data-x="zero" aria-pressed="false">Deftere eklenebilecek N5–N4</button></div>
+      <div class="seg" id="f-st"><button data-x="lib" aria-pressed="true">📚 Tüm kütüphane</button><button data-x="all" aria-pressed="false">Defterim</button><button data-x="mid" aria-pressed="false">1–4 metinde</button><button data-x="ok" aria-pressed="false">5+ metinde</button><button data-x="zero" aria-pressed="false">Deftere eklenebilecek N5–N4</button></div>
     </details>
     <p class="hint" id="f-sum"></p>
     <div id="lists"></div>
@@ -1213,7 +1213,7 @@ function audioBox(t){
 
 // ---------- categorized lists ----------
 const VCAT = {'isim':'İsimler','fiil':'Fiiller','i-sıfat':'い-sıfatlar','na-sıfat':'な-sıfatlar','zarf':'Zarflar','diğer':'Soru kelimeleri, bağlaçlar, ifadeler'};
-const F = {view:'vocab', lvl:'all', st:'all', q:''};
+const F = {view:'vocab', lvl:'all', st:'lib', q:''};
 const openCats = new Set();
 function seenIndex(kind){ const m = new Map(); texts.forEach(t => (kind==='v' ? (t.av||t.tv||[]) : (t.tg||[])).forEach(i => { if (!m.has(i)) m.set(i, []); m.get(i).push(t.no); })); return m; }
 function stOk(c){ return F.st==='all' || (F.st==='mid' && c>0 && c<GOAL) || (F.st==='ok' && c>=GOAL); }
@@ -1262,7 +1262,7 @@ document.addEventListener('click', e => {
 function renderLists(){
   renderOvr(F.view);
   const isV = F.view==='vocab', arr = isV ? V : G, counts = isV ? st.cv : st.cg;
-  const q = nrm(F.q), zero = F.st === 'zero';
+  const q = nrm(F.q), lib = F.st === 'lib', zero = F.st === 'zero' || lib, GRP = (lib && FL.grp === 'cat') ? 'lvl' : FL.grp;
   const groups = {}, seen = seenIndex(isV?'v':'g');
   $('wbox').hidden = $('vfilt').hidden = !isV; $('gbox').hidden = isV;
   $('vh-list-h').textContent = isV ? 'Kelimeler' : 'Gramer';
@@ -1270,17 +1270,17 @@ function renderLists(){
   arr.forEach((x,i) => {
     const lvl = isV ? x[3] : x[2];
     if (F.lvl==='own' ? !(isV ? (x[5] || STUDY.pin[x[0]]) : (x[4] || STUDY.gpin[x[0]])) : (F.lvl!=='all' && lvl!==F.lvl)) return;
-    if (zero){ if (eligible(isV, i) || counts[i] > 0 || !((isV ? x[2] : x[1])||'').trim() || (isV && STUDY.hide[x[0]])) return; if (F.lvl==='all' && !['N5','N4'].includes(lvl)) return; }
+    if (zero){ if ((!lib && (eligible(isV, i) || counts[i] > 0)) || !((isV ? x[2] : x[1])||'').trim() || (isV && STUDY.hide[x[0]])) return; if (!lib && F.lvl==='all' && !['N5','N4'].includes(lvl)) return; }
     else if (!eligible(isV, i) || !stOk(counts[i])) return;
     if (isV && !flPass(i)) return;
     if (!qPass(x, q)) return;
     if ($('l-hidedone') && $('l-hidedone').checked && stOf(isV, i) === 2) return;
-    const k = isV ? (FL.grp==='cat' ? (catsOf(i)[0] || '__none') : FL.grp==='lvl' ? (x[3] || 'N1') : typeOf(i)) : x[3];
+    const k = isV ? (GRP==='cat' ? (catsOf(i)[0] || '__none') : GRP==='lvl' ? (x[3] || 'N1') : typeOf(i)) : x[3];
     (groups[k] ||= []).push(i);
   });
-  const byCat = isV && FL.grp==='cat', tiles = (byCat || !isV);
-  const order = isV ? (byCat ? [...STUDY.cats.map(c => c.id), '__none'] : FL.grp==='lvl' ? ['N5','N4','N3','N2','N1'] : TYPES) : Object.keys(groups);
-  const label = k => isV ? (byCat ? (k==='__none' ? 'Kategorisiz' : catName(k)) : FL.grp==='lvl' ? k + ' kelimeleri' : (VCAT[k]||k)) : k;
+  const byCat = isV && GRP==='cat', tiles = (byCat || !isV);
+  const order = isV ? (byCat ? [...STUDY.cats.map(c => c.id), '__none'] : GRP==='lvl' ? ['N5','N4','N3','N2','N1'] : TYPES) : Object.keys(groups);
+  const label = k => isV ? (byCat ? (k==='__none' ? 'Kategorisiz' : catName(k)) : GRP==='lvl' ? k + ' kelimeleri' : (VCAT[k]||k)) : k;
   const LR = {N5:0, N4:1, N3:2, N2:3, N1:4};
   const lvOf = i => isV ? arr[i][3] : arr[i][2];
   order.forEach(k => { const ids = groups[k]; if (ids) ids.sort((a, b) => (LR[lvOf(a)] ?? 5) - (LR[lvOf(b)] ?? 5) || (isV ? hira(arr[a][1] || arr[a][0]).localeCompare(hira(arr[b][1] || arr[b][0]), 'ja') : 0)); });
@@ -1312,7 +1312,7 @@ function renderLists(){
       const P = prog(ids), open = LST.open || openCats.has(k) || browsing;
       const studyBtn = zero ? '' : `<button class="ghost study" data-kind="${isV ? 'v' : 'g'}" data-cat="${esc(k)}" ${byCat ? `data-fc="${esc(k)}"` : ''}>🃏 Kartla çalış</button>`;
       html += `<details class="cat" data-cat="${esc(k)}" ${tiles ? `style="--h:${hueOf(nm)}"` : ''} ${open ? 'open' : ''}><summary><span class="ct">${tiles ? catIcon(nm) + ' ' : ''}${esc(nm)} <span class="gcount">${ids.length}</span></span><small>${zero ? ids.length + ' görülmemiş' : `${P.n2} öğrenildi · ${P.n1} öğreniliyor`} ${studyBtn}</small></summary>${zero ? '' : pbar(P)}<div class="tg">` +
-        ids.slice(0, 400).map(i => itemHtml(isV, i, zero, seen)).join('') + (ids.length > 400 ? `<p class="hint">İlk 400 gösteriliyor; aramayla ya da seviyeyle daralt.</p>` : '') + '</div></details>';
+        ids.slice(0, lib ? 6000 : 400).map(i => itemHtml(isV, i, zero && !eligible(isV, i) && !(counts[i] > 0), seen)).join('') + (ids.length > (lib ? 6000 : 400) ? `<p class="hint">İlk 400 gösteriliyor; aramayla ya da seviyeyle daralt.</p>` : '') + '</div></details>';
     });
   }
   $('lists').innerHTML = html || `<p class="empty">${counts.some(c => c > 0) || Object.keys(STUDY.pin).length ? 'Bu filtreyle sonuç yok.' : 'Henüz bir metin okumadın. Metinlerde geçen kelime ve gramerler burada listelenir.'}</p>`;

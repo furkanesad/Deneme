@@ -4,6 +4,8 @@
 <script src="../offline/vocab-extra.js"></script>
 <script src="../offline/kanji-extra.js"></script>
 <script src="../offline/grammar-extra.js"></script>
+<script src="../offline/kaliplar.js"></script>
+<script src="../offline/konular.js"></script>
 <style>
 /* Layout: progress strip + one big "next text" action on top, the reading page as the main column, target words and grammar under it, archive at the bottom */
 :root{
@@ -448,6 +450,141 @@ html,body{max-width:100%;overflow-x:hidden}
 .td-hero .pill b{display:block;font-family:var(--f-display);font-size:1.4rem;color:var(--ink)}
 .task{border-left-width:1px!important}
 details{border-radius:12px}
+
+/* ===== Yeni kartlık ===== */
+:root{--c-p:#C2185B;--c-p-soft:#FBE7EF;--nk-ok:#2E9D5B;--nk-no:#D64545;--nk-re:#C98A0B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-p:#F48FB1;--c-p-soft:#3A2030;--nk-ok:#6FD39A;--nk-no:#F08A83;--nk-re:#F0C35E}}
+:root[data-theme="dark"]{--c-p:#F48FB1;--c-p-soft:#3A2030;--nk-ok:#6FD39A;--nk-no:#F08A83;--nk-re:#F0C35E}
+#nk{display:flex;flex-direction:column;gap:16px}
+.nk-head h2{margin:0;font-family:var(--f-display);font-weight:800;font-size:1.35rem}
+.nk-head p{margin:2px 0 0;color:var(--muted);font-size:.88rem}
+.nk-panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.nk-panel h3{margin:0;font-size:1rem}
+.nk-row{display:flex;flex-direction:column;gap:6px}
+.nk-lab{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.nk-chips{display:flex;flex-wrap:wrap;gap:6px}
+.nk-chip{font:inherit;font-size:.86rem;font-weight:600;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.nk-chip small{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.nk-chip[aria-pressed="true"]{background:var(--tc,var(--ai));border-color:var(--tc,var(--ai));color:#fff}
+.nk-chip[aria-pressed="true"] small{color:inherit;opacity:.8}
+:root[data-theme="dark"] .nk-chip[aria-pressed="true"]{color:#10141B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nk-chip[aria-pressed="true"]{color:#10141B}}
+.nk-check{display:flex;gap:8px;align-items:center;font-size:.9rem;cursor:pointer}
+.nk-check input{width:18px;height:18px;accent-color:var(--ai)}
+.nk-go{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.nk-btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:11px 18px;cursor:pointer;background:var(--ai);color:#fff}
+:root[data-theme="dark"] .nk-btn{color:#10141B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .nk-btn{color:#10141B}}
+.nk-btn:disabled{opacity:.45;cursor:default}
+.nk-ghost{font:inherit;font-size:.86rem;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.nk-name{display:flex;gap:8px;flex-wrap:wrap}
+.nk-name input{flex:1 1 180px;min-width:0;font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}
+.nk-sec{background:none;border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.nk-sec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.02rem;padding:4px 0}
+.nk-sec>summary::-webkit-details-marker{display:none}
+.nk-sec>summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .2s;margin-right:2px}
+.nk-sec[open]>summary::before{transform:rotate(45deg)}
+.nk-sec>summary small{font-weight:600;color:var(--muted);font-size:.8rem}
+.nk-sub{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:6px 0 0}
+.nk-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+@media (max-width:480px){.nk-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.nk-tile{font:inherit;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;cursor:pointer;color:var(--ink);min-width:0;position:relative;transition:border-color .15s,transform .15s}
+.nk-tile:hover{border-color:var(--tc);transform:translateY(-1px)}
+.nk-tile .ic{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:1.25rem;line-height:1.2;color:var(--tc)}
+.nk-tile .nm{font-weight:700;font-size:.9rem;line-height:1.25;overflow-wrap:anywhere}
+.nk-tile .ct{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.nk-tile .ct b{color:var(--nk-ok);font-weight:700}
+.nk-tile .ct .z{color:var(--nk-no);font-weight:700}
+.nk-tile .bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:4px}
+.nk-tile .bar i{display:block;height:100%;background:var(--nk-ok)}
+.nk-tile .x{position:absolute;top:6px;right:6px;font:inherit;font-size:.7rem;border:0;background:none;color:var(--muted);cursor:pointer;padding:2px 4px;border-radius:6px}
+.nk-tile .x.arm{background:var(--nk-no);color:#fff}
+.nk-tile.special{border-style:dashed}
+.k-top .ic small{display:block;font-size:.62rem;font-weight:800;letter-spacing:.06em;color:var(--muted);font-family:var(--f-body)}
+.k-top .ic{color:var(--tc)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .k-top .ic{color:color-mix(in srgb,var(--tc) 55%,#fff)}}
+:root[data-theme="dark"] .k-top .ic{color:color-mix(in srgb,var(--tc) 55%,#fff)}
+.nk-sel{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);max-width:100%;width:100%}
+.k-v{--tc:var(--c-v)}.k-g{--tc:var(--c-g)}.k-k{--tc:var(--c-k)}.k-j{--tc:var(--c-j)}.k-p{--tc:var(--c-p)}.k-mix{--tc:var(--ai)}.k-miss{--tc:var(--nk-no)}
+
+/* oturum */
+.nk-ses{display:flex;flex-direction:column;gap:10px;scroll-margin-top:8px}
+.nk-bar{display:flex;align-items:center;gap:8px;min-width:0}
+.nk-bar .nk-title{flex:1;min-width:0;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nk-bar .nk-ghost{padding:6px 10px;flex:none}
+.nk-prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;display:flex}
+.nk-prog i{display:block;height:100%;background:var(--nk-ok);transition:width .3s}
+.nk-stage{position:relative;height:clamp(280px,calc(100vh - 360px),520px);height:clamp(280px,calc(100dvh - 360px),520px);overflow:hidden;overflow:clip;overflow-y:visible;margin:0 -4px;padding:0 4px}
+.nk-card{position:absolute;inset:0 2px 8px;perspective:1400px;-webkit-perspective:1400px;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;will-change:transform}
+.nk-card.nk-next{transform:translateY(10px) scale(.95);opacity:.75;pointer-events:none;transition:transform .25s,opacity .25s}
+.nk-card.nk-cur{z-index:2;cursor:grab;transition:transform .28s cubic-bezier(.2,.7,.3,1)}
+.nk-card.nk-cur.drag{transition:none;cursor:grabbing}
+.nk-card.nk-cur.enter{transform:translateY(10px) scale(.95)}
+.nk-card.fly{transition:transform .3s ease-in,opacity .3s ease-in}
+.nk-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,.7,.25,1)}
+.nk-card.flipped .nk-inner{transform:rotateY(180deg)}
+.nk-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:0 10px 30px -12px rgba(20,30,60,.35);display:flex;flex-direction:column;overflow:hidden}
+.nk-face::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--tc)}
+.nk-back{transform:rotateY(180deg)}
+.nk-top{display:flex;align-items:center;gap:8px;padding:14px 16px 4px;font-size:.75rem;color:var(--muted);flex:none}
+.nk-top .kch{font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--tc);background:color-mix(in srgb,var(--tc) 14%,var(--surface));border-radius:6px;padding:2px 8px}
+.nk-top .bx{margin-left:auto;font-variant-numeric:tabular-nums}
+.nk-front .nk-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:8px 18px;text-align:center;min-height:0;overflow:hidden}
+.nk-w{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:clamp(2rem,9vw,2.8rem);line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+.nk-w rt{font-size:.38em;color:var(--muted);font-weight:500}
+.nk-w.kb{font-size:clamp(4.2rem,22vw,6rem);line-height:1.1}
+.nk-w.gw,.nk-w.pw{font-size:clamp(1.4rem,6vw,1.9rem)}
+.nk-m{font-size:clamp(1.15rem,5vw,1.45rem);font-weight:700;line-height:1.35}
+.nk-use{font-size:.88rem;color:var(--muted);max-width:40ch}
+.nk-tap{text-align:center;font-size:.76rem;color:var(--muted);padding:0 0 14px;flex:none}
+.nk-scroll{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:4px 16px 16px;touch-action:none}
+.nk-scroll.can{touch-action:pan-y}
+.nk-scroll .ans{border:0;padding:0;margin:0;background:none}
+.nk-bh{display:flex;flex-direction:column;gap:2px;margin:2px 0 10px}
+.nk-bh .w{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:1.5rem;font-weight:700;line-height:1.5}
+.nk-bh .m{font-weight:600}
+.nk-rows{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:6px}
+.nk-rows li{background:var(--paper);border-radius:10px;padding:8px 10px}
+.nk-rows .f{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:1.02rem}
+.nk-rows .f .slot{color:var(--muted)}
+.nk-rows .f .key{color:var(--c-p)}
+.nk-rows .l{font-weight:600;font-size:.88rem}
+.nk-rows .t{font-size:.8rem;color:var(--muted)}
+.nk-ex{border-left:3px solid var(--c-p);padding:2px 0 2px 10px;margin:6px 0}
+.nk-ex .jp{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;font-size:1.05rem;line-height:2;margin:0}
+.nk-ex .jp u{text-decoration-color:var(--c-p);text-decoration-thickness:2px;text-underline-offset:3px}
+.nk-ex .tr{font-size:.85rem;color:var(--muted);margin:0}
+.nk-ksub{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px}
+.nk-rules{margin:0;padding-left:18px;font-size:.88rem;display:flex;flex-direction:column;gap:4px}
+.nk-err{font-size:.88rem;background:var(--paper);border-radius:10px;padding:8px 10px}
+.nk-err s{color:var(--nk-no)}
+.nk-err b{color:var(--nk-ok)}
+.nk-lab2{position:absolute;z-index:3;font:800 1rem var(--f-display);letter-spacing:.06em;padding:6px 12px;border:3px solid currentColor;border-radius:10px;background:var(--surface);opacity:0;pointer-events:none}
+.nk-lab2.ok{top:22px;left:18px;color:var(--nk-ok);transform:rotate(-12deg);opacity:var(--pok,0)}
+.nk-lab2.no{top:22px;right:18px;color:var(--nk-no);transform:rotate(12deg);opacity:var(--pno,0)}
+.nk-lab2.re{bottom:26px;left:50%;color:var(--nk-re);transform:translateX(-50%);opacity:var(--pre,0)}
+.nk-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.nk-a{font:inherit;font-size:1.3rem;font-weight:800;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;padding:8px 4px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1.2}
+.nk-a small{font-size:.68rem;font-weight:700;color:var(--muted)}
+.nk-a.ok{color:var(--nk-ok);border-color:color-mix(in srgb,var(--nk-ok) 45%,var(--line))}
+.nk-a.no{color:var(--nk-no);border-color:color-mix(in srgb,var(--nk-no) 45%,var(--line))}
+.nk-a.re{color:var(--nk-re);border-color:color-mix(in srgb,var(--nk-re) 45%,var(--line))}
+.nk-a:active{transform:scale(.96)}
+.nk-foot{display:flex;align-items:center;gap:12px;font-size:.84rem;font-weight:700;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.nk-foot .o{color:var(--nk-ok)}.nk-foot .n{color:var(--nk-no)}.nk-foot .r{color:var(--nk-re)}
+.nk-foot .left{color:var(--muted);font-weight:600}
+.nk-foot .nk-ghost{margin-left:auto;padding:5px 10px}
+.nk-hint{margin:0;font-size:.76rem;color:var(--muted);text-align:center}
+.nk-kbd{display:none}
+@media (hover:hover) and (pointer:fine){.nk-kbd{display:inline}}
+.nk-done{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.nk-done .big{font-size:2.4rem}
+.nk-done h3{margin:0;font-size:1.3rem}
+.nk-done .nk-go{justify-content:center}
+.nk-empty{color:var(--muted);text-align:center;padding:30px 10px}
+@media (prefers-reduced-motion:reduce){.nk-inner,.nk-card,.nk-card.fly,.nk-card.nk-next{transition:none!important}}
+
+.ovtoday{display:none!important}
 </style>
 
 <div class="wrap">
@@ -467,7 +604,7 @@ details{border-radius:12px}
   <nav class="nav" aria-label="Bölümler">
     <div class="tabs" role="tablist">
       <button role="tab" data-v="today" aria-selected="false"><b class="tk">今</b>Bugün</button>
-      <button role="tab" data-v="cards" aria-selected="false"><b class="tk">札</b>Kartlar <span id="cn"></span></button>
+      <button role="tab" data-v="cards" aria-selected="false"><b class="tk">札</b>Kartlar <span id="cn" hidden></span></button>
       <button role="tab" data-v="vocab" aria-selected="false"><b class="tk">語</b>Kelimeler</button>
       <button role="tab" data-v="gram" aria-selected="false"><b class="tk">文</b>Gramer</button>
       <button role="tab" data-v="kanji" aria-selected="false"><b class="tk">漢</b>Kanji <span id="kn"></span></button>
@@ -565,6 +702,8 @@ details{border-radius:12px}
   </div>
 
   <div id="view-cards" class="view" hidden>
+    <div id="nk"></div>
+    <div id="old-cards" hidden>
     <div class="vh"><h2>Kartlar</h2><p>Karta dokun → cevabı gör → "Bilmiyorum / Zor / Biliyorum" de. Bildiğin kart günler sonra, bilmediğin hemen tekrar gelir. Arkasında örnek cümle ve kendi cümlelerin var.</p></div>
     <details class="prac" id="prac">
       <summary class="prac-h"><b>✍️ Yazma alıştırması</b><span class="hint">Claude defterinden birkaç kelime ve bir gramer kalıbı seçer; sen cümle ya da kısa hikâye yazarsın, Claude düzeltir. Kaydettiğin cümleler o kelime ve gramerin kartına eklenir.</span></summary>
@@ -600,6 +739,7 @@ details{border-radius:12px}
     <div class="cnav" id="cnav"><button class="arrow" id="c-prev" aria-label="Önceki kart">‹</button><div class="fcard" id="card"></div><button class="arrow" id="c-next" aria-label="Sonraki kart">›</button></div>
     <p class="swipe-hint" id="c-hint">Karta dokun: cevap açılır (dokunmakla kapanmaz) · sağa/sola kaydır: önceki/sonraki kart · klavyede ← → ve boşluk</p>
     <div class="clist" id="clist" hidden></div>
+      </div>
   </div>
 
   <div id="view-kanji" class="view" hidden>
@@ -1725,13 +1865,13 @@ const DAYS = [0, 1, 3, 7, 14, 30, 60];
 const CK = {kind:'all', group:'', lvl:'all', dir:'jp', view:'one', scope:'due', furi:true, cat:'', type:false};
 const SES = {n:[0, 0, 0]};
 let pos = 0;
-let SR = {v:{}, g:{}, k:{}};            // srs state: index -> [box, dueMs]
+let SR = {v:{}, g:{}, k:{}, p:{}, w:{}, q:{}};            // srs state: index -> [box, dueMs]
 let queue = [], cur = null, shown = false, saveTimer = null;
 async function loadSR(){
   let d = null;
   if (db && uid){ try{ const s = await db.doc(`data/users/${uid}/srs`).get(); if (s.exists) d = thaw(s.data()); }catch(e){} }
   if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-srs')||'null'); }catch(e){} }
-  SR = {v:(d && d.v) || {}, g:(d && d.g) || {}, k:(d && d.k) || {}};
+  SR = {v:(d && d.v) || {}, g:(d && d.g) || {}, k:(d && d.k) || {}, p:(d && d.p) || {}, w:(d && d.w) || {}, q:(d && d.q) || {}};
   // carry over box/due stored on added items by the earlier card version
   CV.forEach((x,k) => { if ((x[7] || x[8]) && !SR.v[BASEV+k]) SR.v[BASEV+k] = [x[7]||0, x[8]||0]; });
   CG.forEach((x,k) => { if ((x[5] || x[6]) && !SR.g[BASEG+k]) SR.g[BASEG+k] = [x[5]||0, x[6]||0]; });
@@ -3714,7 +3854,7 @@ async function applyBackup(){
     const cv = (b.custom && b.custom.v) || [], cg = (b.custom && b.custom.g) || [];
     CV = []; CG = []; V.length = BASEV; G.length = BASEG; applyCustom(cv, cg);
     st = {n:b.progress.n||0, cv:fix(b.progress.cv||[], V.length), cg:fix(b.progress.cg||[], G.length)};
-    SR = {v:(b.srs && b.srs.v) || {}, g:(b.srs && b.srs.g) || {}, k:(b.srs && b.srs.k) || {}};
+    SR = {v:(b.srs && b.srs.v) || {}, g:(b.srs && b.srs.g) || {}, k:(b.srs && b.srs.k) || {}, p:(b.srs && b.srs.p) || {}, w:(b.srs && b.srs.w) || {}, q:(b.srs && b.srs.q) || {}};
     if (b.study){ STUDY = normStudy(b.study); sentMemo = null; await saveStudy(true); }
     const byNo = new Map(texts.map(x => [x.no, x]));
     b.texts.filter(x => x && x.no).forEach(x => byNo.set(x.no, x));
@@ -3804,6 +3944,458 @@ function safeDb(d){
   }catch(e){} }
   window.addEventListener('hashchange', apply); setTimeout(apply, 900);
 })();
+</script>
+<script>
+// ===== Yeni kartlık: konu desteleri, karışık deste, kaydırmalı kartlar =====
+(function(){
+  const $i = id => document.getElementById(id);
+  const root = $i('nk'); if (!root) return;
+  const KAL = window.KALIP || {cats:[], groups:[], cards:[]};
+  const KN = {v:'Kelime', g:'Gramer', k:'Kanji', j:'İkili kanji', p:'Kalıp', w:'Kelime', q:'Gramer'};
+  const KINDS = ['v', 'g', 'k', 'j', 'p'];
+  const KON = window.KONU || {scenes:[], themes:[]};
+  const TW = {}, TQ = {};   // Tabi words / grammar not in the notebook, by text
+  const LVS = ['N5', 'N4', 'N3', 'N2', 'N1'];
+  const ls = {
+    get(k, d){ try{ const v = localStorage.getItem('nk-' + k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+    set(k, v){ try{ localStorage.setItem('nk-' + k, JSON.stringify(v)); }catch(e){} }
+  };
+  const OPT = Object.assign({dir:'jp', furi:true}, ls.get('opt', {}));
+  const CFG = Object.assign({kinds:['v', 'g', 'p'], lvls:['N5', 'N4'], n:30, weak:true, topic:''}, ls.get('cfg', {}));
+  let MY = ls.get('decks', []); if (!Array.isArray(MY)) MY = [];
+  const reduce = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- progress store (shares SR with the rest of the notebook; patterns live in SR.p) ----
+  const B = c => c.kind === 'p' ? 'p' : c.kind === 'w' ? 'w' : c.kind === 'q' ? 'q' : srB(c);
+  const K = c => c.kind === 'p' ? KAL.cards[c.i].id : c.kind === 'w' ? TW[c.i][0] : c.kind === 'q' ? TQ[c.i][0] : srKey(c);
+  const bucket = b => (SR[b] = SR[b] || {});
+  const rec = c => bucket(B(c))[K(c)];
+  const boxOf = c => (rec(c) || [0])[0];
+  const seenC = c => !!rec(c);
+  const knownC = c => boxOf(c) >= 3;
+  const missC = c => seenC(c) && boxOf(c) === 0;
+  const lvOf = c => (c.kind === 'p' ? KAL.cards[c.i].lv : c.kind === 'w' ? TW[c.i][3] : c.kind === 'q' ? TQ[c.i][2] : lvlOf(c)) || 'N1';
+  const cid = c => c.kind + ':' + c.i;
+
+  // ---- konu ve durum desteleri: kelime + gramer + kalıp bir arada ----
+  let TOP = null;
+  function topics(){
+    if (TOP) return TOP;
+    const vIdx = new Map(); V.forEach((x, i) => { const f = first(x[0]); if (!vIdx.has(f)) vIdx.set(f, i); });
+    const gIdx = new Map(); G.forEach((x, i) => { if (!gIdx.has(x[0])) gIdx.set(x[0], i); });
+    const pIdx = new Map(); KAL.cards.forEach((x, i) => pIdx.set(x.id, i));
+    const wIdx = new Map(), qIdx = new Map();
+    const mk = (t, kind) => {
+      const cards = [];
+      t.words.forEach(w => {
+        if (vIdx.has(w[0])) cards.push({kind:'v', i:vIdx.get(w[0])});
+        else { if (!wIdx.has(w[0])){ wIdx.set(w[0], Object.keys(TW).length); TW[wIdx.get(w[0])] = w; } cards.push({kind:'w', i:wIdx.get(w[0])}); }
+      });
+      t.gram.forEach(g => {
+        if (gIdx.has(g[0])) cards.push({kind:'g', i:gIdx.get(g[0])});
+        else { if (!qIdx.has(g[0])){ qIdx.set(g[0], Object.keys(TQ).length); TQ[qIdx.get(g[0])] = g; } cards.push({kind:'q', i:qIdx.get(g[0])}); }
+      });
+      t.cards.forEach(id => { if (pIdx.has(id)) cards.push({kind:'p', i:pIdx.get(id)}); });
+      return {id:t.id, kind, code:t.code, jp:t.jp, tr:t.tr, c:t.c, cards};
+    };
+    return TOP = KON.scenes.map(t => mk(t, 'trip')).concat(KON.themes.map(t => mk(t, 'def')), (KON.sits || []).map(t => mk(t, 'sit')), (KON.cats || []).map(t => mk(t, 'kat')));
+  }
+  const topicById = id => topics().find(t => t.id === id);
+  const kindGroup = k => k === 'w' ? 'v' : k === 'q' ? 'g' : k;
+  let POOLS = null;
+  function pools(){
+    if (POOLS) return POOLS;
+    const P = {v:[], g:[], k:[], j:[], p:[]};
+    V.forEach((x, i) => { if (eligible(true, i)) P.v.push({kind:'v', i}); });
+    G.forEach((x, i) => { if (eligible(false, i)) P.g.push({kind:'g', i}); });
+    KJ.forEach((x, i) => P.k.push({kind:'k', i}));
+    JK.forEach((x, i) => P.j.push({kind:'j', i}));
+    KAL.cards.forEach((x, i) => P.p.push({kind:'p', i}));
+    return POOLS = P;
+  }
+
+  // ---- topic decks ----
+  const SECT_ORDER = ['Konular', 'Fiiller', 'Sıfatlar', 'Dil bilgisi sözcükleri', 'Kendi kategorilerim', 'Kategorisiz'];
+  function topicDecks(){
+    const D = new Map();
+    const add = (key, meta, c) => { let d = D.get(key); if (!d){ d = Object.assign({key, cards:[]}, meta); D.set(key, d); } d.cards.push(c); };
+    const P = pools();
+    P.p.forEach(c => {
+      const ci = KAL.cards[c.i].cat, m = KAL.cats[ci] || ['diger', 'Diğer', '型'];
+      const gi = KAL.groups.findIndex(g => g[1].includes(m[0]));
+      add('p:' + m[0], {kind:'p', top:'Kalıplar', sub:gi >= 0 ? KAL.groups[gi][0] : 'Diğer', so:(gi < 0 ? 9 : gi) * 100 + ci, name:m[1], ic:m[2]}, c);
+    });
+    const catOrder = {}; STUDY.cats.forEach((c, n) => { catOrder[c.id] = n; });
+    P.v.forEach(c => {
+      const ids = catsOf(c.i);
+      (ids.length ? ids : ['__none']).forEach(id => {
+        if (D.has('v:' + id)){ D.get('v:' + id).cards.push(c); return; }
+        const nm = id === '__none' ? 'Kategorisiz' : catName(id), sc = id === '__none' ? 'Kategorisiz' : catSect(nm);
+        const si = SECT_ORDER.indexOf(sc);
+        add('v:' + id, {kind:'v', top:'Kelimeler', sub:sc, so:(si < 0 ? 8 : si) * 1000 + (catOrder[id] ?? 999), name:nm.replace(/^(Fiil|Sıfat|Zarflar|Yiyecek|Zaman|Ev): /, ''), ic:catIcon(nm)}, c);
+      });
+    });
+    P.g.forEach(c => { const g = G[c.i][3] || 'Diğer'; add('g:' + g, {kind:'g', top:'Gramer', sub:'', so:0, name:g, ic:catIcon(g)}, c); });
+    P.k.forEach(c => { const l = KJ[c.i][1] || 'N1'; add('k:' + l, {kind:'k', top:'Kanji', sub:'', so:LVS.indexOf(l), name:l + ' kanjileri', ic:'漢'}, c); });
+    P.j.forEach(c => { const l = JK[c.i][1] || 'N1'; add('j:' + l, {kind:'j', top:'İkili kanji (熟語)', sub:'', so:LVS.indexOf(l), name:l + ' ikili kanji', ic:'熟'}, c); });
+    return D;
+  }
+  function mixCards(cfg){
+    const P = pools(), out = [], kinds = cfg.kinds || [];
+    const src = cfg.topic ? ((topicById(cfg.topic) || {cards:[]}).cards) : kinds.flatMap(k => P[k] || []);
+    const seen = new Set();
+    src.forEach(c => {
+      if (!kinds.includes(kindGroup(c.kind))) return;
+      const id = c.kind + ':' + c.i; if (seen.has(id)) return; seen.add(id);
+      if (cfg.lvls && cfg.lvls.length && !cfg.lvls.includes(lvOf(c))) return;
+      if (cfg.weak && knownC(c)) return;
+      out.push(c);
+    });
+    return out;
+  }
+  function missCards(){ const P = pools(), out = []; KINDS.forEach(k => P[k].forEach(c => { if (missC(c)) out.push(c); })); return out; }
+  // weakest first: "bilmiyorum" cards, then new ones, then the rest by box; shuffled inside each group
+  function order(cards, n){
+    const L = cards.slice();
+    for (let i = L.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [L[i], L[j]] = [L[j], L[i]]; }
+    const w = c => seenC(c) ? boxOf(c) : .5;
+    L.sort((a, b) => w(a) - w(b));
+    return n > 0 ? L.slice(0, n) : L;
+  }
+
+  // ---- deck screen ----
+  let S = null;      // current session
+  let DK = null;     // topic decks of the last render
+  const tile = (attrs, cls, ic, name, cards, extra) => {
+    const n = cards.length, kn = cards.filter(knownC).length, ms = cards.filter(missC).length;
+    return `<button class="nk-tile ${cls}" ${attrs}><span class="ic">${esc(ic)}</span><span class="nm">${esc(name)}</span><span class="ct">${n} kart${kn ? ` · <b>${kn} ✓</b>` : ''}${ms ? ` · <span class="z">${ms} ✗</span>` : ''}</span><span class="bar"><i style="width:${(kn / Math.max(1, n) * 100).toFixed(1)}%"></i></span>${extra || ''}</button>`;
+  };
+  function renderDecks(){
+    S = null; POOLS = null;
+    const P = pools(); DK = topicDecks();
+    const chip = (grp, val, on, label, cls) => `<button class="nk-chip ${cls || ''}" data-cfg="${grp}" data-val="${val}" aria-pressed="${on}">${label}</button>`;
+    const mis = missCards();
+    let h = `<div class="nk-head"><h2>Kartlar</h2><p>Bir konu destesi seç ya da kendi karışık desteni oluştur. Karta dokun, arkası dönsün. Sağa kaydır: biliyorum · sola: bilmiyorum · aşağı: tekrar et.</p></div>`;
+    h += `<section class="nk-panel" id="nk-mix"><h3>Karışık deste oluştur</h3>
+      <div class="nk-row"><span class="nk-lab">Konu / durum</span><select id="nk-topic" class="nk-sel" aria-label="Konu"><option value="">Tüm konular</option><optgroup label="旅 Seyahat durumları">${topics().filter(t => t.kind === 'trip').map(t => `<option value="${esc(t.id)}" ${CFG.topic === t.id ? 'selected' : ''}>${esc(t.code)} ${esc(t.jp)} · ${esc(t.tr)}</option>`).join('')}</optgroup><optgroup label="場 Günlük durumlar">${topics().filter(t => t.kind === 'sit').map(t => `<option value="${esc(t.id)}" ${CFG.topic === t.id ? 'selected' : ''}>${esc(t.jp)} · ${esc(t.tr)}</option>`).join('')}</optgroup><optgroup label="帳 Defter temaları">${topics().filter(t => t.kind === 'def').map(t => `<option value="${esc(t.id)}" ${CFG.topic === t.id ? 'selected' : ''}>${esc(t.jp)} · ${esc(t.tr)}</option>`).join('')}</optgroup><optgroup label="語 Kelime konuları">${topics().filter(t => t.kind === 'kat').map(t => `<option value="${esc(t.id)}" ${CFG.topic === t.id ? 'selected' : ''}>${esc(t.tr)}</option>`).join('')}</optgroup></select></div>
+      <div class="nk-row"><span class="nk-lab">Kart türü</span><div class="nk-chips">${KINDS.map(k => chip('kinds', k, CFG.kinds.includes(k), `${KN[k]} <small>${P[k].length}</small>`, 'k-' + k)).join('')}</div></div>
+      <div class="nk-row"><span class="nk-lab">Seviye</span><div class="nk-chips">${LVS.map(l => chip('lvls', l, CFG.lvls.includes(l), l, 'k-mix')).join('')}</div></div>
+      <div class="nk-row"><span class="nk-lab">Kart sayısı</span><div class="nk-chips">${[20, 30, 50, 100, 0].map(n => chip('n', n, CFG.n === n, n ? String(n) : 'Hepsi', 'k-mix')).join('')}</div></div>
+      <label class="nk-check"><input type="checkbox" id="nk-weak" ${CFG.weak ? 'checked' : ''}> Bildiğim kartları çıkar</label>
+      <div class="nk-go"><button class="nk-btn" id="nk-mixgo"></button><button class="nk-ghost" id="nk-save">Desteyi kaydet</button></div>
+      <div class="nk-name" id="nk-name" hidden><input id="nk-nm" maxlength="40" placeholder="Deste adı, ör. N5 karışık" aria-label="Deste adı"><button class="nk-btn" id="nk-nmok">Kaydet</button><button class="nk-ghost" id="nk-nmno">Vazgeç</button></div>
+    </section>`;
+    if (MY.length || mis.length){
+      h += `<details class="nk-sec" open><summary>Destelerim <small>${MY.length + (mis.length ? 1 : 0)}</small></summary><div class="nk-tiles">`;
+      if (mis.length) h += tile('data-deck="miss"', 'k-miss special', '✗', 'Bilmediklerim', mis);
+      MY.forEach((d, n) => { h += tile(`data-deck="my:${n}"`, 'k-mix', '混', d.name, mixCards(d.cfg), `<span class="x" data-del="${n}" role="button" aria-label="Desteyi sil">✕</span>`); });
+      h += `</div></details>`;
+    }
+    // karışık konu desteleri: her sahne / tema için kelime + gramer + kalıp
+    const mixTile = t => {
+      const n = t.cards.length, kn = t.cards.filter(knownC).length, ms = t.cards.filter(missC).length;
+      const nw = t.cards.filter(c => c.kind === 'v' || c.kind === 'w').length, ng = t.cards.filter(c => c.kind === 'g' || c.kind === 'q').length, np = t.cards.filter(c => c.kind === 'p').length;
+      return `<button class="nk-tile k-top" data-deck="top:${esc(t.id)}" style="--tc:${esc(t.c || (t.kind === 'sit' ? 'var(--c-k)' : t.kind === 'kat' ? 'var(--c-v)' : 'var(--ai)'))}"><span class="ic">${t.kind === 'trip' ? `<small>${esc(t.code)}</small>` : ''}${t.jp ? esc(t.jp) : (t.kind === 'kat' ? catIcon(t.tr) : '語')}</span><span class="nm">${esc(t.tr)}</span><span class="ct">${nw} kelime · ${ng ? ng + ' gramer · ' : ''}${np} kalıp${kn ? ` · <b>${kn} ✓</b>` : ''}${ms ? ` · <span class="z">${ms} ✗</span>` : ''}</span><span class="bar"><i style="width:${(kn / Math.max(1, n) * 100).toFixed(1)}%"></i></span></button>`;
+    };
+    const TT = topics();
+    if (TT.length){
+      h += `<details class="nk-sec" open><summary>Durum desteleri · karışık <small>${TT.filter(t => t.kind === 'trip').length} sahne · kelime + gramer + kalıp</small></summary><p class="nk-sub">Tabi Kaiwa seyahat sahneleri. Her deste o sahnenin kelimelerini, gramerini ve kalıplarını karıştırır.</p><div class="nk-tiles">${TT.filter(t => t.kind === 'trip').map(mixTile).join('')}</div></details>`;
+      h += `<details class="nk-sec" open><summary>Günlük durumlar · karışık <small>${TT.filter(t => t.kind === 'sit').length} durum · kelime + gramer + kalıp</small></summary><p class="nk-sub">Kafe, postane, hastane, banka, telefon, ev kiralama, davet, özür… Her deste ~25 kelime, 12 gramer, 9 kalıp.</p><div class="nk-tiles">${TT.filter(t => t.kind === 'sit').map(mixTile).join('')}</div></details>`;
+      h += `<details class="nk-sec"><summary>Kelime konuları · karışık <small>${TT.filter(t => t.kind === 'kat').length} konu · kelime + gramer + kalıp</small></summary><p class="nk-sub">Defter’in 50 kelime konusu (Zaman, Aile, Yiyecek, Hava, Ev, Fiiller, Sıfatlar…) o konuya uyan gramer ve kalıplarla birlikte. En fazla 70 kelime, kolaydan zora.</p><div class="nk-tiles">${TT.filter(t => t.kind === 'kat').map(mixTile).join('')}</div></details>`;
+      h += `<details class="nk-sec"><summary>Defter temaları · karışık <small>${TT.filter(t => t.kind === 'def').length} tema · kelime + gramer + kalıp</small></summary><p class="nk-sub">Defter temaları (tanışma, zaman, yiyecek…). Büyük desteler; “Kart sayısı” için üstteki karışık deste oluşturucuda konuyu seç.</p><div class="nk-tiles">${TT.filter(t => t.kind === 'def').map(mixTile).join('')}</div></details>`;
+    }
+    const tops = [['Kalıplar', 'p'], ['Kelimeler', 'v'], ['Gramer', 'g'], ['Kanji', 'k'], ['İkili kanji (熟語)', 'j']];
+    tops.forEach(([top, kind]) => {
+      const list = [...DK.values()].filter(d => d.top === top).sort((a, b) => a.so - b.so);
+      if (!list.length) return;
+      const total = P[kind].length;
+      h += `<details class="nk-sec" ${kind === 'p' || kind === 'v' ? 'open' : ''}><summary>${top} <small>${total} kart · ${list.length} deste</small></summary>`;
+      let sub = null, grid = '';
+      const flush = () => { if (grid) h += `<div class="nk-tiles">${grid}</div>`; grid = ''; };
+      list.forEach(d => {
+        if (d.sub && d.sub !== sub){ flush(); sub = d.sub; h += `<p class="nk-sub">${esc(sub)}</p>`; }
+        grid += tile(`data-deck="t:${esc(d.key)}"`, 'k-' + d.kind, d.ic, d.name, d.cards);
+      });
+      flush(); h += `</details>`;
+    });
+    root.innerHTML = h;
+    updMix();
+  }
+  function updMix(){
+    const n = mixCards(CFG).length, take = CFG.n > 0 ? Math.min(CFG.n, n) : n, b = $i('nk-mixgo');
+    if (b){ const tp = CFG.topic && topicById(CFG.topic); b.textContent = n ? `Başlat · ${take} kart${tp ? ' · ' + (tp.jp || tp.tr) : ''}` : 'Bu seçimde kart yok'; b.disabled = !n; }
+    const s = $i('nk-save'); if (s) s.disabled = !n;
+  }
+  function saveCfg(){ ls.set('cfg', CFG); }
+
+  // ---- session ----
+  function start(name, cards, n, key){
+    const q = order(cards, n);
+    if (!q.length){ toast('Bu destede kart yok.'); return; }
+    S = {name, key, src:cards, n, q, total:q.length, ok:0, no:0, re:0, flipped:false, hist:[], first:new Set(), miss:new Map(), busy:false, end:false};
+    renderSession(true);
+    requestAnimationFrame(() => { const el = root.querySelector('.nk-ses'); if (!el) return; const nav = document.querySelector('.nav'), off = (nav && getComputedStyle(nav).position === 'sticky' ? nav.getBoundingClientRect().height : 0) + 8; window.scrollTo({top:Math.max(0, el.getBoundingClientRect().top + window.scrollY - off), behavior:reduce() ? 'auto' : 'smooth'}); });
+  }
+  const kRuby = s => esc(s).replace(/\[([^|\]]+)\|([^\]]+)\]/g, '<ruby>$1<rt>$2</rt></ruby>').replace(/〈/g, '<u>').replace(/〉/g, '</u>');
+  const kPlain = s => String(s).replace(/\[([^|\]]+)\|[^\]]+\]/g, '$1').replace(/[〈〉]/g, '');
+  const fmtF = f => esc(f).replace(/［([^］]*)］/g, '<span class="slot">［$1］</span>').replace(/〈([^〉]*)〉/g, '<b class="key">$1</b>');
+  function topRow(c){
+    const r = rec(c);
+    return `<div class="nk-top"><span class="kch">${KN[c.kind]}</span><span>${esc(lvOf(c))}</span><span class="bx">${r ? (r[0] === 0 ? 'bilmiyordun' : `kutu ${r[0]}/${DAYS.length - 1}`) : 'yeni'}</span></div>`;
+  }
+  function frontHtml(c){
+    const jp = OPT.dir === 'jp';
+    let mid = '';
+    if (c.kind === 'v'){
+      const x = V[c.i], w = first(x[0]);
+      mid = jp ? `<div class="nk-w">${OPT.furi ? wordRuby(c.i) : esc(w)}</div><button class="spk" data-say="${esc(w)}" aria-label="Dinle">🔊</button>` : `<div class="nk-m">${esc(x[2])}</div>`;
+    } else if (c.kind === 'g'){
+      const x = G[c.i];
+      mid = jp ? `<div class="nk-w gw">${OPT.furi ? fj(x[0]) : esc(x[0])}</div>` : `<div class="nk-m">${esc(x[1])}</div>`;
+    } else if (c.kind === 'k'){
+      const x = KJ[c.i];
+      mid = jp ? `<div class="nk-w kb">${esc(x[0])}</div>` : `<div class="nk-m">${esc(x[4])}</div>`;
+    } else if (c.kind === 'j'){
+      const x = JK[c.i];
+      mid = jp ? `<div class="nk-w">${OPT.furi ? ruby(alignFuri(x[0], x[2])) : esc(x[0])}</div><button class="spk" data-say="${esc(x[2] || x[0])}" aria-label="Dinle">🔊</button>` : `<div class="nk-m">${esc(x[4])}</div>`;
+    } else if (c.kind === 'w'){
+      const x = TW[c.i];
+      mid = jp ? `<div class="nk-w">${x[1] ? ruby(alignFuri(x[0], x[1])) : esc(x[0])}</div><button class="spk" data-say="${esc(x[1] || x[0])}" aria-label="Dinle">🔊</button>` : `<div class="nk-m">${esc(x[2])}</div>`;
+    } else if (c.kind === 'q'){
+      const x = TQ[c.i];
+      mid = jp ? `<div class="nk-w gw">${esc(x[0])}</div>` : `<div class="nk-m">${esc(x[1])}</div>`;
+    } else {
+      const x = KAL.cards[c.i];
+      mid = jp ? `<div class="nk-w pw">${x.t.map(t => esc(t[0])).join('<br>')}</div>` : `<div class="nk-m">${x.t.map(t => esc(t[1])).join(' · ')}</div>${x.use ? `<div class="nk-use">${esc(x.use)}</div>` : ''}`;
+    }
+    return `${topRow(c)}<div class="nk-mid">${mid}</div><div class="nk-tap">Çevirmek için dokun</div>`;
+  }
+  function kalBack(x){
+    const ex = x.ex.map(e => `<div class="nk-ex"><p class="jp">${kRuby(e[0])} <button class="spk" data-say="${esc(kPlain(e[0]))}" aria-label="Dinle">🔊</button></p><p class="tr">${esc(e[1])}</p></div>`).join('');
+    return `<div class="nk-bh"><span class="w">${x.t.map(t => esc(t[0])).join('・')}</span><span class="m">${x.t.map(t => esc(t[1])).join(' · ')}</span></div>
+      ${x.use ? `<p style="margin:0 0 8px;font-size:.9rem">${esc(x.use)}</p>` : ''}
+      <ol class="nk-rows">${x.rows.map(r => `<li><div class="f">${fmtF(r[0])}</div><div class="l">${esc(r[1])}</div>${r[2] ? `<div class="t">${esc(r[2])}</div>` : ''}</li>`).join('')}</ol>
+      <div class="nk-ksub">Örnekler</div>${ex}
+      ${x.err ? `<div class="nk-ksub">Sık yapılan hata</div><div class="nk-err"><s>${esc(x.err[0])}</s> → <b>${esc(x.err[1])}</b><br><span style="color:var(--muted)">${esc(x.err[2])}</span></div>` : ''}
+      ${x.r && x.r.length ? `<div class="nk-ksub">İpuçları</div><ul class="nk-rules">${x.r.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}`;
+  }
+  function fillBack(el, c){
+    const sc = el.querySelector('.nk-scroll'); if (!sc || sc.dataset.done) return;
+    sc.dataset.done = 1;
+    if (c.kind === 'p'){ sc.innerHTML = kalBack(KAL.cards[c.i]); }
+    else if (c.kind === 'w'){ const x = TW[c.i]; sc.innerHTML = `<div class="nk-bh"><span class="w">${x[1] ? ruby(alignFuri(x[0], x[1])) : esc(x[0])} <button class="spk" data-say="${esc(x[1] || x[0])}" aria-label="Dinle">🔊</button></span><span class="m">${esc(x[2])}</span></div><p class="hint">${x[1] ? esc(x[1]) + ' · ' : ''}Tabi Kaiwa sözlüğünden; Defter’de bu kelime yok.</p>`; }
+    else if (c.kind === 'q'){ const x = TQ[c.i]; sc.innerHTML = `<div class="nk-bh"><span class="w">${esc(x[0])}</span><span class="m">${esc(x[1])}</span></div><p class="hint">Tabi Kaiwa gramer listesinden${x[2] ? ' · ' + esc(x[2]) : ''}. Ayrıntı için Kalıplar destesine bak.</p>`; }
+    else {
+      try{
+        const r = backHtml(c, CARD_PI); sc.innerHTML = r.html;
+        try{ markTarget(sc, r.fx); }catch(e){}
+        if (!r.fx){ try{ fillAutoEx(sc); }catch(e){} }
+      }catch(e){ sc.innerHTML = `<p class="nk-empty">Kartın arkası açılamadı.</p>`; }
+    }
+    setTimeout(() => sc.classList.toggle('can', sc.scrollHeight > sc.clientHeight + 2), 60);
+  }
+  function cardHtml(c, cur){
+    return `<div class="nk-card ${cur ? 'nk-cur' : 'nk-next'} k-${c.kind}" ${cur ? 'id="nk-cur"' : 'aria-hidden="true"'}>
+      <div class="nk-inner"><div class="nk-face nk-front">${frontHtml(c)}</div>${cur ? `<div class="nk-face nk-back">${topRow(c)}<div class="nk-scroll"></div></div>` : ''}</div>
+      ${cur ? '<span class="nk-lab2 ok">BİLİYORUM</span><span class="nk-lab2 no">BİLMİYORUM</span><span class="nk-lab2 re">TEKRAR</span>' : ''}</div>`;
+  }
+  function renderSession(enter){
+    if (!S) return renderDecks();
+    if (!S.q.length){ S.end = true; return renderDone(); }
+    const c = S.q[0], nx = S.q[1];
+    S.flipped = false;
+    const pc = S.ok / Math.max(1, S.total) * 100;
+    root.innerHTML = `<div class="nk-ses">
+      <div class="nk-bar"><button class="nk-ghost" id="nk-back">← Desteler</button><span class="nk-title">${esc(S.name)}</span>
+        <button class="nk-ghost" id="nk-dir" title="Kartın ön yüzü">${OPT.dir === 'jp' ? 'JP→TR' : 'TR→JP'}</button><button class="nk-ghost" id="nk-furi" aria-pressed="${OPT.furi}" title="Okunuşu göster">${OPT.furi ? 'あ açık' : 'あ kapalı'}</button></div>
+      <div class="nk-prog" aria-hidden="true"><i style="width:${pc.toFixed(1)}%"></i></div>
+      <div class="nk-stage" id="nk-stage">${nx ? cardHtml(nx, false) : ''}${cardHtml(c, true)}</div>
+      <div class="nk-acts"><button class="nk-a no" data-g="no">✗<small>Bilmiyorum</small></button><button class="nk-a re" data-g="re">↓<small>Tekrar et</small></button><button class="nk-a" id="nk-flip">↻<small>Çevir</small></button><button class="nk-a ok" data-g="ok">✓<small>Biliyorum</small></button></div>
+      <div class="nk-foot"><span class="o">✓ ${S.ok}</span><span class="n">✗ ${S.no}</span><span class="r">↓ ${S.re}</span><span class="left">kalan ${S.q.length}</span><button class="nk-ghost" id="nk-undo" ${S.hist.length ? '' : 'disabled'}>⟲ Geri al</button></div>
+      <p class="nk-hint">Dokun: çevir · → biliyorum · ← bilmiyorum · ↓ tekrar et<span class="nk-kbd"> · klavye: ok tuşları, boşluk, Z geri al</span></p>
+    </div>`;
+    const el = $i('nk-cur');
+    if (enter && !reduce()){ el.classList.add('enter'); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('enter'))); }
+    bindDrag(el);
+  }
+  function renderDone(){
+    const miss = [...S.miss.values()];
+    root.innerHTML = `<div class="nk-done"><div class="big">🎉</div><h3>${esc(S.name)} bitti</h3>
+      <p class="nk-foot" style="justify-content:center"><span class="o">✓ ${S.ok} biliyorum</span><span class="n">✗ ${S.no} bilmiyorum</span><span class="r">↓ ${S.re} tekrar</span></p>
+      <div class="nk-go"><button class="nk-btn" id="nk-again">Desteyi yeniden karıştır</button>${miss.length ? `<button class="nk-ghost" id="nk-missgo">Zorlandıklarımı çalış (${miss.length})</button>` : ''}<button class="nk-ghost" id="nk-back">← Desteler</button></div></div>`;
+  }
+  function flip(){
+    const el = $i('nk-cur'); if (!el || !S) return;
+    S.flipped = !S.flipped;
+    if (S.flipped) fillBack(el, S.q[0]);
+    el.classList.toggle('flipped', S.flipped);
+    closePopSafe();
+  }
+  function closePopSafe(){ try{ closePop(); }catch(e){} }
+  function grade(g){
+    const c = S.q[0], b = B(c), k = K(c), prev = bucket(b)[k];
+    S.hist.push({q:S.q.slice(), ok:S.ok, no:S.no, re:S.re, b, k, prev:prev ? prev.slice() : null, miss:new Map(S.miss)});
+    if (S.hist.length > 30) S.hist.shift();
+    if (!S.first.has(cid(c))){ S.first.add(cid(c)); try{ logAct(prev ? 'rev' : (c.kind === 'k' || c.kind === 'j' ? 'nk' : 'nw')); }catch(e){} }
+    const now = Date.now(), box0 = prev ? prev[0] : 0;
+    S.q.shift();
+    if (g === 'ok'){
+      const box = Math.min(DAYS.length - 1, box0 + 1); bucket(b)[k] = [box, now + DAYS[box] * 864e5]; S.ok++;
+      if (c.kind === 'k'){ const ch = KJ[c.i][0]; if (box >= 4 && !STUDY.kd[ch]){ STUDY.kd[ch] = 1; try{ saveStudy(); toast(`${ch} öğrenildi olarak işaretlendi`); }catch(e){} } }
+    } else if (g === 'no'){
+      bucket(b)[k] = [0, now]; S.no++; S.miss.set(cid(c), c);
+      S.q.splice(Math.min(S.q.length, 3), 0, c);
+    } else {
+      bucket(b)[k] = [box0, now]; S.re++; S.miss.set(cid(c), c);
+      S.q.push(c);
+    }
+    try{ saveSR(); }catch(e){}
+    try{ updateKanjiCount(); }catch(e){}
+  }
+  function undo(){
+    if (!S || !S.hist.length || S.busy) return;
+    const h = S.hist.pop();
+    S.q = h.q; S.ok = h.ok; S.no = h.no; S.re = h.re; S.miss = h.miss; S.end = false;
+    if (h.prev) bucket(h.b)[h.k] = h.prev; else delete bucket(h.b)[h.k];
+    try{ saveSR(); }catch(e){}
+    renderSession(true);
+  }
+  function fly(g, dx, dy){
+    if (!S || S.busy || S.end) return;
+    const el = $i('nk-cur'); if (!el) return;
+    S.busy = true; closePopSafe();
+    const W = Math.max(window.innerWidth, 400), H = Math.max(window.innerHeight, 500);
+    el.classList.remove('drag'); el.classList.add('fly');
+    el.style.setProperty('--p' + g, 1);
+    el.style.transform = g === 're' ? `translate(${(dx || 0) * .3}px, ${H}px) rotate(${(dx || 0) / 30}deg)` : `translate(${(g === 'ok' ? 1 : -1) * W * 1.2}px, ${(dy || 0) + 30}px) rotate(${g === 'ok' ? 24 : -24}deg)`;
+    el.style.opacity = '0';
+    setTimeout(() => { grade(g); S.busy = false; renderSession(true); }, reduce() ? 0 : 260);
+  }
+  function setDrag(el, dx, dy){
+    const W = el.offsetWidth || 300, lim = W * .28;
+    el.style.transform = `translate(${dx}px, ${Math.max(dy, -30)}px) rotate(${dx / 16}deg)`;
+    const horiz = Math.abs(dx) >= Math.abs(dy);
+    el.style.setProperty('--pok', horiz ? Math.max(0, Math.min(1, dx / lim)) : 0);
+    el.style.setProperty('--pno', horiz ? Math.max(0, Math.min(1, -dx / lim)) : 0);
+    el.style.setProperty('--pre', !horiz ? Math.max(0, Math.min(1, dy / 110)) : 0);
+  }
+  function resetDrag(el){
+    el.style.transform = ''; ['--pok', '--pno', '--pre'].forEach(p => el.style.removeProperty(p));
+  }
+  let lastDrag = 0;
+  function bindDrag(el){
+    let st = null;
+    el.addEventListener('pointerdown', e => {
+      if (e.button > 0 || S.busy) return;
+      if (e.target.closest('button, a, input, textarea, select, .mys, .autoex, .tk')) return;
+      st = {x:e.clientX, y:e.clientY, t:performance.now(), id:e.pointerId, drag:false, sc:e.target.closest('.nk-scroll')};
+    });
+    el.addEventListener('pointermove', e => {
+      if (!st || e.pointerId !== st.id) return;
+      const dx = e.clientX - st.x, dy = e.clientY - st.y;
+      if (!st.drag){
+        if (Math.hypot(dx, dy) < 10) return;
+        const sc = st.sc;
+        if (sc && Math.abs(dy) > Math.abs(dx) && sc.scrollHeight > sc.clientHeight + 2 && !(dy > 0 && sc.scrollTop <= 0)){ st = null; return; }
+        st.drag = true; el.classList.add('drag');
+        try{ el.setPointerCapture(e.pointerId); }catch(_){}
+      }
+      e.preventDefault();
+      setDrag(el, dx, dy);
+    });
+    const end = e => {
+      if (!st || e.pointerId !== st.id) return;
+      const s = st; st = null; if (!s.drag) return;
+      lastDrag = performance.now();
+      const dx = e.clientX - s.x, dy = e.clientY - s.y, dt = Math.max(1, performance.now() - s.t), vx = dx / dt, vy = dy / dt, W = el.offsetWidth || 300;
+      let g = null;
+      if (Math.abs(dx) >= Math.abs(dy)){ if (Math.abs(dx) > W * .28 || (Math.abs(vx) > .55 && Math.abs(dx) > 40)) g = dx > 0 ? 'ok' : 'no'; }
+      else if (dy > 0 && (dy > 110 || (vy > .55 && dy > 40))) g = 're';
+      if (g) fly(g, dx, dy); else { el.classList.remove('drag'); resetDrag(el); }
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', () => { if (st && st.drag){ el.classList.remove('drag'); resetDrag(el); } st = null; });
+  }
+
+  // ---- events ----
+  root.addEventListener('click', e => {
+    const t = e.target;
+    // deck screen
+    const del = t.closest('[data-del]');
+    if (del){
+      e.stopPropagation();
+      if (!del.classList.contains('arm')){ del.classList.add('arm'); del.textContent = 'Sil?'; setTimeout(() => { if (del.isConnected){ del.classList.remove('arm'); del.textContent = '✕'; } }, 2500); return; }
+      MY.splice(+del.dataset.del, 1); ls.set('decks', MY); renderDecks(); return;
+    }
+    const cf = t.closest('[data-cfg]');
+    if (cf){
+      const g = cf.dataset.cfg, v = cf.dataset.val;
+      if (g === 'n'){ CFG.n = +v; root.querySelectorAll('[data-cfg="n"]').forEach(b => b.setAttribute('aria-pressed', b === cf)); }
+      else { const L = CFG[g], on = L.includes(v); if (on && L.length === 1) return; CFG[g] = on ? L.filter(x => x !== v) : L.concat(v); cf.setAttribute('aria-pressed', !on); }
+      saveCfg(); updMix(); return;
+    }
+    if (t.id === 'nk-mixgo'){ const tp = CFG.topic && topicById(CFG.topic); start(tp ? `${tp.jp || tp.tr} · karışık` : 'Karışık deste', mixCards(CFG), CFG.n, 'mix'); return; }
+    if (t.id === 'nk-save'){ $i('nk-name').hidden = false; $i('nk-nm').focus(); return; }
+    if (t.id === 'nk-nmno'){ $i('nk-name').hidden = true; return; }
+    if (t.id === 'nk-nmok'){
+      const tp = CFG.topic && topicById(CFG.topic);
+      const nm = $i('nk-nm').value.trim() || `${tp ? (tp.jp || tp.tr) : 'Karışık'} · ${CFG.kinds.map(k => KN[k]).join(', ')} · ${CFG.lvls.join('/')}`;
+      MY.push({name:nm, cfg:JSON.parse(JSON.stringify(CFG))}); ls.set('decks', MY); toast(`“${nm}” kaydedildi`); renderDecks(); return;
+    }
+    const dk = t.closest('[data-deck]');
+    if (dk){
+      const d = dk.dataset.deck;
+      if (d === 'miss') start('Bilmediklerim', missCards(), 0, 'miss');
+      else if (d.startsWith('my:')){ const m = MY[+d.slice(3)]; if (m) start(m.name, mixCards(m.cfg), m.cfg.n, d); }
+      else if (d.startsWith('t:')){ const x = DK && DK.get(d.slice(2)); if (x) start(x.name, x.cards, 0, d); }
+      else if (d.startsWith('top:')){ const x = topicById(d.slice(4)); if (x) start(x.jp ? `${x.jp} · ${x.tr}` : x.tr, x.cards, 0, d); }
+      return;
+    }
+    // session
+    if (t.closest('#nk-back')){ S = null; renderDecks(); window.scrollTo({top:0}); return; }
+    if (t.id === 'nk-again' && S){ start(S.name, S.src, S.n, S.key); return; }
+    if (t.id === 'nk-missgo' && S){ start('Zorlandıklarım', [...S.miss.values()], 0, 'smiss'); return; }
+    if (t.closest('#nk-dir')){ OPT.dir = OPT.dir === 'jp' ? 'tr' : 'jp'; ls.set('opt', OPT); renderSession(false); return; }
+    if (t.closest('#nk-furi')){ OPT.furi = !OPT.furi; ls.set('opt', OPT); renderSession(false); return; }
+    if (t.closest('#nk-undo')){ undo(); return; }
+    if (t.closest('#nk-flip')){ flip(); return; }
+    const gb = t.closest('.nk-acts [data-g]'); if (gb){ fly(gb.dataset.g, 0, 0); return; }
+    // the card itself
+    if (t.closest('#nk-cur')){
+      if (performance.now() - lastDrag < 400) return;
+      const tk = t.closest('.tk'); if (tk){ try{ openPop(tk); }catch(_){} return; }
+      const kd = t.closest('[data-kd]');
+      if (kd){ const ch = kd.dataset.kd; STUDY.kd[ch] ? delete STUDY.kd[ch] : (STUDY.kd[ch] = 1); try{ saveStudy(); }catch(_){} kd.textContent = STUDY.kd[ch] ? '✓ Öğrendim' : 'Öğrendim olarak işaretle'; return; }
+      if (t.closest('button, a, input, textarea, select, label, .mys, .autoex')) return;
+      flip();
+    }
+  });
+  root.addEventListener('change', e => {
+    if (e.target.id === 'nk-weak'){ CFG.weak = e.target.checked; saveCfg(); updMix(); }
+    if (e.target.id === 'nk-topic'){ CFG.topic = e.target.value; saveCfg(); updMix(); }
+  });
+  root.addEventListener('keydown', e => { if (e.target.id === 'nk-nm' && e.key === 'Enter'){ e.preventDefault(); $i('nk-nmok').click(); } });
+  document.addEventListener('keydown', e => {
+    if ($i('view-cards').hidden || !S || S.end || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/input|textarea|select/i.test(e.target.tagName) || e.target.isContentEditable) return;
+    const k = e.key;
+    let used = true;
+    if (k === 'ArrowRight') fly('ok', 0, 0);
+    else if (k === 'ArrowLeft') fly('no', 0, 0);
+    else if (k === 'ArrowDown') fly('re', 0, 0);
+    else if (k === ' ' || k === 'Enter' || k === 'ArrowUp') flip();
+    else if (k === 'z' || k === 'Z' || k === 'Backspace') undo();
+    else used = false;
+    if (used){ e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  // ---- hook into the notebook ----
+  window.startCards = function(){ if (S && !S.end) renderSession(false); else if (S && S.end) renderDone(); else renderDecks(); };
+  window.updateCardCount = function(){ const e = $i('cn'); if (e) e.textContent = ''; };
+  window.updateCardCount();
+  window.NK = {renderDecks, start, mixCards, topicDecks, state: () => S};
+})();
+
 </script>
 <script src="../offline/lookup.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('../sw.js').catch(function(){});</script>

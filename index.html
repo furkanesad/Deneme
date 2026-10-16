@@ -161,7 +161,7 @@ kbd{font:600 .78rem var(--tr);border:1px solid var(--rule);border-bottom-width:2
       </div>
 
       <div class="search">
-        <input id="hq" placeholder="Ara: 食べる, taberu, ahtapot…" autocomplete="off" aria-label="Kelime, kanji, kalıp ya da fiil ara">
+        <input id="hq" placeholder="Ara: 食べる, taberu, ahtapot…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Kelime, kanji, kalıp ya da fiil ara">
         <div class="seg">
           <button data-go="defter" style="--c:var(--v)">Kelime</button>
           <button data-go="tabi" style="--c:var(--a)">Kalıp</button>
@@ -225,8 +225,8 @@ kbd{font:600 .78rem var(--tr);border:1px solid var(--rule);border-bottom-width:2
     ensure(p, hash);
     if (cur === p) return;
     const to = ORDER.indexOf(p);
-    Object.values(panes).forEach(x => { x.classList.remove('active'); x.classList.toggle('left', ORDER.indexOf(x.dataset.p) < to); });
-    panes[p].classList.add('active'); panes[p].classList.remove('left');
+    Object.values(panes).forEach(x => { x.classList.remove('active'); x.classList.toggle('left', ORDER.indexOf(x.dataset.p) < to); x.inert = true; x.setAttribute('aria-hidden', 'true'); });
+    panes[p].classList.add('active'); panes[p].classList.remove('left'); panes[p].inert = false; panes[p].removeAttribute('aria-hidden');
     tabs.forEach(t => t.setAttribute('aria-current', String(t.dataset.p === p)));
     cur = p; store.set('last', p);
     document.getElementById('reload').hidden = p === 'home';
@@ -243,12 +243,19 @@ kbd{font:600 .78rem var(--tr);border:1px solid var(--rule);border-bottom-width:2
     if (m.to === 'cekimler' && q) hash = '#v=' + encodeURIComponent(q);
     show(m.to, hash);
   }
-  window.addEventListener('message', e => { if (e.origin === location.origin || e.origin === 'null') navMsg(e.data); });
+  window.addEventListener('message', e => { if (e.origin === location.origin || (location.protocol === 'file:' && e.origin === 'null')) navMsg(e.data); });
   document.addEventListener('click', e => {
     const t = e.target.closest('[data-p]'); if (t && !t.classList.contains('pane')){ show(t.dataset.p); return; }
     const g = e.target.closest('[data-go]'); if (g){ navMsg({type:'nav', to:g.dataset.go, q:document.getElementById('hq').value, kat:true}); return; }
-    if (e.target.closest('[data-lib]')){ show('defter'); setTimeout(() => { try{ const d = frameOf('defter').contentDocument; const b = d && d.getElementById('ol-btn'); if (b) b.click(); }catch(x){} }, 700); }
+    if (e.target.closest('[data-lib]')){ show('defter'); openLib(0); }
   });
+  // 📚 paneli: Defter iframe'i yüklenene kadar bekle (yavaş telefonda 700 ms yetmiyordu)
+  function openLib(n){
+    let b = null;
+    try{ const d = panes.defter.classList.contains('ready') && frameOf('defter').contentDocument; b = d && d.getElementById('ol-btn'); }catch(x){}
+    if (b){ setTimeout(() => b.click(), 150); return; }
+    if (n < 100) setTimeout(() => openLib(n + 1), 200);
+  }
   document.getElementById('hq').addEventListener('keydown', e => { if (e.key === 'Enter') navMsg({type:'nav', to:'defter', q:e.target.value}); });
   document.getElementById('reload').onclick = () => { const f = cur && frameOf(cur); if (f){ panes[cur].classList.remove('ready'); f.contentWindow.location.reload(); } };
   window.addEventListener('hashchange', () => { const p = location.hash.replace('#',''); if (panes[p] && p !== cur) show(p); });
@@ -257,7 +264,7 @@ kbd{font:600 .78rem var(--tr);border:1px solid var(--rule);border-bottom-width:2
   try{
     const st = JSON.parse(localStorage.getItem('okuma-study') || 'null');
     if (st){ const n = Object.keys(st.pin || {}).length; document.getElementById('st-defter').textContent = `Defterinde ${n.toLocaleString('tr')} kelime var`; }
-    const tm = localStorage.getItem('tabi:mode') || localStorage.getItem('mode'); if (tm) document.getElementById('st-tabi').textContent = `Son bölüm: ${ {trip:'Seyahat', def:'Defter', kat:'Kalıplar', oyun:'Oyun', kur:'Kur'}[tm] || tm }`;
+    let tm = localStorage.getItem('tk_mode'); try{ tm = JSON.parse(tm); }catch(x){} if (tm) document.getElementById('st-tabi').textContent = `Son bölüm: ${ {trip:'Seyahat', def:'Defter', kat:'Kalıplar', oyun:'Oyun', kur:'Kur'}[tm] || tm }`;
   }catch(e){}
   if (!store.get('lastApp', '')){ const l = store.get('last', ''); if (META[l]) store.set('lastApp', l); }
   renderResume();

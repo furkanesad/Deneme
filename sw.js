@@ -1,5 +1,5 @@
 // Çevrimdışı önbellek: ilk açılışta tüm dosyaları indirir, sonra internetsiz çalışır.
-const CACHE = 'japonca-v18';
+const CACHE = 'japonca-v19';
 const FILES = [
  "./",
  "index.html",
@@ -37,7 +37,7 @@ const FILES = [
 ];
 // Yazı tipleri (Google Fonts) de önbelleğe alınır; internetsizken de aynı görünsün.
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
-self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
+self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, {cache: 'reload'})))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 // sayfa adresinden ?… ve #… atılır, böylece her arama için ayrı kopya birikmez
 const pageKey = url => { const u = new URL(url); u.search = ''; u.hash = ''; return u.href; };
@@ -45,6 +45,7 @@ const offlineReply = () => new Response('<!doctype html><meta charset="utf-8"><m
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
+  if (url.origin !== location.origin && !FONT_HOSTS.includes(url.hostname)) return;   // dış bağlantılar: tarayıcıya bırak
   const isPage = e.request.mode === 'navigate' || (url.origin === location.origin && /\.html?$|\/$/.test(url.pathname));
   if (isPage){
     // sayfalar: önce ağ (güncellemeler görünsün), 4 sn içinde cevap yoksa ya da internet yoksa önbellek
@@ -53,7 +54,7 @@ self.addEventListener('fetch', e => {
       const fromCache = () => caches.match(pageKey(e.request.url), {ignoreSearch: true}).then(hit => hit || offlineReply());
       // yavaş bağlantı: önbellekte varsa onu göster; yoksa ağı beklemeye devam et
       const timer = setTimeout(() => caches.match(pageKey(e.request.url), {ignoreSearch: true}).then(hit => { if (hit && !done){ done = true; resolve(hit); } }), 4000);
-      fetch(e.request).then(r => {
+      fetch(e.request.url, {cache: 'no-cache', credentials: 'same-origin'}).then(r => {
         if (r.ok){ const c = r.clone(); caches.open(CACHE).then(x => x.put(pageKey(e.request.url), c)); }
         if (!done){ done = true; clearTimeout(timer); resolve(r); }
       }).catch(() => fromCache().then(r => { if (!done){ done = true; clearTimeout(timer); resolve(r); } }));

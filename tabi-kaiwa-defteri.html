@@ -461,7 +461,8 @@ function playAll(block){
 }
 
 /* state */
-const store={get(k,d){try{const v=localStorage.getItem('tk_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('tk_'+k,JSON.stringify(v));}catch(e){}}};
+/* yedek sürüm kendi anahtarlarını kullanır (tky_); çevrimdışı sürüm tk_ kullanır. İlerleme (prog) bir kez eski anahtardan alınır. */
+const store={get(k,d){try{let v=localStorage.getItem('tky_'+k);if(v===null&&k==='prog')v=localStorage.getItem('tk_prog');return v===null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem('tky_'+k,JSON.stringify(v));}catch(e){}}};
 const state={notes:store.get('notes',true),furi:store.get('furi',true),tr:store.get('tr',true),prac:store.get('prac',false),mode:store.get('mode','trip'),otype:store.get('otype','mix'),olv:store.get('olv','all'),kg:store.get('kg','all'),kch:store.get('kch','trip'),og:store.get('og','all'),odiff:store.get('odiff','orta'),cur:store.get('cur',0),dcur:store.get('dcur',0),wf:store.get('wf','all')};
 const list=()=>state.mode==='def'?DEF.themes:SCENES;
 const curIdx=()=>state.mode==='def'?state.dcur:state.cur;

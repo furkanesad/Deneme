@@ -590,6 +590,9 @@ details{border-radius:12px}
 .un-p .ex{border-top:1px dashed var(--line);padding-top:6px;font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
 .un-p .ex span{display:block;font-size:.86rem;color:var(--muted)}
 .un-p b.em{color:var(--c-g)}
+.un-goal{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c-v);border-radius:10px;padding:8px 12px;color:var(--ink)!important}
+.un-rep{font-size:.88rem;color:var(--muted);margin:8px 0 0}
+.un-rep b{color:var(--ink)}
 .un-empty{color:var(--muted);font-size:.9rem;margin:0}
 @media (max-width:480px){.un-row .mn{flex:1 1 100%;margin-left:0;text-align:left;max-width:none}}
 </style>
@@ -3828,61 +3831,184 @@ function safeDb(d){
   const colW = c => ({doc: id => docW(c.doc(id)), limit: n => { const q = c.limit(n); return {get: async () => { const r = await q.get(); return {docs: (r.docs || []).map(snap)}; }}; }, get: async () => { const r = await c.get(); return {docs: (r.docs || []).map(snap)}; }});
   return {doc: path => docW(d.doc(path)), collection: path => colW(d.collection(path))};
 }
-// ---------- üniteler: seviye seviye, konu konu (kelime + kanji + gramer + kalıp) ----------
+// ---------- üniteler: ders kitabı gibi sıralı, durum/sahne bazlı üniteler ----------
+// Araştırma notu: aynı türden kelimeler (tüm renkler, tüm hayvanlar) birbirine karışır; bir sahneye ait
+// kelimeler (kafe: sipariş, menü, sıcak…) daha kolay öğrenilir. Bu yüzden üniteler sahne ve durumlardan kurulur,
+// kelime kategorileri ayrı "Kelime listeleri" olarak kalır.
 const UNITS = (() => {
-  const LV = ['N5', 'N4', 'N3', 'N2', 'N1'];
-  const KAL = window.KALIP || {cards:[]}, KON = window.KONU || {cats:[]};
-  let LIST = null, OPEN = null;
+  const LV = ['N5', 'N4', 'N3'], RANK = {N5:0, N4:1, N3:2, N2:3, N1:4};
+  const MAXW = 30, PARTW = 25, MINW = 10, MAXK = 15, MAXG = 6, MAXP = 3;
+  const KAL = window.KALIP || {cards:[]}, KON = window.KONU || {};
+  // ünite sırası: tanışma → zaman → yemek → alışveriş → ev → şehir/ulaşım → … (Genki / Irodori sırasına benzer)
+  const ORDER = ['sit:8','def:tanisma','trip:zatsudan','def:zaman','sit:19','def:tabemono','sit:0','trip:resutoran','trip:konbini','sit:6',
+    'def:kaimono','trip:kaimono','def:ie','sit:13','def:machi','trip:michi','trip:densha','sit:14','trip:takushi','def:donna','def:tsunagu',
+    'def:benkyo','sit:12','def:shumi','sit:10','sit:7','sit:20','def:shizen','sit:9','def:karada','sit:22','sit:2','trip:yakkyoku','def:kimochi',
+    'def:yaritori','sit:16','sit:17','def:shigoto','sit:11','sit:5','sit:1','sit:4','trip:okane','sit:18','trip:hoteru','trip:ryokan','trip:kuko',
+    'sit:15','trip:kanko','sit:21','sit:23','trip:shinnen','trip:fuyu','trip:donunca','trip:komatta','sit:3','trip:izakaya','def:n3'];
+  // her ünitenin "yapabilirim" hedefi
+  const CANDO = {
+    'sit:8':'Adımı, ülkemi, işimi ve hobilerimi söyleyerek kendimi tanıtabilirim.',
+    'def:tanisma':'Ailemi ve tanıdığım insanları anlatabilir, onlar hakkında soru sorabilirim.',
+    'trip:zatsudan':'Yeni tanıştığım biriyle kısa bir sohbet açıp sürdürebilirim.',
+    'def:zaman':'Gün, tarih, saat ve sayıları söyleyip sorabilirim.',
+    'sit:19':'Saati sorabilir, randevu ayarlayabilir, geç kalacağımı haber verebilirim.',
+    'def:tabemono':'Sevdiğim yiyecek ve içecekleri anlatabilir, ne yediğimi söyleyebilirim.',
+    'sit:0':'Kafede sipariş verebilir, yer ve Wi-Fi sorabilirim.',
+    'trip:resutoran':'Restoranda masa isteyip sipariş verebilir, hesabı isteyebilirim.',
+    'trip:konbini':'Markette ürün bulabilir, ısıtma ve poşet sorularına cevap verebilirim.',
+    'sit:6':'Süpermarkette rafları, fiyatı ve ödemeyi sorabilirim.',
+    'def:kaimono':'Giysi, renk ve fiyat hakkında konuşup alışveriş yapabilirim.',
+    'trip:kaimono':'Mağazada beden, renk ve fiyat sorup bir şey satın alabilirim.',
+    'def:ie':'Evimi ve günlük rutinimi anlatabilirim.',
+    'sit:13':'Ev ararken oda, kira ve komşular hakkında konuşabilirim.',
+    'def:machi':'Şehirde yer, yön ve ulaşım hakkında konuşabilirim.',
+    'trip:michi':'Yol sorabilir ve verilen tarifi anlayabilirim.',
+    'trip:densha':'Tren ve Shinkansen bileti alabilir, peronu ve aktarmayı sorabilirim.',
+    'sit:14':'Otobüste durağı, ücreti ve nerede ineceğimi sorabilirim.',
+    'trip:takushi':'Taksiye adres verip ücreti ve süreyi sorabilirim.',
+    'def:donna':'İnsanları, eşyaları ve yerleri sıfat ve zarflarla anlatabilirim.',
+    'def:tsunagu':'Soru sorabilir, cümleleri bağlaçlarla birbirine bağlayabilirim.',
+    'def:benkyo':'Okulum, derslerim ve dil öğrenmem hakkında konuşabilirim.',
+    'sit:12':'Dil okulunda ders, ödev ve sınav hakkında konuşabilirim.',
+    'def:shumi':'Hobilerimi ve gezilerimi anlatabilirim.',
+    'sit:10':'Birine hobilerini sorup kendi hobilerimi anlatabilirim.',
+    'sit:7':'Sinema, karaoke ve oyun salonunda bilet ve süre sorabilirim.',
+    'sit:20':'Fotoğraf çekmek için izin isteyebilir, fotoğraf çekmeyi rica edebilirim.',
+    'def:shizen':'Doğayı, havayı ve hayvanları anlatabilirim.',
+    'sit:9':'Hava hakkında kısa bir sohbet edebilirim.',
+    'def:karada':'Vücudumu ve sağlık durumumu anlatabilirim.',
+    'sit:22':'Kendimi iyi hissetmediğimi söyleyip ilaç isteyebilirim.',
+    'sit:2':'Hastanede kayıt yaptırıp şikâyetimi anlatabilirim.',
+    'trip:yakkyoku':'Eczanede belirtilerimi anlatıp uygun ilacı isteyebilirim.',
+    'def:kimochi':'Duygularımı ve düşüncelerimi ifade edebilirim.',
+    'def:yaritori':'Vermek, almak ve değişim bildiren fiillerle olanları anlatabilirim.',
+    'sit:16':'Birini bir yere davet edebilir, bir daveti kibarca reddedebilirim.',
+    'sit:17':'Duruma uygun biçimde özür dileyip teşekkür edebilirim.',
+    'def:shigoto':'İşim hakkında konuşabilir, iş yerinde kibar dil kullanabilirim.',
+    'sit:11':'Birine ne iş yaptığını sorup kendi işimi anlatabilirim.',
+    'sit:5':'Telefonda arama yapabilir, mesaj bırakıp rezervasyon yaptırabilirim.',
+    'sit:1':'Postanede kart ve paket gönderip pul alabilirim.',
+    'sit:4':'Bankada hesap, kart ve para çekme işlemlerini sorabilirim.',
+    'trip:okane':'ATM\'den para çekip nakit ödeme ve vergi iadesi yapabilirim.',
+    'sit:18':'Restoran, otel ya da bilet için rezervasyon yapabilirim.',
+    'trip:hoteru':'Otelde giriş ve çıkış yapabilir, oda hakkında istekte bulunabilirim.',
+    'trip:ryokan':'Ryokanda kalabilir, onsen kurallarını anlayabilirim.',
+    'trip:kuko':'Havaalanında giriş, bagaj ve gümrük işlemlerini yapabilirim.',
+    'sit:15':'Uçakta koltuk ve yemek isteyip formları doldurabilirim.',
+    'trip:kanko':'Tapınak ve türbeleri gezerken kuralları sorabilirim.',
+    'sit:21':'Hediyelik seçip paketlenmesini isteyebilirim.',
+    'sit:23':'Sakura, matsuri ve yılbaşı gibi etkinlikler hakkında konuşabilirim.',
+    'trip:shinnen':'Yılbaşı ziyaretlerini ve indirim alışverişini yapabilirim.',
+    'trip:fuyu':'Karlı ve soğuk havada gecikme ve iptallerle başa çıkabilirim.',
+    'trip:donunca':'Anlamadığımda tekrar ettirip yardım isteyebilirim.',
+    'trip:komatta':'Bir sorun ya da acil durumda yardım isteyebilirim.',
+    'sit:3':'Kuaförde nasıl bir kesim istediğimi anlatabilirim.',
+    'trip:izakaya':'İzakayada sipariş verip ortama uygun konuşabilirim.',
+    'def:n3':'Bir üst seviyeye geçmek için gereken kelime ve kalıpları kullanabilirim.'
+  };
+  let LIST = null, CATS = null, OPEN = null;
+  const isKanji = ch => /[一-鿿]/.test(ch);
   function build(){
     if (LIST) return LIST;
     const kj = new Map(KJ.map(k => [k[0], k])), pc = new Map(KAL.cards.map(c => [c.id, c]));
+    const all = [].concat(KON.themes || [], KON.sits || [], KON.scenes || []), byId = new Map(all.map(t => [t.id, t]));
+    const topics = ORDER.map(id => byId.get(id)).filter(Boolean).concat(all.filter(t => !ORDER.includes(t.id)));
+    const seenK = new Set();
     LIST = [];
     LV.forEach(lv => {
-      let no = 0;
-      (KON.cats || []).forEach(t => {
-        const words = t.words.filter(w => w[3] === lv);
-        if (words.length < 4) return;
-        const seen = new Set(), kanji = [];
-        words.forEach(w => [...w[0]].forEach(ch => { if (/[一-鿿]/.test(ch) && !seen.has(ch)){ seen.add(ch); kanji.push(kj.get(ch) || [ch, '', '', '', '', '']); } }));
-        const name = String(t.tr).trim();
-        LIST.push({id:lv + ':' + t.id, lv, no:++no, name, words, kanji,
-          gram:t.gram.filter(g => g[2] === lv), pats:t.cards.map(id => pc.get(id)).filter(c => c && c.lv === lv)});
+      const seenW = new Set(), us = [];
+      // 1) kelimeler: önce durumlar ve sahneler kendi kelimelerini alır; temalar (geniş konular) kalanlarla ünite olur
+      const claim = new Map();
+      topics.filter(t => !t.id.startsWith('def:')).forEach(t => {
+        const ws = t.words.filter(w => w[3] === lv && !claim.has(w[0]));
+        if (ws.length >= MINW) ws.forEach(w => claim.set(w[0], t.id));
       });
+      const extraG = [], extraP = [];   // küçük konuların gramer ve kalıpları kaybolmasın
+      topics.forEach(t => {
+        const words = t.words.filter(w => w[3] === lv && !seenW.has(w[0]) && (!claim.has(w[0]) || claim.get(w[0]) === t.id));
+        const gram = t.gram.filter(g => g[2] === lv), pats = t.cards.map(id => pc.get(id)).filter(c => c && c.lv === lv);
+        if (words.length < MINW){ extraG.push(...gram); extraP.push(...pats); return; }
+        words.forEach(w => seenW.add(w[0]));
+        const parts = words.length > MAXW ? Math.ceil(words.length / PARTW) : 1, size = Math.ceil(words.length / parts);
+        for (let k = 0; k < parts; k++) us.push({t, k, parts, words:words.slice(k * size, (k + 1) * size),
+          gC:gram.filter((g, n) => n % parts === k).concat(extraG.splice(0)), pC:pats.filter((c, n) => n % parts === k).concat(extraP.splice(0))});
+      });
+      if (us.length){ us[us.length - 1].gC.push(...extraG); us[us.length - 1].pC.push(...extraP); }
+      // 2) gramer ve kalıp: her öğe ilk geçtiği yerde "yeni"; seviyedeki tüm yeni öğeler ünitelere eşit dağıtılır
+      const spread = (key, cand, max) => {
+        const total = new Set(); us.forEach(u => u[cand].forEach(x => total.add(key(x))));
+        const seen = new Set(); let queue = [], left = total.size;
+        return us.map((u, n) => {
+          const own = [], rep = [];
+          u[cand].forEach(x => { const id = key(x); if (seen.has(id)){ if (!rep.some(y => key(y) === id)) rep.push(x); } else if (!own.some(y => key(y) === id) && !queue.some(y => key(y) === id)) own.push(x); });
+          queue = own.concat(queue);   // ünitenin kendi konusu önce
+          const cap = Math.min(max, Math.max(1, Math.ceil(left / (us.length - n))));
+          const take = queue.splice(0, cap); take.forEach(x => seen.add(key(x))); left -= take.length;
+          return {nw:take, rep};
+        });
+      };
+      const G = spread(g => g[0], 'gC', MAXG), P = spread(c => c.id, 'pC', MAXP);
+      // 3) kanji: yalnızca bu seviyeye kadar olanlar, ilk geçtiği ünitede, en fazla 15; fazlası sonraki üniteye
+      let qK = [];
+      us.forEach((u, n) => {
+        u.words.forEach(w => [...w[0]].forEach(ch => { const x = kj.get(ch); if (isKanji(ch) && x && RANK[x[1]] <= RANK[lv] && !seenK.has(ch) && !qK.includes(x)) qK.push(x); }));
+        const kNew = qK.splice(0, MAXK); kNew.forEach(x => seenK.add(x[0]));
+        const kOld = []; u.words.forEach(w => [...w[0]].forEach(ch => { const x = kj.get(ch); if (x && seenK.has(ch) && !kNew.includes(x) && !kOld.includes(x)) kOld.push(x); }));
+        LIST.push({id:`${lv}:${u.t.id}:${u.k}`, lv, no:n + 1, name:String(u.t.tr).trim(), jp:u.t.jp || '', part:u.parts > 1 ? 'ABCDEFGH'[u.k] : '',
+          cando:CANDO[u.t.id] || '', words:u.words, kanji:kNew, kanjiOld:kOld, gram:G[n].nw, gramRep:G[n].rep, pats:P[n].nw, patsRep:P[n].rep});
+      });
+      if (qK.length) LIST[LIST.length - 1].kanji.push(...qK.splice(0));
     });
     return LIST;
   }
-  // [漢字|かな] → furigana, 〈…〉 → vurgu
+  // kelime listeleri: eski kategori grupları (anlamca aynı türden kelimeler), ünitelerden ayrı
+  const cats = () => CATS || (CATS = (KON.cats || []).map(t => ({id:'cat:' + t.id, name:String(t.tr).trim(), words:t.words})));
   const fx = s => esc(s).replace(/\[([^|\]]+)\|([^\]]+)\]/g, '<ruby>$1<rt>$2</rt></ruby>').replace(/〈([^〉]*)〉/g, '<b class="em">$1</b>');
-  const cnt = u => [u.words.length + ' kelime', u.kanji.length ? u.kanji.length + ' kanji' : '', u.gram.length ? u.gram.length + ' gramer' : '', u.pats.length ? u.pats.length + ' kalıp' : ''].filter(Boolean).join(' · ');
+  const cnt = u => [u.words.length ? u.words.length + ' kelime' : '', u.kanji.length ? u.kanji.length + ' kanji' : '', u.gram.length ? u.gram.length + ' gramer' : '', u.pats.length ? u.pats.length + ' kalıp' : ''].filter(Boolean).join(' · ');
+  const title = u => `${esc(u.name)}${u.part ? ' ' + u.part : ''}`;
   function renderList(){
     const L = build();
-    let h = `<div class="un-head"><h2>Üniteler</h2><p>Seviye seviye, konu konu. Bir üniteye gir: kelimeleri, kanjileri, gramerleri ve kalıpları bir arada.</p></div>`;
+    let h = `<div class="un-head"><h2>Üniteler</h2><p>Ders kitabı gibi sıralı. Her ünite bir durum ya da konu: o seviyenin kelimeleri, yeni kanjileri, gramerleri ve kalıpları.</p></div>`;
     LV.forEach((lv, n) => {
       const us = L.filter(u => u.lv === lv); if (!us.length) return;
       h += `<details class="nk-sec" ${n === 0 ? 'open' : ''} style="margin-bottom:10px"><summary>${lv} <small>${us.length} ünite</small></summary><div class="nk-tiles">`;
-      us.forEach(u => { h += `<button class="nk-tile un-tile" data-unit="${esc(u.id)}"><span class="no">Ünite ${u.no}</span><span class="ic">${catIcon(u.name)}</span><span class="nm">${esc(u.name)}</span><span class="ct">${cnt(u)}</span></button>`; });
+      us.forEach(u => { h += `<button class="nk-tile un-tile" data-unit="${esc(u.id)}"><span class="no">Ünite ${u.no}</span><span class="nm">${title(u)}</span><span class="ct">${cnt(u)}</span></button>`; });
       h += `</div></details>`;
     });
+    h += `<details class="nk-sec" style="margin-top:6px"><summary>Kelime listeleri <small>kategoriye göre · ${cats().length}</small></summary><p class="un-empty">Aynı türden kelimeler (renkler, hayvanlar, aile…). Ünitelerin yanında başvuru listesi olarak kullan.</p><div class="nk-tiles">`;
+    cats().forEach(c => { h += `<button class="nk-tile un-tile" data-unit="${esc(c.id)}"><span class="ic">${catIcon(c.name)}</span><span class="nm">${esc(c.name)}</span><span class="ct">${c.words.length} kelime</span></button>`; });
+    h += `</div></details>`;
     $('un-root').innerHTML = h;
   }
+  const wordList = ws => `<div class="un-list">${ws.map(w => `<div class="un-row"><span class="jp">${esc(w[0])}</span><span class="rd">${esc(w[1] || '')}</span><span class="mn">${esc(w[2])}</span></div>`).join('')}</div>`;
+  const sec = (id, ttl, n, body, extra) => `<section class="un-sec" id="un-${id}"><h3>${ttl} <small>${n}</small></h3>${n ? body : '<p class="un-empty">Bu ünitede yeni öğe yok.</p>'}${extra || ''}</section>`;
+  const rep = (lab, xs) => xs.length ? `<p class="un-rep"><b>${lab}:</b> ${xs.map(esc).join(' · ')}</p>` : '';
   function renderUnit(u){
-    const sec = (id, title, n, body) => `<section class="un-sec" id="un-${id}"><h3>${title} <small>${n}</small></h3>${n ? body : '<p class="un-empty">Bu ünitede yok.</p>'}</section>`;
-    const words = `<div class="un-list">${u.words.map(w => `<div class="un-row"><span class="jp">${esc(w[0])}</span><span class="rd">${esc(w[1] || '')}</span><span class="mn">${esc(w[2])}</span></div>`).join('')}</div>`;
-    const kanji = `<div class="un-kj">${u.kanji.map(k => `<div class="un-k"><span class="big">${esc(k[0])}</span><b>${esc(k[4] || '')}</b>${k[2] ? `<span class="rd">On: ${esc(k[2])}</span>` : ''}${k[3] ? `<span class="rd">Kun: ${esc(k[3])}</span>` : ''}${k[1] ? `<span class="rd">${esc(k[1])}</span>` : ''}</div>`).join('')}</div>`;
+    const kanji = `<div class="un-kj">${u.kanji.map(k => `<div class="un-k"><span class="big">${esc(k[0])}</span><b>${esc(k[4] || '')}</b>${k[2] && k[2] !== '—' ? `<span class="rd">On: ${esc(k[2])}</span>` : ''}${k[3] && k[3] !== '—' ? `<span class="rd">Kun: ${esc(k[3])}</span>` : ''}<span class="rd">${esc(k[1])}</span></div>`).join('')}</div>`;
     const gram = `<div class="un-list">${u.gram.map(g => `<div class="un-row"><span class="jp">${esc(g[0])}</span><span class="mn">${esc(g[1])}</span></div>`).join('')}</div>`;
     const pats = u.pats.map(c => `<div class="un-p"><span class="pt">${c.t.map(x => esc(x[0])).join(' · ')}</span><span class="rd">${c.t.map(x => esc(x[1])).join(' · ')}</span>${(c.rows || []).map(r => `<div class="pr">${fx(r[0])} <span>${esc(r[1])}</span></div>`).join('')}${(c.ex || []).slice(0, 3).map(e => `<div class="ex">${fx(e[0])}<span>${esc(e[1])}</span></div>`).join('')}</div>`).join('');
     $('un-root').innerHTML = `<button class="un-back" id="un-back">← Üniteler</button>
-      <div class="un-head"><p>${u.lv} · Ünite ${u.no}</p><h2>${catIcon(u.name)} ${esc(u.name)}</h2><p>${cnt(u)}</p>
+      <div class="un-head"><p>${u.lv} · Ünite ${u.no}</p><h2>${title(u)}</h2>${u.cando ? `<p class="un-goal">🎯 <b>Bu ünitenin sonunda:</b> ${esc(u.cando)}</p>` : ''}<p>${cnt(u)}</p>
       <nav class="un-jump" aria-label="Bölümler"><a href="#un-w">Kelimeler</a><a href="#un-k">Kanji</a><a href="#un-g">Gramer</a><a href="#un-p">Kalıplar</a></nav></div>
-      ${sec('w', 'Kelimeler', u.words.length, words)}${sec('k', 'Kanji', u.kanji.length, kanji)}${sec('g', 'Gramer', u.gram.length, gram)}${sec('p', 'Kalıplar', u.pats.length, pats)}`;
+      ${u.words.length ? sec('w', 'Kelimeler', u.words.length, wordList(u.words)) : ''}
+      ${sec('k', 'Yeni kanji', u.kanji.length, kanji, rep('Daha önce öğrendiğin', u.kanjiOld.map(k => k[0])))}
+      ${sec('g', 'Yeni gramer', u.gram.length, gram, rep('Tekrar', u.gramRep.map(g => g[0])))}
+      ${sec('p', 'Yeni kalıplar', u.pats.length, pats, rep('Tekrar', u.patsRep.map(c => c.t.map(x => x[0]).join(' · '))))}`;
   }
-  function render(){ const u = OPEN && build().find(x => x.id === OPEN); u ? renderUnit(u) : renderList(); }
+  function renderCat(c){
+    $('un-root').innerHTML = `<button class="un-back" id="un-back">← Üniteler</button><div class="un-head"><p>Kelime listesi</p><h2>${catIcon(c.name)} ${esc(c.name)}</h2><p>${c.words.length} kelime</p></div>`
+      + ['N5', 'N4', 'N3', 'N2', 'N1'].map(lv => { const ws = c.words.filter(w => w[3] === lv); return ws.length ? sec('c' + lv, lv, ws.length, wordList(ws)) : ''; }).join('');
+  }
+  function render(){
+    if (OPEN && OPEN.startsWith('cat:')){ const c = cats().find(x => x.id === OPEN); if (c) return renderCat(c); }
+    const u = OPEN && build().find(x => x.id === OPEN); u ? renderUnit(u) : renderList();
+  }
   $('un-root').addEventListener('click', e => {
     const a = e.target.closest('.un-jump a'); if (a){ e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if (t) t.scrollIntoView({behavior:'smooth'}); return; }
     const t = e.target.closest('[data-unit]'); if (t){ OPEN = t.dataset.unit; render(); window.scrollTo({top:0}); return; }
     if (e.target.closest('#un-back')){ OPEN = null; render(); window.scrollTo({top:0}); }
   });
-  return {render};
+  return {render, build};
 })();
 // ---------- boot ----------
 (async () => {

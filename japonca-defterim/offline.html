@@ -682,7 +682,7 @@ details{border-radius:12px}
       <div class="ail" id="ai-g-list"></div></div>
     </details>
     <div class="filters">
-      <input id="f-q" class="qs" type="search" placeholder="Ara: kanji, kana, romaji ya da Türkçe…" aria-label="Ara">
+      <input id="f-q" class="qs" type="search" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Ara: kanji, kana, romaji ya da Türkçe…" aria-label="Ara">
       <div class="seg" id="f-lvl"><button data-x="all" aria-pressed="true">Tümü</button><button data-x="N5" aria-pressed="false">N5</button><button data-x="N4" aria-pressed="false">N4</button><button data-x="N3" aria-pressed="false">N3</button><button data-x="N2" aria-pressed="false">N2</button><button data-x="N1" aria-pressed="false">N1</button><button data-x="own" aria-pressed="false">Eklediğim</button></div>
     </div>
     <details class="flt" style="margin:6px 0 10px"><summary class="hint" style="cursor:pointer">⚙️ Filtre ve sıralama <span class="hint" id="cf-on"></span></summary>
@@ -729,7 +729,7 @@ details{border-radius:12px}
       <div class="seg" id="c-dir"><button data-d="jp" aria-pressed="true">JP → TR</button><button data-d="tr" aria-pressed="false">TR → JP</button></div>
       <div class="seg" id="c-view"><button data-w="one" aria-pressed="true">Tek kart</button><button data-w="list" aria-pressed="false">Liste</button></div>
       <button class="ghost" id="c-furi" aria-pressed="true" title="Kartın önyüzünde okunuş">Furigana açık</button>
-      <input id="c-q" class="qs" type="search" placeholder="Kelime ara…" aria-label="Kartlarda ara">
+      <input id="c-q" class="qs" type="search" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Kelime ara…" aria-label="Kartlarda ara">
       <button class="ghost" id="c-rand">🔀 Rastgele</button>
     </div>
       <div class="flab">Kategori</div><div class="chips" data-fl="cats"></div>
@@ -789,7 +789,7 @@ details{border-radius:12px}
 
   <div id="view-stats" class="view" hidden>
     <div class="vh"><h2>İstatistik</h2><p>Her kelimenin okumalarında (📖) ve kendi cümlelerinde (✎) kaç kez geçtiği.</p><div class="cl" hidden></div></div>
-    <div class="filters"><input class="qs" id="t-q" type="search" placeholder="Kelime ara…" aria-label="İstatistikte ara"></div>
+    <div class="filters"><input class="qs" id="t-q" type="search" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Kelime ara…" aria-label="İstatistikte ara"></div>
     <div class="flt"><div class="flab">Kategori</div><div class="chips" data-fl="cats"></div><div class="flab">Tür</div><div class="chips" data-fl="types"></div></div>
     <p class="hint" id="t-sum" style="margin-top:10px"></p>
     <div class="stl" id="t-list"></div>
@@ -1264,6 +1264,12 @@ let db = null, uid = null, sample = null, busy = false;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// localStorage writes: a failed write (full storage, blocked site data) is shown once in a while instead of being swallowed
+let saveFailAt = 0;
+function saveFail(){ const n = Date.now(); if (n - saveFailAt < 15000) return; saveFailAt = n; try{ toast('Kayıt başarısız: depolama dolu olabilir', true); }catch(e){} }
+function lsSet(k, v){ try{ localStorage.setItem(k, v); return true; }catch(e){ saveFail(); return false; } }
+// stored state is written back only after it has been read; until then a save would overwrite it with empty defaults
+const LOADED = {state:false, sr:false, study:false};
 
 // ---------- storage ----------
 // words/grammar the user added from their own texts; appended after the built-in lists so indices stay stable
@@ -1281,11 +1287,12 @@ async function loadCustom(){
   applyCustom(cv, cg);
 }
 async function saveCustom(){
-  try{ localStorage.setItem('okuma-custom', JSON.stringify({v:CV, g:CG})); }catch(e){}
+  if (!LOADED.state) return;
+  lsSet('okuma-custom', JSON.stringify({v:CV, g:CG}));
   if (db && uid) await db.doc(`data/users/${uid}/custom`).set({v:CV, g:CG});
 }
 function localLoad(){ try{ const s = JSON.parse(localStorage.getItem('okuma-state')||'null'); if(s){ st = {n:s.n||0, cv:fix(s.cv,V.length), cg:fix(s.cg,G.length)}; } texts = JSON.parse(localStorage.getItem('okuma-texts')||'[]'); }catch(e){} }
-function localSave(){ try{ localStorage.setItem('okuma-state', JSON.stringify(st)); localStorage.setItem('okuma-texts', JSON.stringify(texts)); }catch(e){} }
+function localSave(){ if (!LOADED.state) return; lsSet('okuma-state', JSON.stringify(st)) && lsSet('okuma-texts', JSON.stringify(texts)); }
 async function load(){
   await loadCustom();
   if (db && uid){
@@ -1448,7 +1455,7 @@ function renderOvr(active){
   const T = todayCards();
   const t = (id, jp, tr, n, tot, on) => `<button class="ovt" data-ovt="${id}" aria-pressed="${on}"><span class="ojp">${jp}</span><span class="lab">${tr}</span><span class="val">${n}<small> / ${tot}</small></span><span class="pb"><i style="width:${(n / Math.max(1, tot) * 100).toFixed(1)}%"></i></span></button>`;
   const html = t('gram', '文法', 'Gramer', gOk, gb.length, active === 'gram') + t('kanji', '漢字', 'Kanji', kOk, KJ.length, active === 'kanji') + t('vocab', '単語', 'Kelime', vOk, vb.length, active === 'vocab') + t('jk', '熟語', 'İkili kanji', jOk, JK.length, active === 'jk')
-    + `<button class="ovtoday" data-ovt="cards">🃏 Bugün <b>${T.rev + T.newLeft}</b> kart seni bekliyor <span>Kartlara git →</span></button>`;
+    + `<button class="ovtoday" data-ovt="cards">🃏 Bugün <b>${T.rev + T.newLeft + T.newKLeft}</b> kart seni bekliyor <span>Kartlara git →</span></button>`;
   document.querySelectorAll('[data-ov]').forEach(el => { el.innerHTML = html; });
 }
 document.addEventListener('click', e => {
@@ -1456,6 +1463,7 @@ document.addEventListener('click', e => {
   const id = b.dataset.ovt;
   if (id === 'jk'){ KF.set = 'jk'; document.querySelectorAll('#k-set button').forEach(x => x.setAttribute('aria-pressed', x.dataset.x === 'jk')); showView('kanji'); }
   else if (id === 'kanji'){ KF.set = 'k'; document.querySelectorAll('#k-set button').forEach(x => x.setAttribute('aria-pressed', x.dataset.x === 'k')); showView('kanji'); }
+  else if (id === 'cards'){ showView('cards'); if (window.NK && NK.startToday) NK.startToday(); }
   else showView(id);
   window.scrollTo({top:0});
 });
@@ -1551,7 +1559,7 @@ function showView(v){
   if (v==='cards'){ try{ prFillCats(); }catch(e){} }
   if (v==='gen') renderGenChips();
   if (v==='stats'){ renderFilterChips(); renderStats(); }
-  try{ localStorage.setItem('okuma-view', v); }catch(e){}
+  lsSet('okuma-view', v);
   if (!restoring && PLACE.view !== v){ PLACE.view = v; savePlace(true); }
 }
 document.querySelectorAll('#modesw button').forEach(b => b.onclick = () => { const m = b.dataset.mode; showView((PLACE.lv && PLACE.lv[m]) || (m === 'read' ? 'read' : 'vocab')); });
@@ -1872,14 +1880,16 @@ async function loadSR(){
   if (db && uid){ try{ const s = await db.doc(`data/users/${uid}/srs`).get(); if (s.exists) d = thaw(s.data()); }catch(e){} }
   if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-srs')||'null'); }catch(e){} }
   SR = {v:(d && d.v) || {}, g:(d && d.g) || {}, k:(d && d.k) || {}, p:(d && d.p) || {}, w:(d && d.w) || {}, q:(d && d.q) || {}};
+  LOADED.sr = true;
   // carry over box/due stored on added items by the earlier card version
   CV.forEach((x,k) => { if ((x[7] || x[8]) && !SR.v[BASEV+k]) SR.v[BASEV+k] = [x[7]||0, x[8]||0]; });
   CG.forEach((x,k) => { if ((x[5] || x[6]) && !SR.g[BASEG+k]) SR.g[BASEG+k] = [x[5]||0, x[6]||0]; });
 }
 function saveSR(){
+  if (!LOADED.sr) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
-    try{ localStorage.setItem('okuma-srs', JSON.stringify(SR)); }catch(e){}
+    lsSet('okuma-srs', JSON.stringify(SR));
     if (db && uid){ try{ await db.doc(`data/users/${uid}/srs`).set(SR); }catch(e){ $('c-sum').innerHTML = `<span class="err">Kart ilerlemesi kaydedilemedi (kod: ${esc(e && e.code || 'hata')}).</span>`; } }
   }, 1200);
 }
@@ -2239,7 +2249,7 @@ function scanWords(pi, a, b){
 function setMode(m){
   tapMode = m;
   document.querySelectorAll('#mode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === m));
-  try{ localStorage.setItem('okuma-mode', m); }catch(e){}
+  lsSet('okuma-mode', m);
   closePop();
 }
 function openSentence(tk){
@@ -2347,7 +2357,7 @@ document.querySelectorAll('#mode button').forEach(b => b.onclick = () => setMode
 function setLevel(l){
   LVL = l;
   document.querySelectorAll('#lvlsel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === l));
-  try{ localStorage.setItem('okuma-level', l); }catch(e){}
+  lsSet('okuma-level', l);
   renderProgress();
 }
 document.querySelectorAll('#lvlsel button').forEach(b => b.onclick = () => setLevel(b.dataset.l));
@@ -2410,7 +2420,7 @@ const KURO_JS = '../offline/kuromoji.js';
 const DIC_SUFFIX = '.wasm';
 (function(){ const open = XMLHttpRequest.prototype.open; XMLHttpRequest.prototype.open = function(m, u){ if (typeof u === 'string' && !/^[a-z]+:/i.test(u) && /(^|\/)dict\/+[a-z_]+\.dat\.gz$/.test(u)) arguments[1] = u.replace(/dict\/+/, 'dict/') + DIC_SUFFIX; return open.apply(this, arguments); }; })();
 const DIC_LOCAL = 'dict/', DIC_CDN = DIC_LOCAL; // çevrimdışı sürüm: sözlük her zaman yerel
-const LIB = {kuro:'idle', kuroWhy:'', kuroSrc:'', cdnDict:'', tl:'idle', tlWhy:'', google:'', mymemory:'', claude:'', ime:'', voice:''};
+const LIB = {kuro:'idle', kuroWhy:'', kuroSrc:'', cdnDict:'', google:'', mymemory:'', claude:'', ime:'', voice:''};
 function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = () => res(); s.onerror = () => rej(new Error('betik yüklenemedi: ' + src)); document.head.appendChild(s); }); }
 function withTimeout(p, ms, why){ let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error(why || 'zaman aşımı')), ms); })]).finally(() => clearTimeout(t)); }
 async function fetchT(url, ms){ const c = new AbortController(), t = setTimeout(() => c.abort(), ms || 8000); try{ return await fetch(url, {signal:c.signal}); } finally { clearTimeout(t); } }
@@ -2513,26 +2523,12 @@ async function analyzeInto(el, text){
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-gq]'); if (!b) return; F.q = b.dataset.gq.replace(/[〜~]/g, ''); document.querySelectorAll('.qs').forEach(o => o.value = F.q); F.lvl = 'all'; F.st = 'all'; showView('gram'); });
 
-// ---------- grammar check: textlint bundle from Kelime Defterim, else light rules ----------
-let tlP = null;
-function loadTextlint(){
-  if (window.jaGrammarChecker) return Promise.resolve();
-  if (tlP) return tlP;
-  LIB.tl = 'loading'; renderLibStat();
-  tlP = (async () => {
-    await loadKuro();
-    window.kuromojin = {dicPath:kuroBase};
-    await withTimeout(loadScript('vendor/ja-grammar-check.js'), 40000, 'textlint paketi zaman aşımı');
-    if (!window.jaGrammarChecker) throw new Error('textlint paketi yüklendi ama çalışmadı');
-    LIB.tl = 'ok'; renderLibStat();
-  })().catch(e => { LIB.tl = 'fail'; LIB.tlWhy = e.message || String(e); tlP = null; renderLibStat(); throw e; });
-  return tlP;
-}
+// ---------- grammar check: light offline rules ----------
 function lightCheck(text){
   const m = [], t = text.trim();
   if (/(見|来|食べ|寝|起き|出|着|借り|教え|覚え|考え)れ(る|ます|ない|た)/.test(t)) m.push('ら抜き言葉 olabilir: yeterlilik biçimi 〜られる olmalı (食べられる, 見られる).');
   if (/(は|が|を|に|で)\1/.test(t.replace(/では|には|ので/g, ''))) m.push('Aynı parçacık art arda yazılmış olabilir.');
-  if (/(です|ます|ました|ません)[。！？]/.test(t) && /(る|た|だ|ない)[。！？]/.test(t)) m.push('Kibar (です/ます) ve düz biçim aynı metinde karışmış.');
+  if (/(です|ます|ました|ません)[。！？]/.test(t) && /(?<!まし|でし)た[。！？]|(る|だ|ない)[。！？]/.test(t)) m.push('Kibar (です/ます) ve düz biçim aynı metinde karışmış.');
   if (/(を).{0,6}を/.test(t) && !/[、。]/.test(t.slice(t.indexOf('を'), t.lastIndexOf('を')))) m.push('Kısa aralıkla iki を var; cümleyi gözden geçir.');
   if (t && !/[。！？!?」]$/.test(t)) m.push('Cümle 。 ile bitmiyor.');
   t.split(/(?<=[。！？])/).forEach(s => { if (s.length > 80) m.push(`Çok uzun cümle (${s.length} karakter); bölmeyi düşün.`); });
@@ -2540,16 +2536,9 @@ function lightCheck(text){
 }
 async function grammarInto(el, text){
   el.hidden = false; el.innerHTML = '<p class="hint">Gramer kontrolü yapılıyor…</p>';
-  let msgs = null, why = '';
-  try{ await loadTextlint(); msgs = await withTimeout(window.jaGrammarChecker.checkJapaneseGrammar(text), 60000, 'kontrol zaman aşımı'); }catch(e){ why = e.message || String(e); }
   const toks = kuroTok ? kAnalyze(text) : null;
-  let html = '';
-  if (msgs){
-    html += msgs.length ? `<div class="flab">textlint: ${msgs.length} olası sorun</div><ul class="gl">${msgs.map(x => `<li>${esc(String(x.message).split('\n')[0])} <span class="hint">(${esc(x.ruleId || '')})</span></li>`).join('')}</ul>` : '<p class="ok">✓ textlint belirgin bir dilbilgisi/üslup sorunu bulmadı.</p>';
-  } else {
-    const lm = lightCheck(text);
-    html += `<p class="err">textlint gramer kontrolü çalışmadı: ${esc(why)}. Hafif kontrol kullanıldı.</p>` + (lm.length ? `<ul class="gl">${lm.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="ok">✓ Hafif kontrol bir sorun bulmadı.</p>');
-  }
+  const lm = lightCheck(text);
+  let html = '<p class="hint">Hafif (çevrimdışı) gramer kontrolü.</p>' + (lm.length ? `<ul class="gl">${lm.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="ok">✓ Hafif kontrol bir sorun bulmadı.</p>');
   html += patternsHtml(detectPatterns(text, toks));
   el.innerHTML = html;
 }
@@ -2557,7 +2546,7 @@ async function grammarInto(el, text){
 // ---------- translation: Google → MyMemory → Claude, cached per sentence ----------
 const TRC = new Map();
 try{ Object.entries(JSON.parse(localStorage.getItem('okuma-trc') || '{}')).forEach(([k, v]) => TRC.set(k, v)); }catch(e){}
-function saveTRC(){ try{ localStorage.setItem('okuma-trc', JSON.stringify(Object.fromEntries([...TRC].slice(-300)))); }catch(e){} }
+function saveTRC(){ lsSet('okuma-trc', JSON.stringify(Object.fromEntries([...TRC].slice(-300)))); }
 async function translate(text, opts){
   text = String(text || '').trim(); if (!text) return null;
   if (!(opts && opts.fresh) && TRC.has(text)) return TRC.get(text);
@@ -2617,7 +2606,6 @@ function renderLibStat(){
   el.innerHTML = [
     libRow('wanakana (romaji → kana)', window.wanakana ? 'ok' : 'yüklenemedi', 'çalışıyor: kelime ve cümle kutuları'),
     libRow('kuromoji (morfolojik analiz)', LIB.kuro === 'fail' ? LIB.kuroWhy : LIB.kuro, 'çalışıyor, sözlük: ' + LIB.kuroSrc, LIB.cdnDict && LIB.cdnDict !== 'ok' ? `jsDelivr sözlüğü: ${LIB.cdnDict}` : ''),
-    false && libRow('Gramer kontrolü (textlint)', LIB.tl === 'fail' ? LIB.tlWhy + ' → hafif kontrol kullanılıyor' : LIB.tl, 'çalışıyor'),
     libRow('Çeviri: Google', LIB.google || 'idle', 'çalışıyor'),
     libRow('Çeviri: MyMemory', LIB.mymemory || 'idle', 'çalışıyor'),
     libRow('Kanji önerisi: Google Input Tools', LIB.ime ? (LIB.ime === 'ok' ? 'ok' : LIB.ime + ' → uygulama sözlüğü kullanılıyor') : 'idle', 'çalışıyor'),
@@ -2690,12 +2678,13 @@ async function loadStudy(){
   let d = null;
   if (db && uid){ try{ const s = await db.doc(`data/users/${uid}/study`).get(); if (s.exists) d = thaw(s.data()); }catch(e){} }
   if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-study') || 'null'); }catch(e){} }
-  STUDY = normStudy(d);
+  STUDY = normStudy(d); LOADED.study = true;
   if (STUDY.allAdded !== 2){ V.forEach(v => { if (!STUDY.hide[v[0]]) STUDY.pin[v[0]] = 1; }); G.forEach(g => { STUDY.gpin[g[0]] = 1; }); STUDY.allAdded = 2; saveStudy(); }   // çevrimdışı kopya: kütüphanedeki tüm kelimeler deftere eklenir
   if (!STUDY.seeded){ DEFAULT_CATS.forEach(addCat); STUDY.seeded = true; saveStudy(); }
 }
 function saveStudy(now){
-  try{ localStorage.setItem('okuma-study', JSON.stringify(STUDY)); }catch(e){}
+  if (!LOADED.study) return Promise.resolve();
+  lsSet('okuma-study', JSON.stringify(STUDY));
   if (!(db && uid)) return Promise.resolve();
   clearTimeout(studyT);
   const run = () => { studyT = null; return db.doc(`data/users/${uid}/study`).set(STUDY).then(() => true, e => { toast(`Kaydedilemedi (kod: ${e && e.code || 'hata'})`, true); throw e; }); };
@@ -2726,12 +2715,19 @@ function flPass(i){
   if (FL.types.size && !FL.types.has(typeOf(i))) return false;
   return true;
 }
-const latin = s => /^[a-z' -]+$/i.test(s);
+const latin = s => /^[a-zı' -]+$/i.test(s);
+// romaji → kana once per query (not once per word); the Turkish lowering turns a typed "I" into "ı", which is "i" in romaji
+const QK = {q:null, k:''};
+function qKana(q){
+  if (QK.q !== q){ QK.q = q; let k = ''; if (latin(q) && window.wanakana){ k = wanakana.toHiragana(q.replace(/ı/g, 'i')); if (/[a-z]/i.test(k)) k = ''; } QK.k = k; }
+  return QK.k;
+}
 function qPass(x, q){
   if (!q) return true;
   const s = nrm(x.join(' '));
   if (s.includes(q)) return true;
-  if (latin(q) && window.wanakana){ const k = wanakana.toHiragana(q); if (k && !/[a-z]/i.test(k) && hira(s).includes(k)) return true; }
+  const k = qKana(q);
+  if (k && hira(s).includes(k)) return true;
   return false;
 }
 function speak(t){
@@ -3399,6 +3395,7 @@ function logAct(what, n){
 function logRead(no){ const L = logToday(); L.rdn = L.rdn || []; if (L.rdn.includes(no)) return; L.rdn.push(no); logAct('rd'); }
 // cards waiting today: reviews that are due, plus new cards up to today's limit
 function todayCards(){
+  if (window.NK && NK.todayCount) return NK.todayCount();
   const now = Date.now(), L = logToday(), P = paceOf();
   let rev = 0, newV = 0;
   V.forEach((x, i) => { if (!eligible(true, i)) return; const r = SR.v[i]; if (r){ if (r[1] <= now) rev++; } else newV++; });
@@ -3453,8 +3450,8 @@ function renderToday(){
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-td]'); if (!b) return;
   const id = b.dataset.td;
-  if (id === 'rev' || id === 'new'){ CK.kind = 'all'; CK.scope = 'due'; CK.group = ''; CK.lvl = 'all'; CK.view = 'one'; showView('cards'); }
-  else if (id === 'kanji'){ CK.kind = 'k'; CK.scope = 'due'; CK.group = ''; CK.lvl = 'all'; CK.view = 'one'; showView('cards'); }
+  if (id === 'rev' || id === 'new'){ CK.kind = 'all'; CK.scope = 'due'; CK.group = ''; CK.lvl = 'all'; CK.view = 'one'; showView('cards'); if (window.NK && NK.startToday) NK.startToday(); }
+  else if (id === 'kanji'){ CK.kind = 'k'; CK.scope = 'due'; CK.group = ''; CK.lvl = 'all'; CK.view = 'one'; showView('cards'); if (window.NK && NK.startToday) NK.startToday(); }
   else if (id === 'read'){ showView('read'); if (!current || (logToday().rdn || []).includes(current.no)) next(); else logRead(current.no); }
   else if (id === 'write'){ showView('cards'); }
 });
@@ -3480,7 +3477,7 @@ let VREAD = null;
 function rubyWord(w){ if (!VREAD){ VREAD = new Map(); V.forEach((v, i) => { const f = first(v[0]); if ((v[1] || '').trim() && !VREAD.has(f)) VREAD.set(f, i); }); } const i = VREAD.has(w) ? VREAD.get(w) : -1; return i < 0 ? `<span data-furi="${esc(w)}">${esc(w)}</span>` : wordRuby(i); }
 const FGC = (() => { try{ return JSON.parse(localStorage.getItem('okuma-fgc') || '{}'); }catch(e){ return {}; } })();
 let fgcT = null;
-const fgcSave = () => { clearTimeout(fgcT); fgcT = setTimeout(() => { try{ const ks = Object.keys(FGC); if (ks.length > 3000) ks.slice(0, ks.length - 3000).forEach(k => delete FGC[k]); localStorage.setItem('okuma-fgc', JSON.stringify(FGC)); }catch(e){} }, 1000); };
+const fgcSave = () => { clearTimeout(fgcT); fgcT = setTimeout(() => { try{ const ks = Object.keys(FGC); if (ks.length > 3000) ks.slice(0, ks.length - 3000).forEach(k => delete FGC[k]); lsSet('okuma-fgc', JSON.stringify(FGC)); }catch(e){} }, 1000); };
 // quick version from the app's own dictionary (no download): exact dictionary words only
 function localFuri(text){
   text = String(text); let out = '', p = 0;
@@ -3538,7 +3535,7 @@ function itemOf(key){
 }
 // an example sentence for every card: from your texts when one exists, otherwise Claude writes one (cached on this device)
 const EXC = (() => { try{ return JSON.parse(localStorage.getItem('okuma-exc') || '{}'); }catch(e){ return {}; } })();
-const excSave = () => { try{ const ks = Object.keys(EXC); if (ks.length > 1500) ks.slice(0, ks.length - 1500).forEach(k => delete EXC[k]); localStorage.setItem('okuma-exc', JSON.stringify(EXC)); }catch(e){} };
+const excSave = () => { try{ const ks = Object.keys(EXC); if (ks.length > 1500) ks.slice(0, ks.length - 1500).forEach(k => delete EXC[k]); lsSet('okuma-exc', JSON.stringify(EXC)); }catch(e){} };
 const exPending = new Map();
 function exRowHtml(key, jp, tr, src){
   const have = exList(key).some(x => x.text === jp);
@@ -3774,7 +3771,7 @@ $('rst-go').onclick = e => arm(e.currentTarget, resetAll);
 // ---------- place + backup ----------
 function savePlace(remote){
   PLACE.at = Date.now(); if (CK) PLACE.ck = Object.assign({}, CK);
-  try{ localStorage.setItem('okuma-place', JSON.stringify(PLACE)); }catch(e){}
+  lsSet('okuma-place', JSON.stringify(PLACE));
   if (remote && db && uid){ clearTimeout(placeTimer); placeTimer = setTimeout(() => { db.doc(`data/users/${uid}/progress`).update({place:PLACE}).catch(() => {}); }, 3000); }
 }
 function scrollRatio(){ const r = $('reader'); return r.offsetHeight ? Math.max(0, Math.min(1, (window.scrollY - r.offsetTop + 20) / r.offsetHeight)) : 0; }
@@ -3861,7 +3858,7 @@ async function applyBackup(){
     texts = [...byNo.values()].sort((a,c) => a.no - c.no);
     if (b.place) PLACE = Object.assign({text:null, scroll:0, view:'read', ck:null}, b.place);
     PLACE.at = Date.now();
-    localSave(); try{ localStorage.setItem('okuma-custom', JSON.stringify({v:CV, g:CG})); localStorage.setItem('okuma-srs', JSON.stringify(SR)); localStorage.setItem('okuma-place', JSON.stringify(PLACE)); }catch(e){}
+    localSave(); lsSet('okuma-custom', JSON.stringify({v:CV, g:CG})) && lsSet('okuma-srs', JSON.stringify(SR)) && lsSet('okuma-place', JSON.stringify(PLACE));
     if (db && uid){
       await db.doc(`data/users/${uid}/custom`).set({v:CV, g:CG});
       await db.doc(`data/users/${uid}/srs`).set(SR);
@@ -3905,14 +3902,16 @@ function safeDb(d){
 // ---------- boot ----------
 (async () => {
   renderProgress();
+  // the Claude host injects window.claude before the page runs; offline it is absent, so don't hold the boot for it
   let c = window.claude;
-  for (let k = 0; k < 20 && !(c && c.use); k++){ await new Promise(r => setTimeout(r, 150)); c = window.claude; }
+  if (c) for (let k = 0; k < 2 && !c.use; k++){ await new Promise(r => setTimeout(r, 150)); c = window.claude; }
   if (c && c.use){
     const [d, u, s, dl] = await Promise.all([c.use('db'), c.use('user'), Promise.resolve(null), c.use('downloads')]);
     db = d ? safeDb(d) : null; sample = s; downloads = dl;
     if (u){ try{ uid = await u.id(); }catch(e){} }
   }
   await load();
+  LOADED.state = true;
   st.cv = fix(st.cv, V.length); st.cg = fix(st.cg, G.length);
   await loadSR();
   await loadStudy();
@@ -3938,7 +3937,7 @@ function safeDb(d){
 // Deep link: #q=kelime → Kelimeler sekmesinde arar (kütüphane görünümü)
 (function(){
   let first = true;
-  function apply(){ let q = null; const m = location.hash.match(/^#q=(.*)$/); if (m) q = decodeURIComponent(m[1]); else if (first){ const sp = new URLSearchParams(location.search); if (sp.has('q')) q = sp.get('q'); } first = false; if (q === null) return; try{
+  function apply(){ let q = null; const m = location.hash.match(/^#q=(.*)$/); if (m){ try{ q = decodeURIComponent(m[1]); }catch(e){ q = m[1]; } } else if (first){ const sp = new URLSearchParams(location.search); if (sp.has('q')) q = sp.get('q'); } first = false; if (q === null) return; try{
     F.st = 'lib'; F.lvl = 'all'; document.querySelectorAll('#f-st button').forEach(b => b.setAttribute('aria-pressed', b.dataset.x === 'lib')); document.querySelectorAll('#f-lvl button').forEach(b => b.setAttribute('aria-pressed', b.dataset.x === 'all'));
     showView('vocab'); F.q = q; const i = document.getElementById('f-q'); if (i){ i.value = q; i.dispatchEvent(new Event('input', {bubbles:true})); } renderLists(); window.scrollTo(0, 0);
   }catch(e){} }
@@ -3958,7 +3957,7 @@ function safeDb(d){
   const LVS = ['N5', 'N4', 'N3', 'N2', 'N1'];
   const ls = {
     get(k, d){ try{ const v = localStorage.getItem('nk-' + k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
-    set(k, v){ try{ localStorage.setItem('nk-' + k, JSON.stringify(v)); }catch(e){} }
+    set(k, v){ lsSet('nk-' + k, JSON.stringify(v)); }
   };
   const OPT = Object.assign({dir:'jp', furi:true}, ls.get('opt', {}));
   const CFG = Object.assign({kinds:['v', 'g', 'p'], lvls:['N5', 'N4'], n:30, weak:true, topic:''}, ls.get('cfg', {}));
@@ -3972,7 +3971,9 @@ function safeDb(d){
   const rec = c => bucket(B(c))[K(c)];
   const boxOf = c => (rec(c) || [0])[0];
   const seenC = c => !!rec(c);
-  const knownC = c => boxOf(c) >= 3;
+  const dueAt = c => (rec(c) || [0, 0])[1] || 0;
+  const learnedC = c => boxOf(c) >= 3;                        // shown as ✓ on the tiles
+  const knownC = c => learnedC(c) && dueAt(c) > Date.now();   // "Bildiğim kartları çıkar": only until the card is due again
   const missC = c => seenC(c) && boxOf(c) === 0;
   const lvOf = c => (c.kind === 'p' ? KAL.cards[c.i].lv : c.kind === 'w' ? TW[c.i][3] : c.kind === 'q' ? TQ[c.i][2] : lvlOf(c)) || 'N1';
   const cid = c => c.kind + ':' + c.i;
@@ -4053,6 +4054,31 @@ function safeDb(d){
     });
     return out;
   }
+  // ---- today's deck: due reviews (any kind) + new cards up to the daily limits of the plan ----
+  const LRK = {N5:0, N4:1, N3:2, N2:3, N1:4};
+  function todaySplit(){
+    POOLS = null;   // eligibility can change (pins, loaded notebook), so count from fresh pools
+    const P = pools(), now = Date.now(), pace = paceOf(), L = logToday();
+    const rev = [], newW = [], newK = [];
+    KINDS.forEach(k => P[k].forEach(c => {
+      const r = rec(c);
+      if (r){ if ((r[1] || 0) <= now) rev.push(c); }
+      else (k === 'k' || k === 'j' ? newK : newW).push(c);
+    }));
+    rev.sort((a, b) => dueAt(a) - dueAt(b));
+    const byLv = (a, b) => (LRK[lvOf(a)] ?? 5) - (LRK[lvOf(b)] ?? 5);
+    newW.sort(byLv); newK.sort(byLv);
+    const nW = Math.max(0, pace.nw - (L.nw || 0)), nK = Math.max(0, pace.nk - (L.nk || 0));
+    return {rev, newW:newW.slice(0, nW), newK:newK.slice(0, nK)};
+  }
+  function todayCount(){ const T = todaySplit(); return {rev:T.rev.length, newLeft:T.newW.length, newKLeft:T.newK.length}; }
+  function startToday(){
+    S = null; POOLS = null;
+    const T = todaySplit(), cards = T.rev.concat(T.newW, T.newK);
+    if (!cards.length){ renderDecks(); toast('Bugünlük kart kalmadı 👏'); return; }
+    S = {name:'🌅 Bugün', key:'today', src:cards, n:0, q:cards.slice(), total:cards.length, ok:0, no:0, re:0, flipped:false, hist:[], first:new Set(), miss:new Map(), busy:false, end:false};
+    renderSession(true);
+  }
   function missCards(){ const P = pools(), out = []; KINDS.forEach(k => P[k].forEach(c => { if (missC(c)) out.push(c); })); return out; }
   // weakest first: "bilmiyorum" cards, then new ones, then the rest by box; shuffled inside each group
   function order(cards, n){
@@ -4067,7 +4093,7 @@ function safeDb(d){
   let S = null;      // current session
   let DK = null;     // topic decks of the last render
   const tile = (attrs, cls, ic, name, cards, extra) => {
-    const n = cards.length, kn = cards.filter(knownC).length, ms = cards.filter(missC).length;
+    const n = cards.length, kn = cards.filter(learnedC).length, ms = cards.filter(missC).length;
     return `<button class="nk-tile ${cls}" ${attrs}><span class="ic">${esc(ic)}</span><span class="nm">${esc(name)}</span><span class="ct">${n} kart${kn ? ` · <b>${kn} ✓</b>` : ''}${ms ? ` · <span class="z">${ms} ✗</span>` : ''}</span><span class="bar"><i style="width:${(kn / Math.max(1, n) * 100).toFixed(1)}%"></i></span>${extra || ''}</button>`;
   };
   function renderDecks(){
@@ -4085,15 +4111,17 @@ function safeDb(d){
       <div class="nk-go"><button class="nk-btn" id="nk-mixgo"></button><button class="nk-ghost" id="nk-save">Desteyi kaydet</button></div>
       <div class="nk-name" id="nk-name" hidden><input id="nk-nm" maxlength="40" placeholder="Deste adı, ör. N5 karışık" aria-label="Deste adı"><button class="nk-btn" id="nk-nmok">Kaydet</button><button class="nk-ghost" id="nk-nmno">Vazgeç</button></div>
     </section>`;
-    if (MY.length || mis.length){
-      h += `<details class="nk-sec" open><summary>Destelerim <small>${MY.length + (mis.length ? 1 : 0)}</small></summary><div class="nk-tiles">`;
+    {
+      const T = todaySplit(), tn = T.rev.length + T.newW.length + T.newK.length;
+      h += `<details class="nk-sec" open><summary>Destelerim <small>${MY.length + (mis.length ? 1 : 0) + 1}</small></summary><div class="nk-tiles">`;
+      h += `<button class="nk-tile k-mix special" data-deck="today"><span class="ic">🌅</span><span class="nm">Bugün</span><span class="ct">${tn ? `${T.rev.length} tekrar · ${T.newW.length + T.newK.length} yeni` : 'bugünlük bitti ✓'}</span><span class="bar"><i style="width:0%"></i></span></button>`;
       if (mis.length) h += tile('data-deck="miss"', 'k-miss special', '✗', 'Bilmediklerim', mis);
       MY.forEach((d, n) => { h += tile(`data-deck="my:${n}"`, 'k-mix', '混', d.name, mixCards(d.cfg), `<span class="x" data-del="${n}" role="button" aria-label="Desteyi sil">✕</span>`); });
       h += `</div></details>`;
     }
     // karışık konu desteleri: her sahne / tema için kelime + gramer + kalıp
     const mixTile = t => {
-      const n = t.cards.length, kn = t.cards.filter(knownC).length, ms = t.cards.filter(missC).length;
+      const n = t.cards.length, kn = t.cards.filter(learnedC).length, ms = t.cards.filter(missC).length;
       const nw = t.cards.filter(c => c.kind === 'v' || c.kind === 'w').length, ng = t.cards.filter(c => c.kind === 'g' || c.kind === 'q').length, np = t.cards.filter(c => c.kind === 'p').length;
       return `<button class="nk-tile k-top" data-deck="top:${esc(t.id)}" style="--tc:${esc(t.c || (t.kind === 'sit' ? 'var(--c-k)' : t.kind === 'kat' ? 'var(--c-v)' : 'var(--ai)'))}"><span class="ic">${t.kind === 'trip' ? `<small>${esc(t.code)}</small>` : ''}${t.jp ? esc(t.jp) : (t.kind === 'kat' ? catIcon(t.tr) : '語')}</span><span class="nm">${esc(t.tr)}</span><span class="ct">${nw} kelime · ${ng ? ng + ' gramer · ' : ''}${np} kalıp${kn ? ` · <b>${kn} ✓</b>` : ''}${ms ? ` · <span class="z">${ms} ✗</span>` : ''}</span><span class="bar"><i style="width:${(kn / Math.max(1, n) * 100).toFixed(1)}%"></i></span></button>`;
     };
@@ -4240,13 +4268,16 @@ function safeDb(d){
     const now = Date.now(), box0 = prev ? prev[0] : 0;
     S.q.shift();
     if (g === 'ok'){
-      const box = Math.min(DAYS.length - 1, box0 + 1); bucket(b)[k] = [box, now + DAYS[box] * 864e5]; S.ok++;
+      // the box only moves up when the card was due (or new); knowing it again before then keeps its schedule
+      const due = !prev || (prev[1] || 0) <= now;
+      const box = due ? Math.min(DAYS.length - 1, box0 + 1) : box0;
+      bucket(b)[k] = due ? [box, now + DAYS[box] * 864e5] : prev.slice(); S.ok++;
       if (c.kind === 'k'){ const ch = KJ[c.i][0]; if (box >= 4 && !STUDY.kd[ch]){ STUDY.kd[ch] = 1; try{ saveStudy(); toast(`${ch} öğrenildi olarak işaretlendi`); }catch(e){} } }
     } else if (g === 'no'){
       bucket(b)[k] = [0, now]; S.no++; S.miss.set(cid(c), c);
       S.q.splice(Math.min(S.q.length, 3), 0, c);
     } else {
-      bucket(b)[k] = [box0, now]; S.re++; S.miss.set(cid(c), c);
+      bucket(b)[k] = prev ? prev.slice() : [0, now]; S.re++; S.miss.set(cid(c), c);
       S.q.push(c);
     }
     try{ saveSR(); }catch(e){}
@@ -4269,7 +4300,8 @@ function safeDb(d){
     el.style.setProperty('--p' + g, 1);
     el.style.transform = g === 're' ? `translate(${(dx || 0) * .3}px, ${H}px) rotate(${(dx || 0) / 30}deg)` : `translate(${(g === 'ok' ? 1 : -1) * W * 1.2}px, ${(dy || 0) + 30}px) rotate(${g === 'ok' ? 24 : -24}deg)`;
     el.style.opacity = '0';
-    setTimeout(() => { grade(g); S.busy = false; renderSession(true); }, reduce() ? 0 : 260);
+    const ses = S;
+    setTimeout(() => { if (S !== ses) return; grade(g); S.busy = false; renderSession(true); }, reduce() ? 0 : 260);
   }
   function setDrag(el, dx, dy){
     const W = el.offsetWidth || 300, lim = W * .28;
@@ -4345,15 +4377,16 @@ function safeDb(d){
     const dk = t.closest('[data-deck]');
     if (dk){
       const d = dk.dataset.deck;
-      if (d === 'miss') start('Bilmediklerim', missCards(), 0, 'miss');
+      if (d === 'today') startToday();
+      else if (d === 'miss') start('Bilmediklerim', missCards(), 0, 'miss');
       else if (d.startsWith('my:')){ const m = MY[+d.slice(3)]; if (m) start(m.name, mixCards(m.cfg), m.cfg.n, d); }
       else if (d.startsWith('t:')){ const x = DK && DK.get(d.slice(2)); if (x) start(x.name, x.cards, 0, d); }
       else if (d.startsWith('top:')){ const x = topicById(d.slice(4)); if (x) start(x.jp ? `${x.jp} · ${x.tr}` : x.tr, x.cards, 0, d); }
       return;
     }
     // session
-    if (t.closest('#nk-back')){ S = null; renderDecks(); window.scrollTo({top:0}); return; }
-    if (t.id === 'nk-again' && S){ start(S.name, S.src, S.n, S.key); return; }
+    if (t.closest('#nk-back')){ if (S && S.busy) return; S = null; renderDecks(); window.scrollTo({top:0}); return; }
+    if (t.id === 'nk-again' && S){ if (S.key === 'today') startToday(); else start(S.name, S.src, S.n, S.key); return; }
     if (t.id === 'nk-missgo' && S){ start('Zorlandıklarım', [...S.miss.values()], 0, 'smiss'); return; }
     if (t.closest('#nk-dir')){ OPT.dir = OPT.dir === 'jp' ? 'tr' : 'jp'; ls.set('opt', OPT); renderSession(false); return; }
     if (t.closest('#nk-furi')){ OPT.furi = !OPT.furi; ls.set('opt', OPT); renderSession(false); return; }
@@ -4393,7 +4426,7 @@ function safeDb(d){
   window.startCards = function(){ if (S && !S.end) renderSession(false); else if (S && S.end) renderDone(); else renderDecks(); };
   window.updateCardCount = function(){ const e = $i('cn'); if (e) e.textContent = ''; };
   window.updateCardCount();
-  window.NK = {renderDecks, start, mixCards, topicDecks, state: () => S};
+  window.NK = {renderDecks, start, startToday, todayCount, mixCards, topicDecks, state: () => S};
 })();
 
 </script>

@@ -1048,7 +1048,7 @@ const G = [["〜は〜です", "…dır, …dir (tanımlama)", "N5", "Temel yap�
 const GOAL = 5;
 const RANK = {N5:1, N4:2, N3:3, N2:4, N1:5};
 let LVL = 'N4';
-try{ const l = localStorage.getItem('okuma-level'); if (RANK[l]) LVL = l; }catch(e){}
+try{ const l = localStorage.getItem('okuma-yedek-level'); if (RANK[l]) LVL = l; }catch(e){}
 const inLvl = l => RANK[l] <= RANK[LVL];
 const LVLTXT = () => LVL === 'N4' ? 'N5–N4' : LVL === 'N3' ? 'N4–N3' : 'N3–N2';
 const THEMES = ['sabah rutini','hafta sonu','iş yerinde bir gün','Tokyo\'da ilk gün','Kyoto gezisi','restoranda','konbinide alışveriş','tren istasyonunda','arkadaşla plan yapmak','hastalanmak','hediye almak','yağmurlu bir gün','taşınmak','doğum günü partisi','tatil anıları','Japonca kursu','bir mektup','kayıp eşya','komşularla','spor ve sağlık','yemek yapmak','kış mevsimi','otelde','müzeye gitmek','aile ziyareti'];
@@ -1058,7 +1058,7 @@ let texts = [];         // {no,title,body,tr,tv,tg}
 let current = null;
 // where the reader left off: open text, scroll position in it, tab, card filters
 let PLACE = {text:null, scroll:0, view:'read', ck:null, at:0};
-try{ Object.assign(PLACE, JSON.parse(localStorage.getItem('okuma-place')||'{}')); }catch(e){}
+try{ Object.assign(PLACE, JSON.parse(localStorage.getItem('okuma-yedek-place')||'{}')); }catch(e){}
 let placeTimer = null, restoring = false;
 let db = null, uid = null, sample = null, busy = false;
 
@@ -1077,15 +1077,15 @@ function applyCustom(cv, cg){
 async function loadCustom(){
   let cv = [], cg = [];
   if (db && uid){ try{ const s = await db.doc(`data/users/${uid}/custom`).get(); if (s.exists){ const d = thaw(s.data()); cv = d.v || []; cg = d.g || []; } }catch(e){} }
-  else { try{ const d = JSON.parse(localStorage.getItem('okuma-custom')||'null'); if (d){ cv = d.v||[]; cg = d.g||[]; } }catch(e){} }
+  else { try{ const d = JSON.parse(localStorage.getItem('okuma-yedek-custom')||'null'); if (d){ cv = d.v||[]; cg = d.g||[]; } }catch(e){} }
   applyCustom(cv, cg);
 }
 async function saveCustom(){
-  try{ localStorage.setItem('okuma-custom', JSON.stringify({v:CV, g:CG})); }catch(e){}
+  try{ localStorage.setItem('okuma-yedek-custom', JSON.stringify({v:CV, g:CG})); }catch(e){}
   if (db && uid) await db.doc(`data/users/${uid}/custom`).set({v:CV, g:CG});
 }
-function localLoad(){ try{ const s = JSON.parse(localStorage.getItem('okuma-state')||'null'); if(s){ st = {n:s.n||0, cv:fix(s.cv,V.length), cg:fix(s.cg,G.length)}; } texts = JSON.parse(localStorage.getItem('okuma-texts')||'[]'); }catch(e){} }
-function localSave(){ try{ localStorage.setItem('okuma-state', JSON.stringify(st)); localStorage.setItem('okuma-texts', JSON.stringify(texts)); }catch(e){} }
+function localLoad(){ try{ const s = JSON.parse(localStorage.getItem('okuma-yedek-state')||'null'); if(s){ st = {n:s.n||0, cv:fix(s.cv,V.length), cg:fix(s.cg,G.length)}; } texts = JSON.parse(localStorage.getItem('okuma-yedek-texts')||'[]'); }catch(e){} }
+function localSave(){ try{ localStorage.setItem('okuma-yedek-state', JSON.stringify(st)); localStorage.setItem('okuma-yedek-texts', JSON.stringify(texts)); }catch(e){} }
 async function load(){
   await loadCustom();
   if (db && uid){
@@ -1346,7 +1346,7 @@ function showView(v){
   if (v==='cards'){ try{ prFillCats(); }catch(e){} }
   if (v==='gen') renderGenChips();
   if (v==='stats'){ renderFilterChips(); renderStats(); }
-  try{ localStorage.setItem('okuma-view', v); }catch(e){}
+  try{ localStorage.setItem('okuma-yedek-view', v); }catch(e){}
   if (!restoring && PLACE.view !== v){ PLACE.view = v; savePlace(true); }
 }
 document.querySelectorAll('#modesw button').forEach(b => b.onclick = () => { const m = b.dataset.mode; showView((PLACE.lv && PLACE.lv[m]) || (m === 'read' ? 'read' : 'vocab')); });
@@ -1665,7 +1665,7 @@ let queue = [], cur = null, shown = false, saveTimer = null;
 async function loadSR(){
   let d = null;
   if (db && uid){ try{ const s = await db.doc(`data/users/${uid}/srs`).get(); if (s.exists) d = thaw(s.data()); }catch(e){} }
-  if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-srs')||'null'); }catch(e){} }
+  if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-yedek-srs')||'null'); }catch(e){} }
   SR = {v:(d && d.v) || {}, g:(d && d.g) || {}, k:(d && d.k) || {}};
   // carry over box/due stored on added items by the earlier card version
   CV.forEach((x,k) => { if ((x[7] || x[8]) && !SR.v[BASEV+k]) SR.v[BASEV+k] = [x[7]||0, x[8]||0]; });
@@ -1674,7 +1674,7 @@ async function loadSR(){
 function saveSR(){
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
-    try{ localStorage.setItem('okuma-srs', JSON.stringify(SR)); }catch(e){}
+    try{ localStorage.setItem('okuma-yedek-srs', JSON.stringify(SR)); }catch(e){}
     if (db && uid){ try{ await db.doc(`data/users/${uid}/srs`).set(SR); }catch(e){ $('c-sum').innerHTML = `<span class="err">Kart ilerlemesi kaydedilemedi (kod: ${esc(e && e.code || 'hata')}).</span>`; } }
   }, 1200);
 }
@@ -2007,7 +2007,7 @@ function lookup(pi, o){
   return best;
 }
 let popCtx = null, askCtl = null, tapMode = 'word';
-try{ if (localStorage.getItem('okuma-mode') === 'sent') tapMode = 'sent'; }catch(e){}
+try{ if (localStorage.getItem('okuma-yedek-mode') === 'sent') tapMode = 'sent'; }catch(e){}
 const sentCache = new Map();
 function sentenceRange(pi, o){
   const p = paraPlain[pi] || ''; let a = o, b = o;
@@ -2034,7 +2034,7 @@ function scanWords(pi, a, b){
 function setMode(m){
   tapMode = m;
   document.querySelectorAll('#mode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === m));
-  try{ localStorage.setItem('okuma-mode', m); }catch(e){}
+  try{ localStorage.setItem('okuma-yedek-mode', m); }catch(e){}
   closePop();
 }
 function openSentence(tk){
@@ -2142,7 +2142,7 @@ document.querySelectorAll('#mode button').forEach(b => b.onclick = () => setMode
 function setLevel(l){
   LVL = l;
   document.querySelectorAll('#lvlsel button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === l));
-  try{ localStorage.setItem('okuma-level', l); }catch(e){}
+  try{ localStorage.setItem('okuma-yedek-level', l); }catch(e){}
   renderProgress();
 }
 document.querySelectorAll('#lvlsel button').forEach(b => b.onclick = () => setLevel(b.dataset.l));
@@ -2344,8 +2344,8 @@ async function grammarInto(el, text){
 
 // ---------- translation: Google → MyMemory → Claude, cached per sentence ----------
 const TRC = new Map();
-try{ Object.entries(JSON.parse(localStorage.getItem('okuma-trc') || '{}')).forEach(([k, v]) => TRC.set(k, v)); }catch(e){}
-function saveTRC(){ try{ localStorage.setItem('okuma-trc', JSON.stringify(Object.fromEntries([...TRC].slice(-300)))); }catch(e){} }
+try{ Object.entries(JSON.parse(localStorage.getItem('okuma-yedek-trc') || '{}')).forEach(([k, v]) => TRC.set(k, v)); }catch(e){}
+function saveTRC(){ try{ localStorage.setItem('okuma-yedek-trc', JSON.stringify(Object.fromEntries([...TRC].slice(-300)))); }catch(e){} }
 async function translate(text, opts){
   text = String(text || '').trim(); if (!text) return null;
   if (!(opts && opts.fresh) && TRC.has(text)) return TRC.get(text);
@@ -2477,12 +2477,12 @@ let studyT = null;
 async function loadStudy(){
   let d = null;
   if (db && uid){ try{ const s = await db.doc(`data/users/${uid}/study`).get(); if (s.exists) d = thaw(s.data()); }catch(e){} }
-  if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-study') || 'null'); }catch(e){} }
+  if (!d){ try{ d = JSON.parse(localStorage.getItem('okuma-yedek-study') || 'null'); }catch(e){} }
   STUDY = normStudy(d);
   if (!STUDY.seeded){ DEFAULT_CATS.forEach(addCat); STUDY.seeded = true; saveStudy(); }
 }
 function saveStudy(now){
-  try{ localStorage.setItem('okuma-study', JSON.stringify(STUDY)); }catch(e){}
+  try{ localStorage.setItem('okuma-yedek-study', JSON.stringify(STUDY)); }catch(e){}
   if (!(db && uid)) return Promise.resolve();
   clearTimeout(studyT);
   const run = () => { studyT = null; return db.doc(`data/users/${uid}/study`).set(STUDY).then(() => true, e => { toast(`Kaydedilemedi (kod: ${e && e.code || 'hata'})`, true); throw e; }); };
@@ -3256,9 +3256,9 @@ const wordRuby = i => ruby(wordFg(i));
 // reading of a dictionary word by its written form, for example lists like 一人、一つ
 let VREAD = null;
 function rubyWord(w){ if (!VREAD){ VREAD = new Map(); V.forEach((v, i) => { const f = first(v[0]); if ((v[1] || '').trim() && !VREAD.has(f)) VREAD.set(f, i); }); } const i = VREAD.has(w) ? VREAD.get(w) : -1; return i < 0 ? `<span data-furi="${esc(w)}">${esc(w)}</span>` : wordRuby(i); }
-const FGC = (() => { try{ return JSON.parse(localStorage.getItem('okuma-fgc') || '{}'); }catch(e){ return {}; } })();
+const FGC = (() => { try{ return JSON.parse(localStorage.getItem('okuma-yedek-fgc') || '{}'); }catch(e){ return {}; } })();
 let fgcT = null;
-const fgcSave = () => { clearTimeout(fgcT); fgcT = setTimeout(() => { try{ const ks = Object.keys(FGC); if (ks.length > 3000) ks.slice(0, ks.length - 3000).forEach(k => delete FGC[k]); localStorage.setItem('okuma-fgc', JSON.stringify(FGC)); }catch(e){} }, 1000); };
+const fgcSave = () => { clearTimeout(fgcT); fgcT = setTimeout(() => { try{ const ks = Object.keys(FGC); if (ks.length > 3000) ks.slice(0, ks.length - 3000).forEach(k => delete FGC[k]); localStorage.setItem('okuma-yedek-fgc', JSON.stringify(FGC)); }catch(e){} }, 1000); };
 // quick version from the app's own dictionary (no download): exact dictionary words only
 function localFuri(text){
   text = String(text); let out = '', p = 0;
@@ -3315,8 +3315,8 @@ function itemOf(key){
   const k = KJ.find(x => x[0] === w) || JK.find(x => x[0] === w); return k ? `${w}: ${k[4]}` : w;
 }
 // an example sentence for every card: from your texts when one exists, otherwise Claude writes one (cached on this device)
-const EXC = (() => { try{ return JSON.parse(localStorage.getItem('okuma-exc') || '{}'); }catch(e){ return {}; } })();
-const excSave = () => { try{ const ks = Object.keys(EXC); if (ks.length > 1500) ks.slice(0, ks.length - 1500).forEach(k => delete EXC[k]); localStorage.setItem('okuma-exc', JSON.stringify(EXC)); }catch(e){} };
+const EXC = (() => { try{ return JSON.parse(localStorage.getItem('okuma-yedek-exc') || '{}'); }catch(e){ return {}; } })();
+const excSave = () => { try{ const ks = Object.keys(EXC); if (ks.length > 1500) ks.slice(0, ks.length - 1500).forEach(k => delete EXC[k]); localStorage.setItem('okuma-yedek-exc', JSON.stringify(EXC)); }catch(e){} };
 const exPending = new Map();
 function exRowHtml(key, jp, tr, src){
   const have = exList(key).some(x => x.text === jp);
@@ -3537,7 +3537,7 @@ async function resetAll(){
       await db.doc(`data/users/${uid}/study`).delete();
       await db.doc(`data/users/${uid}/progress`).set({n:0, cv:[], cg:[], place:{text:null, scroll:0, view:'read', at:Date.now()}});
     }
-    ['okuma-state','okuma-texts','okuma-custom','okuma-srs','okuma-study','okuma-place','okuma-trc'].forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
+    ['okuma-yedek-state','okuma-yedek-texts','okuma-yedek-custom','okuma-yedek-srs','okuma-yedek-study','okuma-yedek-place','okuma-yedek-trc'].forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
     texts = []; current = null; CV = []; CG = []; V.length = BASEV; G.length = BASEG; rebuildDict(); buildRead(); BASEMAP.clear();
     st = {n:0, cv:new Array(V.length).fill(0), cg:new Array(G.length).fill(0)}; SR = {v:{}, g:{}, k:{}};
     STUDY = normStudy(null); DEFAULT_CATS.forEach(addCat); STUDY.seeded = true; STUDY.mig = 6; await saveStudy(true); sentMemo = null;
@@ -3552,14 +3552,14 @@ $('rst-go').onclick = e => arm(e.currentTarget, resetAll);
 // ---------- place + backup ----------
 function savePlace(remote){
   PLACE.at = Date.now(); if (CK) PLACE.ck = Object.assign({}, CK);
-  try{ localStorage.setItem('okuma-place', JSON.stringify(PLACE)); }catch(e){}
+  try{ localStorage.setItem('okuma-yedek-place', JSON.stringify(PLACE)); }catch(e){}
   if (remote && db && uid){ clearTimeout(placeTimer); placeTimer = setTimeout(() => { db.doc(`data/users/${uid}/progress`).update({place:PLACE}).catch(() => {}); }, 3000); }
 }
 function scrollRatio(){ const r = $('reader'); return r.offsetHeight ? Math.max(0, Math.min(1, (window.scrollY - r.offsetTop + 20) / r.offsetHeight)) : 0; }
 function restorePlace(){
   restoring = true;
   if (PLACE.ck){ Object.assign(CK, PLACE.ck); try{ syncCardControls(); }catch(e){} }
-  const v = PLACE.view || (()=>{ try{ return localStorage.getItem('okuma-view'); }catch(e){ return null; } })();
+  const v = PLACE.view || (()=>{ try{ return localStorage.getItem('okuma-yedek-view'); }catch(e){ return null; } })();
   if (v && v !== 'read') showView(v);
   else if (current && PLACE.scroll > 0.02){ const r = $('reader'); window.scrollTo({top: r.offsetTop + PLACE.scroll * r.offsetHeight - 20}); }
   restoring = false;
@@ -3630,7 +3630,7 @@ async function applyBackup(){
     texts = [...byNo.values()].sort((a,c) => a.no - c.no);
     if (b.place) PLACE = Object.assign({text:null, scroll:0, view:'read', ck:null}, b.place);
     PLACE.at = Date.now();
-    localSave(); try{ localStorage.setItem('okuma-custom', JSON.stringify({v:CV, g:CG})); localStorage.setItem('okuma-srs', JSON.stringify(SR)); localStorage.setItem('okuma-place', JSON.stringify(PLACE)); }catch(e){}
+    localSave(); try{ localStorage.setItem('okuma-yedek-custom', JSON.stringify({v:CV, g:CG})); localStorage.setItem('okuma-yedek-srs', JSON.stringify(SR)); localStorage.setItem('okuma-yedek-place', JSON.stringify(PLACE)); }catch(e){}
     if (db && uid){
       await db.doc(`data/users/${uid}/custom`).set({v:CV, g:CG});
       await db.doc(`data/users/${uid}/srs`).set(SR);
@@ -3695,7 +3695,7 @@ function safeDb(d){
   updateKanjiCount();
   renderLibStat(); $('lib-test').onclick = libTest;
   restorePlace();
-  try{ if (localStorage.getItem('okuma-day') !== dayKey()){ localStorage.setItem('okuma-day', dayKey()); showView('vocab'); } }catch(e){ showView('vocab'); }
+  try{ if (localStorage.getItem('okuma-yedek-day') !== dayKey()){ localStorage.setItem('okuma-yedek-day', dayKey()); showView('vocab'); } }catch(e){ showView('vocab'); }
   setupBackup();
 })();
 </script>

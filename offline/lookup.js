@@ -92,19 +92,23 @@
       else if (jp ? (e.f.startsWith(raw) || e.k.startsWith(kana)) : (e.t.includes(raw.toLowerCase()) && raw.length > 2)) part.push(e.w);
     }
     for (const w of trHits) exact.push(w);
+    // the whole index is scanned so exact matches are never lost; only prefix / partial matches are capped
+    const CAP = 400, hasKana = /[ぁ-ん]/.test(kana);
+    const engRe = eng ? new RegExp('(^|[ ;(])' + eng.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([ ;),]|$)') : null;
     for (const e of index){
-      const w = window.JMDICT[e.i];
+      const w = window.JMDICT[e.i], full = pre.length + part.length >= CAP;
       if (jp){
         if (e.forms.includes(raw) || e.kana.includes(kana)) exact.push(w);
+        else if (full) continue;
         else if (e.forms.some(f => f.startsWith(raw)) || e.kana.some(k => k.startsWith(kana))) pre.push(w);
         else if (e.forms.some(f => f.includes(raw)) || e.kana.some(k => k.includes(kana))) part.push(w);
       } else {
-        if (e.kana.includes(kana) && /[ぁ-ん]/.test(kana)) exact.push(w);
-        else if (new RegExp('(^|[ ;(])' + eng.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([ ;),]|$)').test(e.g)) pre.push(w);
-        else if (/[ぁ-ん]/.test(kana) && e.kana.some(k => k.startsWith(kana))) part.push(w);
+        if (hasKana && e.kana.includes(kana)) exact.push(w);
+        else if (engRe.test(e.g)){ if (pre.length < CAP) pre.push(w); }
+        else if (full) continue;
+        else if (hasKana && e.kana.some(k => k.startsWith(kana))) part.push(w);
         else if (eng.length > 2 && e.g.includes(eng)) part.push(w);
       }
-      if (exact.length + pre.length + part.length > 400) break;
     }
     if (eng) pre.sort((x, y) => (y[3][0].toLowerCase().split('; ').includes(eng) ? 1 : 0) - (x[3][0].toLowerCase().split('; ').includes(eng) ? 1 : 0) || x[3][0].length - y[3][0].length);
     return exact.concat(pre, part).slice(0, 40);
@@ -118,12 +122,14 @@
     }
     return out.slice(0, 12);
   }
+  // KANJIDIC2 stores the old 4-level JLPT; map it to the nearest current level
+  const JLPT_OLD = {4:'N5', 3:'N4', 2:'N3/N2', 1:'N1'};
   function kanjiHtml(ch){
     const k = window.KANJIDIC[ch];
     return '<div class="ol-k"><div class="ol-kc">' + esc(ch) + '</div><div><div class="ol-m">' + esc(k[2].join(', ')) + '</div>' +
       (k[0].length ? '<div class="ol-s">音 ' + esc(k[0].join('、')) + '</div>' : '') +
       (k[1].length ? '<div class="ol-s">訓 ' + esc(k[1].join('、')) + '</div>' : '') +
-      '<div class="ol-s">' + (k[4] ? 'JLPT N' + (k[4] <= 2 ? k[4] + 2 : k[4] + 1) + ' · ' : '') + (k[3] ? 'okul sınıfı ' + k[3] + ' · ' : '') + (k[5] ? k[5] + ' çizgi' : '') + '</div></div></div>';
+      '<div class="ol-s">' + (JLPT_OLD[k[4]] ? 'JLPT ' + JLPT_OLD[k[4]] + ' · ' : '') + (k[3] ? 'okul sınıfı ' + k[3] + ' · ' : '') + (k[5] ? k[5] + ' çizgi' : '') + '</div></div></div>';
   }
   function wordHtml(w){
     const head = w[0].length ? w[0][0] : w[1][0], isV = w[2].some(p => /^(v|fiil|adj|i-sıfat|na-sıfat)/.test(p));
@@ -149,7 +155,7 @@
   home.style.cssText = 'position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:9998;font:600 14px system-ui,sans-serif;border-radius:999px;padding:11px 16px;background:#fff;color:#26478a;border:1px solid #26478a;box-shadow:0 4px 16px rgba(0,0,0,.2);text-decoration:none';
   const btn = document.createElement('button'); btn.id = 'ol-btn'; btn.type = 'button'; btn.textContent = '📚 Kütüphane';
   const pan = document.createElement('div'); pan.id = 'ol-p'; pan.hidden = true;
-  pan.innerHTML = '<div id="ol-box" role="dialog" aria-label="Çevrimdışı Japonca kütüphanesi"><div id="ol-top"><input id="ol-q" type="search" placeholder="Kelime, kanji, romaji ya da İngilizce yaz…" autocomplete="off"><button id="ol-x" type="button">Kapat</button></div>' +
+  pan.innerHTML = '<div id="ol-box" role="dialog" aria-label="Çevrimdışı Japonca kütüphanesi"><div id="ol-top"><input id="ol-q" type="search" placeholder="Kelime, kanji, romaji ya da İngilizce yaz…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button id="ol-x" type="button">Kapat</button></div>' +
     '<div id="ol-tabs"><button data-t="word" aria-pressed="true" type="button">Kelime</button><button data-t="kanji" aria-pressed="false" type="button">Kanji</button><button data-t="gram" aria-pressed="false" type="button">Gramer</button><a id="ol-cek" href="#" style="font:600 13px system-ui,sans-serif;border:1px solid var(--l);color:var(--m);border-radius:999px;padding:4px 12px;text-decoration:none">📐 Çekimler</a></div><div id="ol-out"></div></div>';
   pan.querySelector('#ol-cek').href = BASE + 'cekimler.html';
   pan.querySelector('#ol-cek').addEventListener('click', e => { if (IN_SHELL){ e.preventDefault(); pan.hidden = true; nav('cekimler', ''); } });

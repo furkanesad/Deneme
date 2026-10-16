@@ -1,8 +1,12 @@
 // Çevrimdışı önbellek: ilk açılışta tüm dosyaları indirir, sonra internetsiz çalışır.
-const CACHE = 'japonca-v15';
+const CACHE = 'japonca-v16';
 const FILES = [
  "./",
  "index.html",
+ "manifest.json",
+ "icons/icon-192.png",
+ "icons/icon-512.png",
+ "icons/apple-touch-icon.png",
  "japonca-defterim/offline.html",
  "tabi-kaiwa-defteri-offline.html",
  "offline/kuromoji.js",

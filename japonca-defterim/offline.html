@@ -413,13 +413,13 @@ html,body{max-width:100%;overflow-x:hidden}
 .seg{max-width:100%;flex-wrap:wrap}
 @media (max-width:640px){.seg{display:flex!important;width:100%}.seg button{flex:1 1 auto;min-width:0;padding-left:6px!important;padding-right:6px!important}}
 @media (max-width:640px){
- .nav .tabs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}
+ .nav .tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))}
  .nav .tabs button{flex-direction:column;gap:1px!important;padding:6px 2px!important;font-size:.72rem!important;min-width:0}
  .nav .tabs button .tk{font-size:1.05rem}
  .nav .tabs button span{display:none}
  .nav .tabs button.minor{grid-column:span 1;flex-direction:row;font-size:.72rem!important}
  .nav .tabs button[data-v="stats"]{grid-column:1 / span 2;grid-row:2}
- .nav .tabs button[data-v="settings"]{grid-column:3 / span 2;grid-row:2}
+ .nav .tabs button[data-v="settings"]{grid-column:3 / span 3;grid-row:2}
  .nav .tabs button[hidden]{display:none!important}
 }
 /* özet kutuları ve "bugün" şeridi */
@@ -561,6 +561,37 @@ details{border-radius:12px}
 .nk-empty{color:var(--muted);text-align:center;padding:30px 10px}
 @media (prefers-reduced-motion:reduce){.nk-inner,.nk-card,.nk-card.fly,.nk-card.nk-next{transition:none!important}}
 
+/* üniteler */
+.un-head{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.un-head h2{margin:0}
+.un-head p{margin:0;color:var(--muted)}
+.un-tile .no{font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.un-back{font:inherit;font-weight:700;background:none;border:1px solid var(--line);border-radius:10px;padding:7px 12px;cursor:pointer;color:var(--ink);margin-bottom:12px}
+.un-jump{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px}
+.un-jump a{font-size:.85rem;font-weight:700;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.un-sec{margin-top:18px;scroll-margin-top:80px}
+.un-sec>h3{margin:0 0 8px;font-size:1.05rem}
+.un-sec>h3 small{color:var(--muted);font-weight:600}
+.un-list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.un-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px;padding:8px 14px;border-top:1px solid var(--line);line-height:1.35}
+.un-row>span{margin:0}
+.un-row:first-child{border-top:0}
+.un-row .jp{font-size:1.15rem;font-weight:700;font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
+.un-row .rd{font-size:.82rem;color:var(--muted)}
+.un-row .mn{margin-left:auto;text-align:right;max-width:60%}
+.un-kj{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.un-k{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.un-k .big{font-size:2rem;line-height:1.2;font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
+.un-k .rd{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.un-p{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.un-p .pt{font-weight:800}
+.un-p .pr{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
+.un-p .pr span{font-family:inherit;color:var(--muted);font-size:.86rem}
+.un-p .ex{border-top:1px dashed var(--line);padding-top:6px;font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
+.un-p .ex span{display:block;font-size:.86rem;color:var(--muted)}
+.un-p b.em{color:var(--c-g)}
+.un-empty{color:var(--muted);font-size:.9rem;margin:0}
+@media (max-width:480px){.un-row .mn{flex:1 1 100%;margin-left:0;text-align:left;max-width:none}}
 </style>
 
 <div class="wrap">
@@ -580,6 +611,7 @@ details{border-radius:12px}
   <nav class="nav" aria-label="Bölümler">
     <div class="tabs" role="tablist">
       <button role="tab" data-v="cards" aria-selected="false"><b class="tk">札</b>Kartlar <span id="cn" hidden></span></button>
+      <button role="tab" data-v="units" aria-selected="false"><b class="tk">単</b>Üniteler</button>
       <button role="tab" data-v="vocab" aria-selected="false"><b class="tk">語</b>Kelimeler</button>
       <button role="tab" data-v="gram" aria-selected="false"><b class="tk">文</b>Gramer</button>
       <button role="tab" data-v="kanji" aria-selected="false"><b class="tk">漢</b>Kanji <span id="kn"></span></button>
@@ -743,6 +775,8 @@ details{border-radius:12px}
     <div class="gres" id="g-res" hidden style="margin-top:12px"></div>
     <p class="hint" id="g-err"></p>
   </div>
+
+  <div id="view-units" class="view" hidden><div id="un-root"></div></div>
 
   <div id="view-stats" class="view" hidden>
     <div class="vh"><h2>İstatistik</h2><p>Her kelimenin okumalarında (📖) ve kendi cümlelerinde (✎) kaç kez geçtiği.</p><div class="cl" hidden></div></div>
@@ -1487,7 +1521,7 @@ function renderLists(){
   if (lib) $('f-sum').innerHTML = `📚 Kütüphane: <b>${_shown.toLocaleString('tr')}</b> ${isV ? 'kelime' : 'gramer kalıbı'} listeleniyor · Defterinde (çalıştığın) ${el.length.toLocaleString('tr')} · Yeni ${el.length - n1 - n2} · Öğreniliyor ${n1} · Öğrenildi ${n2}`; else
   $('f-sum').innerHTML = `<span class="legend"><span class="sdot"></span>Yeni ${el.length - n1 - n2}<span class="sdot s1"></span>Öğreniliyor ${n1}<span class="sdot s2"></span>Öğrenildi ${n2}</span> · toplam ${el.length}${hid ? ` · Sildiğin ${hid} kelime gizli <button class="mini" id="unhide">geri getir</button>` : ''}`;
 }
-const MODE_OF = {read:'read', texts:'read', vocab:'study', gram:'study', kanji:'study', sent:'study', gen:'study', stats:'study', cards:'study', settings:'set'};
+const MODE_OF = {read:'read', texts:'read', vocab:'study', gram:'study', kanji:'study', sent:'study', gen:'study', stats:'study', cards:'study', units:'study', settings:'set'};
 function setModeUI(m){
   document.querySelectorAll('.nav .ng').forEach(g => g.classList.toggle('on', g.dataset.group === m));
 }
@@ -1499,11 +1533,12 @@ function showView(v){
   const m = MODE_OF[v]; setModeUI(m);
   PLACE.lv = Object.assign({}, PLACE.lv, {[m]: v});
   document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.v===v));
-  ['read','texts','cards','kanji','sent','gen','stats','settings'].forEach(x => { $('view-' + x).hidden = v !== x; });
+  ['read','texts','cards','units','kanji','sent','gen','stats','settings'].forEach(x => { $('view-' + x).hidden = v !== x; });
   document.querySelector('.prog').hidden = $('banner').hidden = v !== 'read';
   if (v === 'settings') renderLibStat();
   $('view-list').hidden = !(v==='vocab'||v==='gram');
   if (v==='cards'){ renderFilterChips(); startCards(); }
+  if (v==='units') UNITS.render();
   if (v==='vocab'||v==='gram'){ if (F.view !== v) LST.open = null; F.view = v; renderFilterChips(); renderLists(); }
   if (v==='read' && !current && texts.length) renderText(texts[texts.length - 1]);
   if (v==='texts') renderArchive();
@@ -3793,6 +3828,62 @@ function safeDb(d){
   const colW = c => ({doc: id => docW(c.doc(id)), limit: n => { const q = c.limit(n); return {get: async () => { const r = await q.get(); return {docs: (r.docs || []).map(snap)}; }}; }, get: async () => { const r = await c.get(); return {docs: (r.docs || []).map(snap)}; }});
   return {doc: path => docW(d.doc(path)), collection: path => colW(d.collection(path))};
 }
+// ---------- üniteler: seviye seviye, konu konu (kelime + kanji + gramer + kalıp) ----------
+const UNITS = (() => {
+  const LV = ['N5', 'N4', 'N3', 'N2', 'N1'];
+  const KAL = window.KALIP || {cards:[]}, KON = window.KONU || {cats:[]};
+  let LIST = null, OPEN = null;
+  function build(){
+    if (LIST) return LIST;
+    const kj = new Map(KJ.map(k => [k[0], k])), pc = new Map(KAL.cards.map(c => [c.id, c]));
+    LIST = [];
+    LV.forEach(lv => {
+      let no = 0;
+      (KON.cats || []).forEach(t => {
+        const words = t.words.filter(w => w[3] === lv);
+        if (words.length < 4) return;
+        const seen = new Set(), kanji = [];
+        words.forEach(w => [...w[0]].forEach(ch => { if (/[一-鿿]/.test(ch) && !seen.has(ch)){ seen.add(ch); kanji.push(kj.get(ch) || [ch, '', '', '', '', '']); } }));
+        const name = String(t.tr).trim();
+        LIST.push({id:lv + ':' + t.id, lv, no:++no, name, words, kanji,
+          gram:t.gram.filter(g => g[2] === lv), pats:t.cards.map(id => pc.get(id)).filter(c => c && c.lv === lv)});
+      });
+    });
+    return LIST;
+  }
+  // [漢字|かな] → furigana, 〈…〉 → vurgu
+  const fx = s => esc(s).replace(/\[([^|\]]+)\|([^\]]+)\]/g, '<ruby>$1<rt>$2</rt></ruby>').replace(/〈([^〉]*)〉/g, '<b class="em">$1</b>');
+  const cnt = u => [u.words.length + ' kelime', u.kanji.length ? u.kanji.length + ' kanji' : '', u.gram.length ? u.gram.length + ' gramer' : '', u.pats.length ? u.pats.length + ' kalıp' : ''].filter(Boolean).join(' · ');
+  function renderList(){
+    const L = build();
+    let h = `<div class="un-head"><h2>Üniteler</h2><p>Seviye seviye, konu konu. Bir üniteye gir: kelimeleri, kanjileri, gramerleri ve kalıpları bir arada.</p></div>`;
+    LV.forEach((lv, n) => {
+      const us = L.filter(u => u.lv === lv); if (!us.length) return;
+      h += `<details class="nk-sec" ${n === 0 ? 'open' : ''} style="margin-bottom:10px"><summary>${lv} <small>${us.length} ünite</small></summary><div class="nk-tiles">`;
+      us.forEach(u => { h += `<button class="nk-tile un-tile" data-unit="${esc(u.id)}"><span class="no">Ünite ${u.no}</span><span class="ic">${catIcon(u.name)}</span><span class="nm">${esc(u.name)}</span><span class="ct">${cnt(u)}</span></button>`; });
+      h += `</div></details>`;
+    });
+    $('un-root').innerHTML = h;
+  }
+  function renderUnit(u){
+    const sec = (id, title, n, body) => `<section class="un-sec" id="un-${id}"><h3>${title} <small>${n}</small></h3>${n ? body : '<p class="un-empty">Bu ünitede yok.</p>'}</section>`;
+    const words = `<div class="un-list">${u.words.map(w => `<div class="un-row"><span class="jp">${esc(w[0])}</span><span class="rd">${esc(w[1] || '')}</span><span class="mn">${esc(w[2])}</span></div>`).join('')}</div>`;
+    const kanji = `<div class="un-kj">${u.kanji.map(k => `<div class="un-k"><span class="big">${esc(k[0])}</span><b>${esc(k[4] || '')}</b>${k[2] ? `<span class="rd">On: ${esc(k[2])}</span>` : ''}${k[3] ? `<span class="rd">Kun: ${esc(k[3])}</span>` : ''}${k[1] ? `<span class="rd">${esc(k[1])}</span>` : ''}</div>`).join('')}</div>`;
+    const gram = `<div class="un-list">${u.gram.map(g => `<div class="un-row"><span class="jp">${esc(g[0])}</span><span class="mn">${esc(g[1])}</span></div>`).join('')}</div>`;
+    const pats = u.pats.map(c => `<div class="un-p"><span class="pt">${c.t.map(x => esc(x[0])).join(' · ')}</span><span class="rd">${c.t.map(x => esc(x[1])).join(' · ')}</span>${(c.rows || []).map(r => `<div class="pr">${fx(r[0])} <span>${esc(r[1])}</span></div>`).join('')}${(c.ex || []).slice(0, 3).map(e => `<div class="ex">${fx(e[0])}<span>${esc(e[1])}</span></div>`).join('')}</div>`).join('');
+    $('un-root').innerHTML = `<button class="un-back" id="un-back">← Üniteler</button>
+      <div class="un-head"><p>${u.lv} · Ünite ${u.no}</p><h2>${catIcon(u.name)} ${esc(u.name)}</h2><p>${cnt(u)}</p>
+      <nav class="un-jump" aria-label="Bölümler"><a href="#un-w">Kelimeler</a><a href="#un-k">Kanji</a><a href="#un-g">Gramer</a><a href="#un-p">Kalıplar</a></nav></div>
+      ${sec('w', 'Kelimeler', u.words.length, words)}${sec('k', 'Kanji', u.kanji.length, kanji)}${sec('g', 'Gramer', u.gram.length, gram)}${sec('p', 'Kalıplar', u.pats.length, pats)}`;
+  }
+  function render(){ const u = OPEN && build().find(x => x.id === OPEN); u ? renderUnit(u) : renderList(); }
+  $('un-root').addEventListener('click', e => {
+    const a = e.target.closest('.un-jump a'); if (a){ e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if (t) t.scrollIntoView({behavior:'smooth'}); return; }
+    const t = e.target.closest('[data-unit]'); if (t){ OPEN = t.dataset.unit; render(); window.scrollTo({top:0}); return; }
+    if (e.target.closest('#un-back')){ OPEN = null; render(); window.scrollTo({top:0}); }
+  });
+  return {render};
+})();
 // ---------- boot ----------
 (async () => {
   renderProgress();

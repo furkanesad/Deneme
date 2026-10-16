@@ -594,37 +594,108 @@ li{margin:3px 0}
     for (const e of JMDICT){ if (e[0].includes(w) || e[1].map(toHira).includes(h)) c.push(e); if (c.length > 20) break; }
     return c.find(e => e[0].includes(w) && e[2].some(p => /^(v|adj)/.test(p))) || c.find(e => e[2].some(p => /^(v|adj)/.test(p))) || c[0] || null;
   }
+  // 行く ve bileşikleri (持って行く, 連れていく, ゆく): て/た biçimi って/った
+  const IKU = w => /(行く|ゆく)$/.test(w) || w === 'いく' || /[てで]いく$/.test(w);
+  const YOI = /(いい|良い|よい|好い|善い)$/;
   function classify(w, e){
     const pos = e ? e[2] : [];
     if (w === '来る' || w === 'くる') return {k:'kuru'};
-    if (w === 'する' || w === 'いい' || w === '良い') return {k: w === 'する' ? 'suru' : 'adji'};
-    if (pos.includes('adj-i')) return {k:'adji'};
+    if (w === 'する' || w === '為る') return {k:'suru'};
+    if (w === 'いい' || w === '良い') return {k:'adji', ix:true};
+    if (w === 'ござる' || w === '御座る') return {k:'v1', sub:'gozaru'};
+    if (pos.includes('adj-ix')) return {k:'adji', ix:true};
+    if (pos.includes('adj-i')) return {k:'adji', ix: w === 'よい'};
     if (pos.includes('adj-na')) return {k:'adjna'};
-    if (pos.some(p => /^v1/.test(p))) return {k:'v2'};
+    if (pos.some(p => /^v1/.test(p))) return {k:'v2', sub: pos.includes('v1-s') ? 'kureru' : ''};
     if (pos.includes('vk')) return {k:'kuru'};
+    if (pos.includes('vs-s') && /する$/.test(w)) return {k:'vss'};
+    if (pos.includes('vz') && /ずる$/.test(w)) return {k:'vz'};
     if (pos.some(p => /^vs/.test(p)) && /する$/.test(w)) return {k:'suru'};
-    if (pos.some(p => /^v5/.test(p))) return {k:'v1'};
+    if (pos.some(p => /^v5/.test(p))) return {k:'v1', sub: pos.includes('v5aru') ? 'aru' : pos.includes('v5k-s') ? 'iku' : pos.includes('v5u-s') ? 'u_s' : ''};
     if (pos.some(p => /^vs/.test(p)) && !/する$/.test(w)) return {k:'suru', add:'する'};
     // heuristics
     if (/(する)$/.test(w)) return {k:'suru'};
-    if (w === '来る' || w === 'くる') return {k:'kuru'};
+    if (/ずる$/.test(w)) return {k:'vz', guess:true};
     if (/[いきしちにひみりぎじびぢぴえけせてねへめれげぜでべぺ]る$/.test(toHira(w)) && !G1_EXC.includes(w)) return {k:'v2', guess:true};
     if (/[うくぐすつぬぶむる]$/.test(w)) return {k:'v1', guess:true};
+    if (/[がのも]いい$/.test(w)) return {k:'adji', ix:true, guess:true};
     if (/い$/.test(w)) return {k:'adji', guess:true};
     return {k:'adjna', guess:true};
   }
-  function conjVerb(w, k){
+  // Exact sözlük girişi (yazılış ya da okunuş tam eşleşir) + sözcük türü testi
+  function findExact(w, re){
+    if (!window.JMDICT) return null; const h = toHira(w);
+    for (const e of JMDICT){ if ((e[0].includes(w) || e[1].map(toHira).includes(h)) && e[2].some(p => re.test(p))) return e; }
+    return null;
+  }
+  // ます / ない / た / て biçiminde yazılan fiili sözlük biçimine indirger (食べます → 食べる, 行った → 行く)
+  function deinflect(w){
+    const U = {'わ':'う','い':'う','か':'く','き':'く','が':'ぐ','ぎ':'ぐ','さ':'す','し':'す','た':'つ','ち':'つ','な':'ぬ','に':'ぬ','ば':'ぶ','び':'ぶ','ま':'む','み':'む','ら':'る','り':'る'};
+    const c = []; let m;
+    const stemForms = (s, row) => { // s: ます kökü (row 'i') ya da ない kökü (row 'a')
+      if (row === 'i' && /し$/.test(s)) c.push([s.slice(0, -1) + 'する', 'vs']);
+      if (row === 'a' && /し$/.test(s)) c.push([s.slice(0, -1) + 'する', 'vs']);
+      if (/(来|き|こ)$/.test(s)) c.push([s.replace(/(き|こ)$/, 'く') + 'る', 'vk'], [s.replace(/来$/, '来') + 'る', 'vk']);
+      const l = s.slice(-1);
+      if (row === 'i' && /(ござい|ください|なさい|いらっしゃい|おっしゃい)$/.test(s)) c.push([s.slice(0, -1) + 'る', /ござい$/.test(s) ? 'goz' : 'v5']);
+      if (U[l] && (row === 'i' ? /[いきぎしちにびみり]/ : /[わかがさたなばまら]/).test(l)) c.push([s.slice(0, -1) + U[l], 'v5']);
+      c.push([s + 'る', 'v1']);
+    };
+    if ((m = w.match(/^(.+?)(ませんでした|ました|ません|ましょう|ます)$/))) stemForms(m[1], 'i');
+    else if ((m = w.match(/^(.+?)(なかった|ない)$/))) stemForms(m[1], 'a');
+    else if ((m = w.match(/^(.+)([たてだで])$/))){
+      const s = m[1], voiced = /[だで]/.test(m[2]), b = s.slice(0, -1), l = s.slice(-1);
+      if (!voiced){
+        if (l === 'っ'){ if (/(行|い|ゆ)$/.test(b)) c.push([b + 'く', 'v5']); c.push([b + 'う', 'v5'], [b + 'つ', 'v5'], [b + 'る', 'v5']); }
+        if (l === 'い') c.push([b + 'く', 'v5']);
+        if (l === 'し'){ c.push([b + 'する', 'vs'], [b + 'す', 'v5']); }
+        if (/(来|き)$/.test(s)) c.push([s.replace(/き$/, 'く') + 'る', 'vk']);
+        c.push([s + 'る', 'v1']);
+        if (/う$/.test(s)) c.push([s, 'v5']); // 問うた → 問う
+      } else {
+        if (l === 'い') c.push([b + 'ぐ', 'v5']);
+        if (l === 'ん') c.push([b + 'ぬ', 'v5'], [b + 'ぶ', 'v5'], [b + 'む', 'v5']);
+      }
+    }
+    for (const [cand, g] of c){
+      if (!cand || cand === w) continue;
+      if (g === 'goz') return {w:cand, e:null};
+      if (g === 'vs'){
+        if (cand === 'する') return {w:cand, e:null};
+        const n = cand.replace(/する$/, ''); const e = findExact(cand, /^vs/) || findExact(n, /^vs/);
+        if (e) return {w:cand, e}; continue;
+      }
+      const e = findExact(cand, g === 'v1' ? /^v1/ : g === 'vk' ? /^vk$/ : /^v5/);
+      if (e) return {w:cand, e};
+    }
+    return null;
+  }
+  function conjVerb(w, k, sub){
     const last = w.slice(-1), base = w.slice(0, -1);
     let f = {};
     if (k === 'v1'){
       const a = base + A[last], i = base + I[last], e = base + E[last], o = base + O[last];
-      const te = (w === '行く' || w === 'いく') ? base + 'って' : base + TE[last];
+      const te = (last === 'く' && /ゆく$/.test(w)) ? w.slice(0, -2) + 'いって' : (last === 'く' && (sub === 'iku' || IKU(w))) ? base + 'って' : (sub === 'u_s' && last === 'う') ? w + 'て' : base + TE[last];
       const ta = te.replace(/て$/, 'た').replace(/で$/, 'だ');
       const nai = (w === 'ある') ? 'ない' : a + 'ない';
       if (w === 'ある'){ f = {dict:w, masu:'あります', stem:'あり', nai:'ない', te:'あって', ta:'あった', ba:'あれば', pot:'あり得る（ありうる）', vol:'あろう', imp:'あれ', pass:'—', caus:'—', causpass:'—', zu:'なく／あらず'}; return mkRows(f); }
+      if (sub === 'gozaru'){ // ござる: yalnız ます biçimleriyle kullanılır
+        const rows = mkRows({dict:w, masu:base+'います', stem:base+'い', nai:'—', te:base+'いまして', ta:'—', ba:'—', pot:'—', vol:'—', imp:'—', pass:'—', caus:'—', causpass:'—', zu:'—'});
+        return rows.map((r, n) => n < 6 ? r : [r[0], n === 10 ? base + 'いまして' : '—']);
+      }
+      if (sub === 'aru'){ // いらっしゃる・くださる・なさる・おっしゃる: ます ve emirde り değil い
+        f = {dict:w, masu:base+'います', stem:i, nai, te, ta, ba:e+'ば', pot:e+'る', vol:o+'う', imp:base+'い', pass:a+'れる', caus:a+'せる', causpass:a+'せられる／'+a+'される', zu:a+'ず(に)'};
+        return mkRows(f);
+      }
       f = {dict:w, masu:i+'ます', stem:i, nai, te, ta, ba:e+'ば', pot:e+'る', vol:o+'う', imp:e, pass:a+'れる', caus:a+'せる', causpass:a+'せられる' + (last === 'す' ? '' : '／' + a + 'される'), zu:a+'ず(に)'};
     } else if (k === 'v2'){
-      f = {dict:w, masu:base+'ます', stem:base, nai:base+'ない', te:base+'て', ta:base+'た', ba:base+'れば', pot:base+'られる', vol:base+'よう', imp:base+'ろ', pass:base+'られる', caus:base+'させる', causpass:base+'させられる', zu:base+'ず(に)'};
+      f = {dict:w, masu:base+'ます', stem:base, nai:base+'ない', te:base+'て', ta:base+'た', ba:base+'れば', pot:base+'られる', vol:base+'よう', imp: sub === 'kureru' ? base : base+'ろ', pass:base+'られる', caus:base+'させる', causpass:base+'させられる', zu:base+'ず(に)'};
+    } else if (k === 'vss'){ // 愛する・察する: さ/せ/そ biçimleri
+      const b = w.replace(/する$/, '');
+      f = {dict:w, masu:b+'します', stem:b+'し', nai:b+'さない', te:b+'して', ta:b+'した', ba:b+'すれば', pot:b+'せる', vol:b+'そう', imp:b+'せよ／'+b+'しろ', pass:b+'される', caus:b+'させる', causpass:b+'させられる', zu:b+'さず(に)'};
+    } else if (k === 'vz'){ // 信ずる・感ずる: じ kökü
+      const b = w.replace(/ずる$/, '');
+      f = {dict:w, masu:b+'じます', stem:b+'じ', nai:b+'じない', te:b+'じて', ta:b+'じた', ba:b+'ずれば', pot:b+'じられる', vol:b+'じよう', imp:b+'じろ／'+b+'ぜよ', pass:b+'じられる', caus:b+'じさせる', causpass:b+'じさせられる', zu:b+'ぜず(に)'};
     } else if (k === 'suru'){
       const b = w.replace(/する$/, '');
       f = {dict:w, masu:b+'します', stem:b+'し', nai:b+'しない', te:b+'して', ta:b+'した', ba:b+'すれば', pot:b+'できる', vol:b+'しよう', imp:b+'しろ', pass:b+'される', caus:b+'させる', causpass:b+'させられる', zu:b+'せず(に)'};
@@ -637,23 +708,25 @@ li{margin:3px 0}
     return mkRows(f);
   }
   function mkRows(f){
-    const R = (s, from, to) => s.split(from).join(to);
-    const masu = x => R(f.masu, 'ます', x), nai = x => R(f.nai, 'ない', x), ta = () => f.ta.replace(/た(（[^）]*）)?$/, (m, r) => 'たら' + (r ? r.replace('た）', 'たら）') : '')).replace(/だ$/, 'だら');
+    // Yalnız sondaki eki değiştir (たべた → たべたら; あんないしない → あんないしなかった). 来る için 来た（きた） gibi iki parçayı da kapsar.
+    const R = (s, from, to) => s.replace(new RegExp(from + '(?=$|（|）)', 'g'), to);
+    const S = (s, x) => s.replace(/(（([^）]*)）)?$/, (m, p, r) => x + (p ? '（' + r + x + '）' : ''));
+    const masu = x => R(f.masu, 'ます', x), nai = x => R(f.nai, 'ない', x);
     {
     const rows = [
       ['Sözlük biçimi (yapar)', f.dict], ['ます (nazik: yaparım)', f.masu], ['ません (yapmam)', masu('ません')], ['ました (yaptım)', masu('ました')], ['ませんでした (yapmadım)', masu('ませんでした')], ['ましょう (yapalım)', masu('ましょう')],
       ['ない (düz: yapmam)', f.nai], ['なかった (düz: yapmadım)', nai('なかった')], ['なくて / ないで', nai('なくて') + ' / ' + nai('ないで')], ['なければ (yapmazsa)', nai('なければ')],
       ['て biçimi', f.te], ['た (düz: yaptı)', f.ta], ['たら (…ince / …sa)', R(R(f.ta, 'た', 'たら'), 'だ', 'だら')], ['たり (bazen …)', R(R(f.ta, 'た', 'たり'), 'だ', 'だり')],
-      ['ている (…iyor)', f.te + 'いる'], ['ておく → とく', f.te + 'おく'], ['てしまう → ちゃう/じゃう', f.te + 'しまう'], ['てください (lütfen)', f.te + 'ください'],
-      ['ば (…sa)', f.ba], ['yetenek (yapabilir)', f.pot], ['niyet (yapayım)', f.vol], ['emir (sert)', f.imp], ['yasak (yapma!)', f.dict + 'な'], ['なさい (yumuşak emir)', f.stem + 'なさい'],
+      ['ている (…iyor)', S(f.te, 'いる')], ['ておく → とく', S(f.te, 'おく')], ['てしまう → ちゃう/じゃう', S(f.te, 'しまう')], ['てください (lütfen)', S(f.te, 'ください')],
+      ['ば (…sa)', f.ba], ['yetenek (yapabilir)', f.pot], ['niyet (yapayım)', f.vol], ['emir (sert)', f.imp], ['yasak (yapma!)', f.dict + 'な'], ['なさい (yumuşak emir)', S(f.stem, 'なさい')],
       ['edilgen (yapılır)', f.pass], ['ettirgen (yaptırır)', f.caus], ['ettirgen-edilgen (zorlanır)', f.causpass],
-      ['たい (istiyorum)', f.stem + 'たい'], ['たくない / たかった', f.stem + 'たくない / ' + f.stem + 'たかった'], ['ながら (…erken)', f.stem + 'ながら'], ['やすい / にくい', f.stem + 'やすい / ' + f.stem + 'にくい'], ['すぎる (fazla)', f.stem + 'すぎる'], ['方 (…me şekli)', f.stem + '方'], ['そう (…ecek gibi)', f.stem + 'そう'], ['ず(に) (…meden, yazı)', f.zu]
+      ['たい (istiyorum)', S(f.stem, 'たい')], ['たくない / たかった', S(f.stem, 'たくない') + ' / ' + S(f.stem, 'たかった')], ['ながら (…erken)', S(f.stem, 'ながら')], ['やすい / にくい', S(f.stem, 'やすい') + ' / ' + S(f.stem, 'にくい')], ['すぎる (fazla)', S(f.stem, 'すぎる')], ['方 (…me şekli)', S(f.stem, '方')], ['そう (…ecek gibi)', S(f.stem, 'そう')], ['ず(に) (…meden, yazı)', f.zu]
     ];
     return rows;
   }}
-  function conjAdjI(w){
-    const b = (w === 'いい' || w === '良い') ? 'よ' : w.slice(0, -1);
-    return [['…dır', w], ['です (nazik)', w + 'です'], ['くない (değil)', b+'くない'], ['かった (idi)', b+'かった'], ['くなかった (değildi)', b+'くなかった'], ['くて (…ve)', b+'くて'], ['く (zarf: …şekilde)', b+'く'], ['くなる (…laşmak)', b+'くなる'], ['くする (…laştırmak)', b+'くする'], ['ければ (…sa)', b+'ければ'], ['かったら (…sa)', b+'かったら'], ['さ (…lik)', b+'さ'], ['そう (gibi görünüyor)', (w === 'いい' || w === '良い') ? 'よさそう' : /ない$/.test(w) ? w.slice(0,-1) + 'さそう' : b + 'そう'], ['すぎる (fazla)', b+'すぎる'], ['い + isim', w + ' + 本']];
+  function conjAdjI(w, ix){
+    const yoi = ix && YOI.test(w), b = yoi ? w.replace(YOI, 'よ') : w.slice(0, -1);
+    return [['…dır', w], ['です (nazik)', w + 'です'], ['くない (değil)', b+'くない'], ['かった (idi)', b+'かった'], ['くなかった (değildi)', b+'くなかった'], ['くて (…ve)', b+'くて'], ['く (zarf: …şekilde)', b+'く'], ['くなる (…laşmak)', b+'くなる'], ['くする (…laştırmak)', b+'くする'], ['ければ (…sa)', b+'ければ'], ['かったら (…sa)', b+'かったら'], ['さ (…lik)', b+'さ'], ['そう (gibi görünüyor)', yoi ? b + 'さそう' : /ない$/.test(w) ? w.slice(0,-1) + 'さそう' : b + 'そう'], ['すぎる (fazla)', b+'すぎる'], ['い + isim', w + ' + 本']];
   }
   function conjAdjNa(w){
     return [['だ / です', w+'だ / '+w+'です'], ['じゃない (değil)', w+'じゃない'], ['だった (idi)', w+'だった'], ['じゃなかった (değildi)', w+'じゃなかった'], ['で (…ve)', w+'で'], ['に (zarf)', w+'に'], ['になる / にする', w+'になる / '+w+'にする'], ['なら (…sa)', w+'なら'], ['だったら (…sa)', w+'だったら'], ['な + isim', w+'な + 人'], ['そう (gibi görünüyor)', w+'そう'], ['さ (…lik)', w+'さ'], ['でしょう (galiba)', w+'でしょう'], ['である (yazı dili)', w+'である']];
@@ -664,19 +737,28 @@ li{margin:3px 0}
     w = w.replace(/[。、\s]/g, '');
     $('#out').innerHTML = '<p class="hint">Bakılıyor…</p>';
     await loadDict();
-    const e = lookup(w); const c = classify(w, e);
-    const name = {v1:'Grup 1 (五段 / u-fiili)', v2:'Grup 2 (一段 / る-fiili)', suru:'Grup 3 (する fiili)', kuru:'Grup 3 (来る)', adji:'い-sıfat', adjna:'な-sıfat / isim'}[c.k];
+    let e = lookup(w), from = '';
+    // Katakana yazılmış fiil/sıfat (タベル) → hiragana; katakana isim/sıfatlar (ハンサム) olduğu gibi kalır
+    if (/^[ァ-ヶ]+$/.test(w)){ const h = toHira(w), eh = lookup(h); if (eh && eh[2].some(p => /^(v[15kzs]|adj-i)/.test(p))){ from = w; w = h; e = eh; } }
+    // ます / ない / た / て biçimi girildiyse sözlük biçimine indir (食べます → 食べる)
+    if (!e || !e[2].some(p => /^(v|adj)/.test(p))){ const d = deinflect(w); if (d){ from = from || w; w = d.w; e = d.e || lookup(d.w); } }
+    const c = classify(w, e);
+    const name = {v1:'Grup 1 (五段 / u-fiili)', v2:'Grup 2 (一段 / る-fiili)', suru:'Grup 3 (する fiili)', vss:'Grup 3 (〜する, さ/せ biçimli: 愛する tipi)', vz:'Grup 3 (〜ずる: 信ずる tipi)', kuru:'Grup 3 (来る)', adji:'い-sıfat', adjna:'な-sıfat / isim'}[c.k];
     const mean = e ? e[3][0] : '';
     const word = c.add ? w + c.add : w;
-    const rows = c.k === 'adji' ? conjAdjI(word) : c.k === 'adjna' ? conjAdjNa(word) : conjVerb(word, c.k);
-    const head = `<div class="res-top"><span class="res-w">${esc(word)}</span>${e && e[1][0] && e[1][0] !== word ? `<span class="res-m">${esc(e[1][0])}</span>` : ''}<span class="grp">${name}${c.guess ? ' · tahmin' : ''}</span></div>${mean ? `<div class="res-m">${esc(mean)}</div>` : ''}${c.guess ? '<div class="hint">Sözlükte bulunamadı, grup tahmin edildi.</div>' : ''}`;
+    const rows = c.k === 'adji' ? conjAdjI(word, c.ix) : c.k === 'adjna' ? conjAdjNa(word) : conjVerb(word, c.k, c.sub);
+    const head = `<div class="res-top"><span class="res-w">${esc(word)}</span>${e && e[1][0] && e[1][0] !== word ? `<span class="res-m">${esc(e[1][0])}</span>` : ''}<span class="grp">${name}${c.guess ? ' · tahmin' : ''}</span></div>${mean ? `<div class="res-m">${esc(mean)}</div>` : ''}${from ? `<div class="hint">「${esc(from)}」 sözlük biçimine çevrildi: ${esc(word)}</div>` : ''}${c.guess && !e ? '<div class="hint">Sözlükte bulunamadı, grup tahmin edildi.</div>' : ''}`;
     const verb = !(c.k === 'adji' || c.k === 'adjna');
     const G = verb ? [['Nazik (ます)',0,6],['Düz olumsuz',6,10],['て / た biçimleri',10,18],['Koşul, yetenek, emir',18,24],['Edilgen ve ettirgen',24,27],['ます kökü + ek',27,rows.length]] : [[c.k === 'adji' ? 'い-sıfat çekimleri' : 'な-sıfat / isim çekimleri',0,rows.length]];
     const box = g => `<div class="cgb"><h3>${g[0]}</h3><dl>${rows.slice(g[1], g[2]).map(r => `<div class="r"><dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd></div>`).join('')}</dl></div>`;
+    const exc = G1_EXC.includes(word);
+    const why = c.k === 'v2' ? 'sonu e/i + る → Grup 2' + (exc ? ' — dikkat: aynı okunuşlu bir Grup 1 fiili de var (ör. 要る・切る・帰る); kanjiyle yazarsan grup kesinleşir' : '')
+      : c.sub === 'aru' || c.sub === 'gozaru' ? 'Grup 1, saygı fiili: ます ve emirde り yerine い (〜います, 〜い)'
+      : 'Grup 1 (五段)' + (exc ? ' — bu fiil "hain" listesinde: e/i + る ile bitse de Grup 1' : '');
     $('#out').innerHTML = head + `<div class="cg">${G.filter(g => g[2] > g[1]).map(box).join('')}</div>` +
-      (c.k === 'v1' || c.k === 'v2' ? `<p class="hint">Grup belirleme: ${c.k === 'v2' ? 'sonu e/i + る → Grup 2' : 'Grup 1 (五段)'}${G1_EXC.includes(w) ? ' — bu fiil "hain" listesinde, Grup 1' : ''}. Yanlışsa diğer gruba göre kuralı bölüm 2\'den uygula.</p>` : '');
+      (c.k === 'v1' || c.k === 'v2' ? `<p class="hint">Grup belirleme: ${why}. Yanlışsa diğer gruba göre kuralı bölüm 2\'den uygula.</p>` : '');
   }
-  function fromHash(){ const m = location.hash.match(/^#v=(.*)$/); const sp = new URLSearchParams(location.search); const v = m ? decodeURIComponent(m[1]) : sp.get('v'); if (v){ $('#vin').value = v; run(); } }
+  function fromHash(){ const m = location.hash.match(/^#v=(.*)$/); const sp = new URLSearchParams(location.search); let v = sp.get('v'); if (m){ try{ v = decodeURIComponent(m[1]); }catch(err){ v = m[1]; } } if (v){ $('#vin').value = v; run(); } }
   window.addEventListener('hashchange', fromHash); fromHash();
   $('#vgo').onclick = run; $('#vin').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
   $('#vchips').innerHTML = ['食べる','行く','買う','話す','待つ','読む','泳ぐ','死ぬ','遊ぶ','帰る','勉強する','来る','高い','いい','静か','きれい'].map(w => `<button class="chip" data-w="${w}">${w}</button>`).join('');

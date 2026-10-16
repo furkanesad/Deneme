@@ -270,7 +270,12 @@ kbd{font:600 .78rem var(--tr);border:1px solid var(--rule);border-bottom-width:2
   renderResume();
   const start = location.hash.replace('#','') || store.get('last', 'home');
   show(panes[start] ? start : 'home');
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  // yeni sürüm: her açılışta kontrol et; yeni service worker devreye girince sayfayı bir kez yenile
+  if ('serviceWorker' in navigator){
+    const had = !!navigator.serviceWorker.controller; let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (had && !reloaded){ reloaded = true; location.reload(); } });
+    navigator.serviceWorker.register('sw.js', {updateViaCache: 'none'}).then(r => r.update()).catch(() => {});
+  }
 })();
 </script>
 </body>

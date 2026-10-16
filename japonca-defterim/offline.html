@@ -90,10 +90,6 @@ h3{font-size:.95rem;margin:0 0 6px}
 .pfb{border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
 .pfb .cor{font-size:1.05rem}
 .pfb ul{margin:0;padding-left:18px}
-.td-hero{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.td-hero .pill{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:.9rem}
-.td-hero .pill b{font-size:1.25rem;font-family:var(--f-display)}
-.td-list{display:flex;flex-direction:column;gap:10px}
 .task{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center}
 .task.done{border-color:var(--matcha);background:var(--matcha-soft)}
 .task .tk-i{font-size:1.5rem;grid-row:span 2}
@@ -101,11 +97,6 @@ h3{font-size:.95rem;margin:0 0 6px}
 .task .tk-d{font-size:.86rem;color:var(--muted);grid-column:2}
 .task .tk-b{grid-row:span 2}
 .task .bar{grid-column:1/-1;margin-top:4px}
-.td-week{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px}
-.td-day{aspect-ratio:1;border-radius:6px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:.68rem;color:var(--muted)}
-.td-day.p1{background:var(--ai-soft);color:var(--ai)}.td-day.p2{background:var(--matcha);color:#fff}.td-day.today{outline:2px solid var(--ai)}
-.td-over{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-@media (max-width:480px){.td-over{grid-template-columns:1fr}}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:6px}
 .tile{font:inherit;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;cursor:pointer;color:var(--ink);min-width:0;transition:border-color .15s,transform .15s}
 .tile:hover{border-color:var(--ai);transform:translateY(-1px)}
@@ -152,7 +143,6 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
 .nav .tabs button[data-v="cards"][aria-selected="true"]{background:var(--c-v)}
 .nav .tabs button[data-v="gram"][aria-selected="true"]{background:var(--c-g)}
 .nav .tabs button[data-v="kanji"][aria-selected="true"]{background:var(--c-k)}
-.nav .tabs button[data-v="today"][aria-selected="true"]{background:var(--ok)}
 .tile[style*="--h"]{background:hsl(var(--h) 75% var(--tl));border-color:hsl(var(--h) 55% var(--tb))}
 .tile[style*="--h"] .ti{background:hsl(var(--h) 70% var(--ti));border-radius:10px;padding:5px 7px;width:fit-content}
 .tile[style*="--h"]:hover{border-color:hsl(var(--h) 60% var(--ts))}
@@ -170,8 +160,6 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
 .ovt[data-ovt="gram"] .ojp{color:var(--c-g)} .ovt[data-ovt="kanji"] .ojp{color:var(--c-k)} .ovt[data-ovt="vocab"] .ojp{color:var(--c-v)} .ovt[data-ovt="jk"] .ojp{color:var(--c-j)}
 .ovt[data-ovt="gram"][aria-pressed="true"]{background:var(--c-g-soft);box-shadow:inset 0 0 0 2px var(--c-g)} .ovt[data-ovt="kanji"][aria-pressed="true"]{background:var(--c-k-soft);box-shadow:inset 0 0 0 2px var(--c-k)}
 .ovt[data-ovt="vocab"][aria-pressed="true"]{background:var(--c-v-soft);box-shadow:inset 0 0 0 2px var(--c-v)} .ovt[data-ovt="jk"][aria-pressed="true"]{background:var(--c-j-soft);box-shadow:inset 0 0 0 2px var(--c-j)}
-.ovtoday{grid-column:1/-1;font:inherit;text-align:left;border:none;border-radius:12px;padding:10px 14px;cursor:pointer;background:linear-gradient(90deg,var(--c-v),var(--c-g));color:#fff;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.ovtoday b{font-size:1.15rem}.ovtoday span{margin-left:auto;font-weight:700}
 @media (max-width:560px){.ov{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ovt{padding:8px 10px}.ovt .val{font-size:1.1rem}}
 .lsect{display:flex;align-items:center;gap:8px}
 .lsect::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--sc,var(--ai))}
@@ -191,16 +179,11 @@ header h1{background:linear-gradient(90deg,var(--c-v),var(--c-g) 60%,var(--c-k))
 #c-kind button[data-k="v"][aria-pressed="true"]{background:var(--c-v)} #c-kind button[data-k="g"][aria-pressed="true"]{background:var(--c-g)}
 #c-kind button[data-k="k"][aria-pressed="true"]{background:var(--c-k)} #c-kind button[data-k="j"][aria-pressed="true"]{background:var(--c-j)}
 .lc{border-left:4px solid var(--line)} .lc.k-v{border-left-color:var(--c-v)} .lc.k-g{border-left-color:var(--c-g)} .lc.k-k{border-left-color:var(--c-k)} .lc.k-j{border-left-color:var(--c-j)}
-/* today */
 .task{border-left:6px solid var(--tc,var(--ai))}
 .task .tk-i{width:42px;height:42px;border-radius:12px;display:grid;place-content:center;background:var(--tcs,var(--ai-soft));font-size:1.35rem}
 .task .btn{background:var(--tc,var(--ai));border-color:var(--tc,var(--ai))}
 .task .bar i{background:var(--tc,var(--ai))}
 .task.done{border-left-color:var(--ok)}
-.td-hero .pill{border-width:2px}
-.td-hero .pill:nth-child(1){border-color:var(--c-v);background:var(--c-v-soft)} .td-hero .pill:nth-child(2){border-color:var(--c-j);background:var(--c-j-soft)} .td-hero .pill:nth-child(3){border-color:var(--c-g);background:var(--c-g-soft)}
-.td-day.p1{background:var(--mid-soft);color:#9a6b00}.td-day.p2{background:var(--ok);color:#fff}
-.td-over .pc:nth-child(1) .bar i{background:var(--ok)} .td-over .pc:nth-child(2) .bar i{background:var(--c-v)} .td-over .pc:nth-child(3) .bar i{background:var(--c-g)}
 .sdot.s1,.it.s1 .sdot{background:var(--mid-soft);border-color:var(--mid)}
 .sdot.s2,.it.s2 .sdot{background:var(--ok);border-color:var(--ok)}
 .pbar .l2{background:var(--ok)} .pbar .l1{background:var(--mid);opacity:.8}
@@ -430,24 +413,18 @@ html,body{max-width:100%;overflow-x:hidden}
 .seg{max-width:100%;flex-wrap:wrap}
 @media (max-width:640px){.seg{display:flex!important;width:100%}.seg button{flex:1 1 auto;min-width:0;padding-left:6px!important;padding-right:6px!important}}
 @media (max-width:640px){
- .nav .tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))}
+ .nav .tabs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}
  .nav .tabs button{flex-direction:column;gap:1px!important;padding:6px 2px!important;font-size:.72rem!important;min-width:0}
  .nav .tabs button .tk{font-size:1.05rem}
  .nav .tabs button span{display:none}
  .nav .tabs button.minor{grid-column:span 1;flex-direction:row;font-size:.72rem!important}
  .nav .tabs button[data-v="stats"]{grid-column:1 / span 2;grid-row:2}
- .nav .tabs button[data-v="settings"]{grid-column:3 / span 3;grid-row:2}
+ .nav .tabs button[data-v="settings"]{grid-column:3 / span 2;grid-row:2}
  .nav .tabs button[hidden]{display:none!important}
 }
 /* özet kutuları ve "bugün" şeridi */
 .ovt{border-top-width:1px!important;border-top-color:var(--line)!important;border-radius:14px}
 .ovt .ojp{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
-.ovtoday{background:var(--ai);border-radius:14px;padding:12px 16px}
-:root[data-theme="dark"] .ovtoday{color:#10141B}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ovtoday{color:#10141B}}
-.td-hero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.td-hero .pill{border-width:1px!important;border-color:var(--line)!important;background:var(--surface)!important;text-align:center;font-size:.82rem;color:var(--muted)}
-.td-hero .pill b{display:block;font-family:var(--f-display);font-size:1.4rem;color:var(--ink)}
 .task{border-left-width:1px!important}
 details{border-radius:12px}
 
@@ -584,7 +561,6 @@ details{border-radius:12px}
 .nk-empty{color:var(--muted);text-align:center;padding:30px 10px}
 @media (prefers-reduced-motion:reduce){.nk-inner,.nk-card,.nk-card.fly,.nk-card.nk-next{transition:none!important}}
 
-.ovtoday{display:none!important}
 </style>
 
 <div class="wrap">
@@ -603,7 +579,6 @@ details{border-radius:12px}
 
   <nav class="nav" aria-label="Bölümler">
     <div class="tabs" role="tablist">
-      <button role="tab" data-v="today" aria-selected="false"><b class="tk">今</b>Bugün</button>
       <button role="tab" data-v="cards" aria-selected="false"><b class="tk">札</b>Kartlar <span id="cn" hidden></span></button>
       <button role="tab" data-v="vocab" aria-selected="false"><b class="tk">語</b>Kelimeler</button>
       <button role="tab" data-v="gram" aria-selected="false"><b class="tk">文</b>Gramer</button>
@@ -617,24 +592,6 @@ details{border-radius:12px}
       <button role="tab" data-v="sent" aria-selected="false" hidden>Cümleler <span id="sn"></span></button>
     </div>
   </nav>
-
-  <div id="view-today" class="view" hidden>
-    <div class="vh"><h2>Bugün</h2><p id="td-date"></p></div>
-    <div class="td-hero" id="td-hero"></div>
-    <div class="td-list" id="td-list"></div>
-    <h3 class="lsect">Son 14 gün</h3>
-    <div class="td-week" id="td-week"></div>
-    <h3 class="lsect">Genel ilerleme</h3>
-    <div class="td-over" id="td-over"></div>
-    
-    <details class="addbox" style="margin-top:14px"><summary>⚙️ Plan ayarları</summary>
-      <div class="flab">Günlük yoğunluk</div>
-      <div class="seg" id="td-pace"><button data-x="light">Hafif (~15 dk)</button><button data-x="normal">Normal (~30 dk)</button><button data-x="intense">Yoğun (~50 dk)</button></div>
-      <div class="flab">Hedef tarih</div>
-      <input type="date" id="td-goal" style="max-width:220px">
-      <p class="hint" id="td-pace-h" style="margin:0"></p>
-    </details>
-  </div>
 
   <div id="view-read" class="view" hidden>
   <div class="actions">
@@ -1452,10 +1409,8 @@ function renderOvr(active){
   const vb = V.map((v, i) => i).filter(i => eligible(true, i)), gb = G.map((g, i) => i).filter(i => eligible(false, i));
   const vOk = vb.filter(i => stOf(true, i) === 2).length, gOk = gb.filter(i => stOf(false, i) === 2).length;
   const kOk = KJ.filter(k => (SR.k[k[0]] || [0])[0] >= 3 || STUDY.kd[k[0]]).length, jOk = JK.filter(k => (SR.k[k[0]] || [0])[0] >= 3 || STUDY.kd[k[0]]).length;
-  const T = todayCards();
   const t = (id, jp, tr, n, tot, on) => `<button class="ovt" data-ovt="${id}" aria-pressed="${on}"><span class="ojp">${jp}</span><span class="lab">${tr}</span><span class="val">${n}<small> / ${tot}</small></span><span class="pb"><i style="width:${(n / Math.max(1, tot) * 100).toFixed(1)}%"></i></span></button>`;
-  const html = t('gram', '文法', 'Gramer', gOk, gb.length, active === 'gram') + t('kanji', '漢字', 'Kanji', kOk, KJ.length, active === 'kanji') + t('vocab', '単語', 'Kelime', vOk, vb.length, active === 'vocab') + t('jk', '熟語', 'İkili kanji', jOk, JK.length, active === 'jk')
-    + `<button class="ovtoday" data-ovt="cards">🃏 Bugün <b>${T.rev + T.newLeft + T.newKLeft}</b> kart seni bekliyor <span>Kartlara git →</span></button>`;
+  const html = t('gram', '文法', 'Gramer', gOk, gb.length, active === 'gram') + t('kanji', '漢字', 'Kanji', kOk, KJ.length, active === 'kanji') + t('vocab', '単語', 'Kelime', vOk, vb.length, active === 'vocab') + t('jk', '熟語', 'İkili kanji', jOk, JK.length, active === 'jk');
   document.querySelectorAll('[data-ov]').forEach(el => { el.innerHTML = html; });
 }
 document.addEventListener('click', e => {
@@ -1463,7 +1418,6 @@ document.addEventListener('click', e => {
   const id = b.dataset.ovt;
   if (id === 'jk'){ KF.set = 'jk'; document.querySelectorAll('#k-set button').forEach(x => x.setAttribute('aria-pressed', x.dataset.x === 'jk')); showView('kanji'); }
   else if (id === 'kanji'){ KF.set = 'k'; document.querySelectorAll('#k-set button').forEach(x => x.setAttribute('aria-pressed', x.dataset.x === 'k')); showView('kanji'); }
-  else if (id === 'cards'){ showView('cards'); if (window.NK && NK.startToday) NK.startToday(); }
   else showView(id);
   window.scrollTo({top:0});
 });
@@ -1533,20 +1487,19 @@ function renderLists(){
   if (lib) $('f-sum').innerHTML = `📚 Kütüphane: <b>${_shown.toLocaleString('tr')}</b> ${isV ? 'kelime' : 'gramer kalıbı'} listeleniyor · Defterinde (çalıştığın) ${el.length.toLocaleString('tr')} · Yeni ${el.length - n1 - n2} · Öğreniliyor ${n1} · Öğrenildi ${n2}`; else
   $('f-sum').innerHTML = `<span class="legend"><span class="sdot"></span>Yeni ${el.length - n1 - n2}<span class="sdot s1"></span>Öğreniliyor ${n1}<span class="sdot s2"></span>Öğrenildi ${n2}</span> · toplam ${el.length}${hid ? ` · Sildiğin ${hid} kelime gizli <button class="mini" id="unhide">geri getir</button>` : ''}`;
 }
-const MODE_OF = {today:'read', read:'read', texts:'read', vocab:'study', gram:'study', kanji:'study', sent:'study', gen:'study', stats:'study', cards:'study', settings:'set'};
+const MODE_OF = {read:'read', texts:'read', vocab:'study', gram:'study', kanji:'study', sent:'study', gen:'study', stats:'study', cards:'study', settings:'set'};
 function setModeUI(m){
   document.querySelectorAll('.nav .ng').forEach(g => g.classList.toggle('on', g.dataset.group === m));
 }
 function showView(v){
-  if (v === 'sent') v = 'cards';   // sentences now live inside the cards
+  if (v === 'sent' || v === 'today') v = 'cards';   // sentences live inside the cards; the daily page is removed
   if (v === 'read' || v === 'texts' || v === 'gen') v = 'vocab';   // reading and the sentence generator are switched off
   if (!MODE_OF[v]) v = 'vocab';
   closePop();
   const m = MODE_OF[v]; setModeUI(m);
   PLACE.lv = Object.assign({}, PLACE.lv, {[m]: v});
   document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.v===v));
-  ['today','read','texts','cards','kanji','sent','gen','stats','settings'].forEach(x => { $('view-' + x).hidden = v !== x; });
-  if (v === 'today') renderToday();
+  ['read','texts','cards','kanji','sent','gen','stats','settings'].forEach(x => { $('view-' + x).hidden = v !== x; });
   document.querySelector('.prog').hidden = $('banner').hidden = v !== 'read';
   if (v === 'settings') renderLibStat();
   $('view-list').hidden = !(v==='vocab'||v==='gram');
@@ -1930,10 +1883,7 @@ function syncCardControls(){
   if (CK.group && !(vg[CK.group] || gg[CK.group])) CK.group = '';
   $('c-group').value = CK.group;
 }
-function updateCardCount(){
-  const T = todayCards(), n = T.rev + T.newLeft;
-  $('cn').textContent = n ? `(${n})` : '';
-}
+function updateCardCount(){ $('cn').textContent = ''; }
 function startCards(all){
   syncCardControls();
   const now = Date.now(), cards = deck();
@@ -3390,12 +3340,10 @@ function logAct(what, n){
   const L = logToday(); L[what] = (L[what] || 0) + (n || 1);
   const ks = Object.keys(STUDY.log).sort(); if (ks.length > 120) ks.slice(0, ks.length - 120).forEach(k => delete STUDY.log[k]);
   saveStudy();
-  if (!$('view-today').hidden) renderToday();
 }
 function logRead(no){ const L = logToday(); L.rdn = L.rdn || []; if (L.rdn.includes(no)) return; L.rdn.push(no); logAct('rd'); }
 // cards waiting today: reviews that are due, plus new cards up to today's limit
 function todayCards(){
-  if (window.NK && NK.todayCount) return NK.todayCount();
   const now = Date.now(), L = logToday(), P = paceOf();
   let rev = 0, newV = 0;
   V.forEach((x, i) => { if (!eligible(true, i)) return; const r = SR.v[i]; if (r){ if (r[1] <= now) rev++; } else newV++; });
@@ -3403,60 +3351,6 @@ function todayCards(){
   let revK = 0; KJ.forEach(k => { const r = SR.k[k[0]]; if (r && r[1] <= now) revK++; }); JK.forEach(k => { const r = SR.k[k[0]]; if (r && r[1] <= now) revK++; });
   return {rev: rev + revK, newLeft: Math.max(0, Math.min(newV, P.nw - (L.nw || 0))), newKLeft: Math.max(0, P.nk - (L.nk || 0))};
 }
-function suggestTopic(){
-  const cnt = {};
-  ['N5','N4','N3'].some(l => { V.forEach((v, i) => { if (v[3] === l && eligible(true, i) && !SR.v[i]){ const c = catsOf(i)[0]; if (c && !/^(Zarflar|Soru-|Bağlaçlar|Selamlaşma)/.test(catName(c))) cnt[c] = (cnt[c] || 0) + 1; } }); if (Object.keys(cnt).length){ cnt.__l = l; return true; } return false; });
-  const l = cnt.__l; delete cnt.__l;
-  const best = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
-  return best ? {lvl:l, cat:best[0], name:catName(best[0]), n:best[1]} : null;
-}
-function renderToday(){
-  const P = paceOf(), L = logToday(), T = todayCards(), pl = planOf();
-  const d = new Date(), goal = new Date(pl.goal + 'T00:00:00'), left = Math.ceil((goal - new Date(dayKey() + 'T00:00:00')) / 864e5);
-  $('td-date').textContent = d.toLocaleDateString('tr-TR', {weekday:'long', day:'numeric', month:'long'}) + ` · ${P.lab} plan`;
-  // streak: days in a row with any work, counting back from today (today may still be empty)
-  let streak = 0; for (let k = 0; k < 400; k++){ const x = STUDY.log && STUDY.log[dayKey(new Date(Date.now() - k * 864e5))]; const any = x && (x.rev + x.nw + x.nk + x.rd + x.st) > 0; if (any) streak++; else if (k > 0) break; }
-  $('td-hero').innerHTML = `${left > 0 ? `<span class="pill">Hedefe <b>${left}</b> gün</span>` : ''}<span class="pill">🔥 Seri <b>${streak}</b> gün</span><span class="pill">Bugün <b>${(L.rev || 0) + (L.nw || 0) + (L.nk || 0)}</b> kart</span>`;
-  const tp = suggestTopic();
-  const tasks = [
-    {id:'rev', col:'v', ic:'🔁', t:'Tekrar kartları', done:L.rev || 0, goal:(L.rev || 0) + T.rev, d:T.rev ? `${T.rev} kart bugün tekrar bekliyor (yaklaşık ${Math.max(1, Math.round(T.rev / 4))} dk). Önce bunları bitir; bilmediklerin yakında yine gelir.` : 'Bugünkü tekrarlar bitti 👏', btn:T.rev ? 'Başla' : ''},
-    {id:'new', col:'g', ic:'🆕', t:'Yeni kelime ve gramer', done:L.nw || 0, goal:P.nw, d:T.newLeft ? `${T.newLeft} yeni kart kaldı.${tp ? ` Önerilen: ${tp.lvl} · ${tp.name} (${tp.n} kelime bekliyor).` : ''} Kartın arkasındaki örnek cümleyi sesli oku.` : 'Bugünkü yeni kartlar tamam.', btn:T.newLeft ? 'Başla' : ''},
-    {id:'kanji', col:'k', ic:'漢', t:'Yeni kanji', done:L.nk || 0, goal:P.nk, d:T.newKLeft ? `${T.newKLeft} yeni kanji öğren: okunuşlarına ve defterindeki kelimelere bak.` : 'Bugünkü kanjiler tamam.', btn:T.newKLeft ? 'Başla' : ''},
-    {id:'write', col:'j', ic:'✍️', t:'Cümle yaz', done:L.st || 0, goal:P.st, d:(L.st || 0) >= P.st ? 'Bugünkü yazma tamam.' : `${P.st - (L.st || 0)} cümle yaz: bir kartın arkasındaki ✍️ bölümünde.`, btn:(L.st || 0) >= P.st ? '' : 'Yaz'},
-  ];
-  $('td-list').innerHTML = tasks.map(x => { const ok = x.done >= x.goal && x.goal > 0 || (x.id === 'rev' && !T.rev); const pc = x.goal ? Math.min(100, x.done / x.goal * 100) : 100;
-    return `<div class="task ${ok ? 'done' : ''}" style="--tc:var(--c-${x.col});--tcs:var(--c-${x.col}-soft)"><span class="tk-i">${ok ? '✅' : x.ic}</span><span class="tk-t">${x.t} <span class="hint">${x.done}/${x.goal}</span></span>${x.btn ? `<button class="btn tk-b" data-td="${x.id}">${x.btn}</button>` : '<span></span>'}<span class="tk-d">${esc(x.d)}</span><div class="bar"><i style="width:${pc.toFixed(0)}%"></i></div></div>`; }).join('');
-  // last 14 days
-  let wk = '';
-  for (let k = 13; k >= 0; k--){
-    const dd = new Date(Date.now() - k * 864e5), x = (STUDY.log || {})[dayKey(dd)];
-    const score = x ? [Math.min(1, (x.rev + x.nw) / Math.max(1, P.nw)), Math.min(1, (x.nk || 0) / P.nk), Math.min(1, (x.st || 0) / P.st)].reduce((a, b) => a + b, 0) / 3 : 0;
-    wk += `<div class="td-day ${score >= .75 ? 'p2' : score > 0 ? 'p1' : ''} ${k === 0 ? 'today' : ''}" title="${dayKey(dd)}">${dd.getDate()}</div>`;
-  }
-  $('td-week').innerHTML = wk;
-  // overall: words/kanji/grammar that reached box 3+ (about a week of memory), by level
-  const strong = (kind, key) => (SR[kind][key] || [0])[0] >= 3;
-  const lv = ['N5','N4','N3'].map(l => {
-    const ws = V.map((v, i) => i).filter(i => V[i][3] === l && eligible(true, i)), ks = KJ.filter(k => k[1] === l), gs = G.map((g, i) => i).filter(i => G[i][2] === l && eligible(false, i));
-    const a = ws.filter(i => strong('v', i)).length, b = ks.filter(k => strong('k', k[0]) || STUDY.kd[k[0]]).length, c = gs.filter(i => strong('g', i)).length;
-    const tot = ws.length + ks.length + gs.length, pc = tot ? (a + b + c) / tot * 100 : 0;
-    return `<div class="pc"><div class="lab">${l}</div><div class="val">${pc.toFixed(0)}<small>%</small></div><div class="hint">kelime ${a}/${ws.length} · kanji ${b}/${ks.length} · gramer ${c}/${gs.length}</div><div class="bar"><i style="width:${pc.toFixed(1)}%"></i></div></div>`;
-  }).join('');
-  $('td-over').innerHTML = lv + '';
-  document.querySelectorAll('#td-pace button').forEach(b => b.setAttribute('aria-pressed', b.dataset.x === pl.pace));
-  $('td-goal').value = pl.goal;
-  $('td-pace-h').textContent = `Günlük: ${P.nw} yeni kelime/gramer, ${P.nk} kanji, ${P.st} cümle + bekleyen tekrarlar. "Öğrenildi" sayılması için kartın en az 3. kutuya (yaklaşık bir hafta hafızada) çıkması gerekir.`;
-}
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-td]'); if (!b) return;
-  const id = b.dataset.td;
-  if (id === 'rev' || id === 'new'){ CK.kind = 'all'; CK.scope = 'due'; CK.group = ''; CK.lvl = 'all'; CK.view = 'one'; showView('cards'); if (window.NK && NK.startToday) NK.startToday(); }
-  else if (id === 'kanji'){ CK.kind = 'k'; CK.scope = 'due'; CK.group = ''; CK.lvl = 'all'; CK.view = 'one'; showView('cards'); if (window.NK && NK.startToday) NK.startToday(); }
-  else if (id === 'read'){ showView('read'); if (!current || (logToday().rdn || []).includes(current.no)) next(); else logRead(current.no); }
-  else if (id === 'write'){ showView('cards'); }
-});
-document.querySelectorAll('#td-pace button').forEach(b => b.onclick = () => { STUDY.plan = Object.assign(planOf(), {pace:b.dataset.x}); saveStudy(true).catch(() => {}); renderToday(); updateCardCount(); });
-$('td-goal').onchange = e => { if (!e.target.value) return; STUDY.plan = Object.assign(planOf(), {goal:e.target.value}); saveStudy(true).catch(() => {}); renderToday(); };
 
 // ---------- furigana everywhere: any element with data-furi="text" gets ruby readings ----------
 const KRUN = /[々ヶ一-鿿㐀-䶿]+|[^々ヶ一-鿿㐀-䶿]+/g;
@@ -3780,7 +3674,7 @@ function restorePlace(){
   if (PLACE.ck){ Object.assign(CK, PLACE.ck); try{ syncCardControls(); }catch(e){} }
   const v = PLACE.view || (()=>{ try{ return localStorage.getItem('okuma-view'); }catch(e){ return null; } })();
   if (v && v !== 'read') showView(v);
-  else if (!current) showView('today');
+  else if (!current) showView('cards');
   else if (current && PLACE.scroll > 0.02){ const r = $('reader'); window.scrollTo({top: r.offsetTop + PLACE.scroll * r.offsetHeight - 20}); }
   restoring = false;
 }
@@ -4054,31 +3948,6 @@ function safeDb(d){
     });
     return out;
   }
-  // ---- today's deck: due reviews (any kind) + new cards up to the daily limits of the plan ----
-  const LRK = {N5:0, N4:1, N3:2, N2:3, N1:4};
-  function todaySplit(){
-    POOLS = null;   // eligibility can change (pins, loaded notebook), so count from fresh pools
-    const P = pools(), now = Date.now(), pace = paceOf(), L = logToday();
-    const rev = [], newW = [], newK = [];
-    KINDS.forEach(k => P[k].forEach(c => {
-      const r = rec(c);
-      if (r){ if ((r[1] || 0) <= now) rev.push(c); }
-      else (k === 'k' || k === 'j' ? newK : newW).push(c);
-    }));
-    rev.sort((a, b) => dueAt(a) - dueAt(b));
-    const byLv = (a, b) => (LRK[lvOf(a)] ?? 5) - (LRK[lvOf(b)] ?? 5);
-    newW.sort(byLv); newK.sort(byLv);
-    const nW = Math.max(0, pace.nw - (L.nw || 0)), nK = Math.max(0, pace.nk - (L.nk || 0));
-    return {rev, newW:newW.slice(0, nW), newK:newK.slice(0, nK)};
-  }
-  function todayCount(){ const T = todaySplit(); return {rev:T.rev.length, newLeft:T.newW.length, newKLeft:T.newK.length}; }
-  function startToday(){
-    S = null; POOLS = null;
-    const T = todaySplit(), cards = T.rev.concat(T.newW, T.newK);
-    if (!cards.length){ renderDecks(); toast('Bugünlük kart kalmadı 👏'); return; }
-    S = {name:'🌅 Bugün', key:'today', src:cards, n:0, q:cards.slice(), total:cards.length, ok:0, no:0, re:0, flipped:false, hist:[], first:new Set(), miss:new Map(), busy:false, end:false};
-    renderSession(true);
-  }
   function missCards(){ const P = pools(), out = []; KINDS.forEach(k => P[k].forEach(c => { if (missC(c)) out.push(c); })); return out; }
   // weakest first: "bilmiyorum" cards, then new ones, then the rest by box; shuffled inside each group
   function order(cards, n){
@@ -4112,12 +3981,12 @@ function safeDb(d){
       <div class="nk-name" id="nk-name" hidden><input id="nk-nm" maxlength="40" placeholder="Deste adı, ör. N5 karışık" aria-label="Deste adı"><button class="nk-btn" id="nk-nmok">Kaydet</button><button class="nk-ghost" id="nk-nmno">Vazgeç</button></div>
     </section>`;
     {
-      const T = todaySplit(), tn = T.rev.length + T.newW.length + T.newK.length;
-      h += `<details class="nk-sec" open><summary>Destelerim <small>${MY.length + (mis.length ? 1 : 0) + 1}</small></summary><div class="nk-tiles">`;
-      h += `<button class="nk-tile k-mix special" data-deck="today"><span class="ic">🌅</span><span class="nm">Bugün</span><span class="ct">${tn ? `${T.rev.length} tekrar · ${T.newW.length + T.newK.length} yeni` : 'bugünlük bitti ✓'}</span><span class="bar"><i style="width:0%"></i></span></button>`;
+      if (MY.length || mis.length){
+      h += `<details class="nk-sec" open><summary>Destelerim <small>${MY.length + (mis.length ? 1 : 0)}</small></summary><div class="nk-tiles">`;
       if (mis.length) h += tile('data-deck="miss"', 'k-miss special', '✗', 'Bilmediklerim', mis);
       MY.forEach((d, n) => { h += tile(`data-deck="my:${n}"`, 'k-mix', '混', d.name, mixCards(d.cfg), `<span class="x" data-del="${n}" role="button" aria-label="Desteyi sil">✕</span>`); });
       h += `</div></details>`;
+      }
     }
     // karışık konu desteleri: her sahne / tema için kelime + gramer + kalıp
     const mixTile = t => {
@@ -4377,8 +4246,7 @@ function safeDb(d){
     const dk = t.closest('[data-deck]');
     if (dk){
       const d = dk.dataset.deck;
-      if (d === 'today') startToday();
-      else if (d === 'miss') start('Bilmediklerim', missCards(), 0, 'miss');
+      if (d === 'miss') start('Bilmediklerim', missCards(), 0, 'miss');
       else if (d.startsWith('my:')){ const m = MY[+d.slice(3)]; if (m) start(m.name, mixCards(m.cfg), m.cfg.n, d); }
       else if (d.startsWith('t:')){ const x = DK && DK.get(d.slice(2)); if (x) start(x.name, x.cards, 0, d); }
       else if (d.startsWith('top:')){ const x = topicById(d.slice(4)); if (x) start(x.jp ? `${x.jp} · ${x.tr}` : x.tr, x.cards, 0, d); }
@@ -4386,7 +4254,7 @@ function safeDb(d){
     }
     // session
     if (t.closest('#nk-back')){ if (S && S.busy) return; S = null; renderDecks(); window.scrollTo({top:0}); return; }
-    if (t.id === 'nk-again' && S){ if (S.key === 'today') startToday(); else start(S.name, S.src, S.n, S.key); return; }
+    if (t.id === 'nk-again' && S){ start(S.name, S.src, S.n, S.key); return; }
     if (t.id === 'nk-missgo' && S){ start('Zorlandıklarım', [...S.miss.values()], 0, 'smiss'); return; }
     if (t.closest('#nk-dir')){ OPT.dir = OPT.dir === 'jp' ? 'tr' : 'jp'; ls.set('opt', OPT); renderSession(false); return; }
     if (t.closest('#nk-furi')){ OPT.furi = !OPT.furi; ls.set('opt', OPT); renderSession(false); return; }
@@ -4426,7 +4294,7 @@ function safeDb(d){
   window.startCards = function(){ if (S && !S.end) renderSession(false); else if (S && S.end) renderDone(); else renderDecks(); };
   window.updateCardCount = function(){ const e = $i('cn'); if (e) e.textContent = ''; };
   window.updateCardCount();
-  window.NK = {renderDecks, start, startToday, todayCount, mixCards, topicDecks, state: () => S};
+  window.NK = {renderDecks, start, mixCards, topicDecks, state: () => S};
 })();
 
 </script>
